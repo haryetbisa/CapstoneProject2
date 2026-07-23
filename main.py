@@ -26,6 +26,7 @@ def load_fonts():
 
 #wag kalimutan mag-import, mag-eerror talaga :)))
 from router import Router
+from screens.loading_screen import LoadingScreen
 from screens.account_info import AccountInfo
 from features.voice_recog import VoiceRecognitionScreen
 from features.lesson_screen import LessonScreen
@@ -56,6 +57,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.stack)
 
         self.router = Router(self.stack)
+        self.router.register("loading_screen", LoadingScreen(self.router))
         self.router.register("createacc", CreateAccount(self.router))
         self.router.register("credentials", AccountInfo(self.router))
         self.router.register("home", HomeScreen(self.router))
@@ -75,7 +77,7 @@ class MainWindow(QMainWindow):
 
 
 
-        self.router.navigate("createacc")
+        self.router.navigate("loading_screen")
 
 
 if __name__ == "__main__":

@@ -3,6 +3,6 @@ class LessonContentArray:
             super().__init__()
 
 
-            self.content_array = []
+            self.content_array = [];
 
 

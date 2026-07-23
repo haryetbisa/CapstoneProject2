@@ -64,21 +64,20 @@ class ParteNgKatawanScreen(QWidget):
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
 
-        mata_card = CardsPicButton ("giraffe.png", color = CORAL_RED) 
-        ilong_card = CardsPicButton ("giraffe.png", color = MARIGOLD) 
-        bibig_card = CardsPicButton ("giraffe.png", color = ELECTRIC_VIOLET) 
-        tainga_card = CardsPicButton ("giraffe.png", color = HOT_PINK)
-        ulo_card = CardsPicButton ("giraffe.png", color = SKY_BLUE) 
+        mata_card = CardsPicButton ("mata.png", color = CORAL_RED) 
+        ilong_card = CardsPicButton ("ilong.png", color = HONEY_YELLOW) 
+        bibig_card = CardsPicButton ("bibig.png", color = ELECTRIC_VIOLET) 
+        tainga_card = CardsPicButton ("tainga.png", color = HOT_PINK)
+        ulo_card = CardsPicButton ("ulo.png", color = SKY_BLUE) 
 
-        leeg_card = CardsPicButton ("giraffe.png", color = LIGHT_GREEN) 
-        balikat_card = CardsPicButton ("giraffe.png", color = COBALT_BLUE) 
-        tiyan_card = CardsPicButton ("giraffe.png", color = TERRACOTTA) 
-        braso_card = CardsPicButton ("giraffe.png", color = BURNT_ORANGE) 
-        kamay_card = CardsPicButton ("giraffe.png", color = MAGENTA) 
+        leeg_card = CardsPicButton ("leeg.png", color = LIGHT_GREEN) 
+        balikat_card = CardsPicButton ("balikat.png", color = COBALT_BLUE) 
+        tiyan_card = CardsPicButton ("tiyan.png", color = TERRACOTTA) 
+        braso_card = CardsPicButton ("braso.png", color = BURNT_ORANGE) 
+        kamay_card = CardsPicButton ("kamay.png", color = MAGENTA) 
 
-        binti_card = CardsPicButton ("giraffe.png", color = CORAL_RED) 
-        tuhod_card = CardsPicButton ("giraffe.png", color = MARIGOLD) 
-        paa_card = CardsPicButton ("giraffe.png", color = ELECTRIC_VIOLET) 
+        binti_card = CardsPicButton ("binti.png", color = CORAL_RED) 
+        paa_card = CardsPicButton ("paa.png", color = HONEY_YELLOW) 
         
         
 
@@ -95,8 +94,8 @@ class ParteNgKatawanScreen(QWidget):
         grid_layout.addWidget(kamay_card, 1, 4)
 
         grid_layout.addWidget(binti_card, 2, 0)
-        grid_layout.addWidget(tuhod_card, 2, 1)
-        grid_layout.addWidget(paa_card, 2, 2)
+        grid_layout.addWidget(paa_card, 2, 1)
+     
  
 
         main_layout.addLayout(grid_layout)
