@@ -136,3 +136,7 @@ class PantigScreen(QWidget):
         main_layout.addStretch()
 
         scroll.setWidget(content)
+
+        def clicked():
+            A_card.clicked.connect(lambda: self.router.navigate("vr"))
+

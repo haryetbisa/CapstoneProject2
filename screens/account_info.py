@@ -1,10 +1,10 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit, QGraphicsDropShadowEffect
 from PySide6.QtGui import QPixmap, QColor, QPalette
 from PySide6.QtCore import QRect
 
 
-from components.cardsbutton import CardsButton
+from components.btn_dropshadow import add_drop_shadow
 from themes.colors import *
 from assets.icon import icon_label
 from themes.fonts import  HEADING_FONT, BODY_FONT
@@ -110,13 +110,12 @@ class AccountInfo(QWidget):
                 padding: 2px 6px;
                 border-radius: 6px;
         }}""")
+        add_drop_shadow(create_btn)
+        add_drop_shadow(email, blur=10, y_offset=2, color=(0, 0, 0, 80)) 
         create_btn.clicked.connect(lambda: self.router.navigate("home"))
         main_layout.addWidget(create_btn, alignment = Qt.AlignmentFlag.AlignCenter)
 
-
-        original = QPixmap("assets/images/together_kids.png")
-                # copy(x, y, width, height) — crop starting at (x, y), taking that much width/height
-        cropped = original.copy(0, 0, 300, 200)
+       
 
 
         image_bottom = QHBoxLayout()
