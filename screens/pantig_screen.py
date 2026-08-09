@@ -82,9 +82,11 @@ class PantigScreen(QWidget):
 
 
         A_card = GridButton ("A", color = CORAL_RED)
-        A_card.clicked.connect(lambda: self.router.navigate("vr"))
+        A_card.clicked.connect(lambda: self.router.navigate("a"))
 
-        Ba_card = GridButton ("BA", color = MARIGOLD) 
+        Ba_card = GridButton ("BA", color = MARIGOLD)
+
+         
         Ka_card = GridButton ("KA", color = ELECTRIC_VIOLET) 
         Da_card = GridButton ("DA", color = HOT_PINK)
         E_card = GridButton ("E", color = SKY_BLUE) 
@@ -105,8 +107,7 @@ class PantigScreen(QWidget):
         Ta_card = GridButton ("TA", color = COBALT_BLUE) 
         U_card = GridButton ("U", color = TERRACOTTA) 
         Wa_card = GridButton ("WA", color = BURNT_ORANGE)
-        Ya_card = GridButton ("YA", color = MAGENTA)    
-         
+        Ya_card = GridButton ("YA", color = MAGENTA)
 
         grid_layout.addWidget(A_card, 0, 0)
         grid_layout.addWidget(Ba_card, 0, 1)
@@ -137,6 +138,5 @@ class PantigScreen(QWidget):
 
         scroll.setWidget(content)
 
-        def clicked():
-            A_card.clicked.connect(lambda: self.router.navigate("vr"))
+    
 

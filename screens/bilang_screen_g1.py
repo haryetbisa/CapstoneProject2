@@ -83,7 +83,16 @@ class BilangScreenG1(QWidget):
         card19 = GridButton ("19", color = BURNT_ORANGE)
         card20 = GridButton ("20", color = MAGENTA)  
         
+        bilang_cards = [ one_card, two_card, three_card, four_card, five_card,
+                                 six_card, seven_card, eight_card, nine_card, ten_card,
+                                 card11, card12, card13, card14, card15,
+                                 card16, card17, card18, card19, card20]
          
+        def connect_screen():
+            self.router.navigate("vr")
+                 
+        for cards in bilang_cards:
+            cards.clicked.connect(connect_screen)
 
         grid_layout.addWidget(one_card, 0, 0)
         grid_layout.addWidget(two_card, 0, 1)

@@ -43,6 +43,7 @@ from screens.hayop_screen import HayopScreen
 from screens.kuwento_screen import KuwentoScreen
 from screens.bilang_screen_g1 import BilangScreenG1
 from screens.pangungusap_screen import Pangungusap
+from features.pantig_screen_vr.A import PantigA
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -74,6 +75,9 @@ class MainWindow(QMainWindow):
         self.router.register("bilang_g1", BilangScreenG1(self.router))
         self.router.register("pangungusap", Pangungusap(self.router))
         self.router.register("lesson", LessonScreen(self.router))
+
+        self.router.register("a", PantigA(self.router))
+
 
 
 

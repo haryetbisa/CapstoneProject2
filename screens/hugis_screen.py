@@ -62,6 +62,14 @@ class HugisScreen(QWidget):
         parihaba_card = CardsPicButton("parihaba.png", color = LIGHT_GREEN)
         bituin_card = CardsPicButton("bituin.png", color = COBALT_BLUE) 
         rombus_card = CardsPicButton("brilyante.png", color = TERRACOTTA )
+
+        hugis_cards = [bilog_card, tatsu_card, puso_card, oblong_card, parihaba_card, bituin_card, rombus_card]
+
+        def connect_screen():
+            self.router.navigate("lesson")
+        
+        for cards in hugis_cards:
+            cards.clicked.connect(connect_screen)
         
         grid_layout.addWidget(bilog_card, 0, 0)
         grid_layout.addWidget(tatsu_card, 0, 1)

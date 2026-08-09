@@ -82,7 +82,17 @@ class HayopScreen(QWidget):
         kambing_card = CardsPicButton ("kambing.png", color = ELECTRIC_VIOLET) 
         palaka_card = CardsPicButton ("palaka.png", color = HOT_PINK) 
         kuneho_card = CardsPicButton ("kuneho.png", color = SKY_BLUE) 
+
+        hayop_cards = [aso_card, baboy_card, isda_card, kalabaw_card, kabayo_card,
+                       pagong_card, tarsier_card, agila_card, bibe_card, manok_card,
+                       unggoy_card, elepante_card, kambing_card, palaka_card, kuneho_card]
+
         
+        def connect_screen():
+            self.router.navigate("lesson")
+        
+        for cards in hayop_cards:
+            cards.clicked.connect(connect_screen)
 
         grid_layout.addWidget(aso_card, 0, 0)
         grid_layout.addWidget(baboy_card, 0, 1)

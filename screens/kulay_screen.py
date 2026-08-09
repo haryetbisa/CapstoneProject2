@@ -71,7 +71,16 @@ class KulayScreen(QWidget):
 
         lila_card = CardsPicButton ("lila.png", color = MEDIUM_PURPLE) 
         brown_card = CardsPicButton ("tsokolate.png", color = CHOCO_BROWN) 
-        itim_card = CardsPicButton ("itim.png", color = BLACK) 
+        itim_card = CardsPicButton ("itim.png", color = BLACK)
+
+        kulay_cards = [pula_card, kahel_card, dilaw_card, berde_card, asul_card,
+                       lila_card, brown_card, itim_card]
+
+        def connect_screen():
+            self.router.navigate("lesson")
+        
+        for cards in kulay_cards:
+            cards.clicked.connect(connect_screen)
         
 
         grid_layout.addWidget(pula_card, 0, 0)
