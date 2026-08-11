@@ -24,7 +24,7 @@ class LessonCard(QWidget):
             }}
         """)
 
-        # ---- Header (yellow, rounded top corners only) ----
+        # ---- Header 
         header = QLabel(title)
         header.setAlignment(Qt.AlignCenter)
         header.setStyleSheet(f"""
@@ -60,7 +60,7 @@ class LessonCard(QWidget):
             border-right: 2px solid #000000;
             border-bottom: 2px solid #000000;
             
-            padding: 40px 45px;
+            padding: 40px 40px;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
         """)
