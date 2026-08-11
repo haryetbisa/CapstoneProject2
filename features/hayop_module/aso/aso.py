@@ -1,17 +1,18 @@
 from PySide6.QtCore import Qt, QSize
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
 
 
 from components.cardsbutton import CardsButton
 from themes.colors import *
+from assets.icon import icon_label
 from themes.fonts import  BODY_FONT
 from components.lesson_card import LessonCard
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image")
+ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
 class LessonScreenAso(QWidget):
@@ -33,10 +34,10 @@ class LessonScreenAso(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
+        back_btn.clicked.connect(lambda: self.router.navigate("hayop"))
 
    
-        pagsasanay = QLabel("Aralin: Aso")
+        pagsasanay = QLabel("Aralin: Bilog")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -53,7 +54,7 @@ class LessonScreenAso(QWidget):
 
 
         content_layout = QHBoxLayout()
-        content_layout.setContentsMargins(70, 20, 70, 30)
+        content_layout.setContentsMargins(70, 30, 70, 30)
         content_layout.setSpacing(280)
         main_layout.addLayout(content_layout)
 
@@ -71,19 +72,16 @@ class LessonScreenAso(QWidget):
         body_text="Ang aso ay isang uri ng alagang hayop na may apat na paa at kilala bilang isa sa mga pinakamatalik na kaibigan ng tao.")
         content_layout.addWidget(card)
 
-
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)
         lower_layout.setContentsMargins(70, 20, 70, 30)
         main_layout.addLayout(lower_layout)
-        
 
         audio_btn = QLabel()
         audio_btn.setPixmap(QPixmap(os.path.join(ICONS_DIR, "play.png")).scaled(
                 80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         audio_btn.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
-
         lower_layout.addWidget(audio_btn)
 
         self.speak_btn = QPushButton("Sunod")
@@ -102,10 +100,3 @@ class LessonScreenAso(QWidget):
         self.speak_btn.setFixedSize(240, 70)
         lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("vr"))
-
-
-
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
-
-

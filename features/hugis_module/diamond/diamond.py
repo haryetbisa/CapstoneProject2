@@ -11,8 +11,8 @@ from components.lesson_card import LessonCard
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image")
+ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
 class LessonScreenParisukat(QWidget):
@@ -37,7 +37,7 @@ class LessonScreenParisukat(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
 
    
-        pagsasanay = QLabel("Aralin: Bilog")
+        pagsasanay = QLabel("Aralin: Dayamond")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -60,7 +60,7 @@ class LessonScreenParisukat(QWidget):
 
         #yung image
         content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "bilog.png")).scaled(
+        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "brilyante.png")).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)

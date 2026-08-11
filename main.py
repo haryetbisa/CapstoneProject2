@@ -45,8 +45,22 @@ from screens.bilang_screen_g1 import BilangScreenG1
 from screens.pangungusap_screen import Pangungusap
 from features.pantig_screen_vr.A import PantigA
 
+#LessonSCreen
 from features.hayop_module.aso.aso import LessonScreenAso
 from features.hayop_module.baboy.baboy import LessonScreenBaboy
+from features.hayop_module.bibe.bibe import LessonScreenBibe
+from features.hayop_module.isda.isda import LessonScreenIsda
+from features.hayop_module.kabayo.kabayo import LessonScreenKabayo
+from features.hayop_module.kalabaw.kalabaw import LessonScreenKalabaw
+from features.hayop_module.kambing.kambing import LessonScreenKambing
+from features.hayop_module.kuneho.kuneho import LessonScreenKuneho
+from features.hayop_module.manok.manok import LessonScreenManok
+from features.hayop_module.pagong.pagong import LessonScreenPagong
+from features.hayop_module.palaka.palaka import LessonScreenPalaka
+from features.hayop_module.pusa.pusa import LessonScreenPusa
+from features.hayop_module.unggoy.unggoy import LessonScreenUnggoy
+
+
 
 from features.hugis_module.bilog.bilog import LessonScreenBilog
 from features.hugis_module.tatsulok.tatsulok import LessonScreenTatsu
@@ -83,8 +97,26 @@ class MainWindow(QMainWindow):
         self.router.register("lesson", LessonScreen(self.router))
 
         self.router.register("a", PantigA(self.router))
+
+#HAYOP
         self.router.register("aso_lesson", LessonScreenAso(self.router))
         self.router.register("baboy_lesson", LessonScreenBaboy(self.router))
+        self.router.register("bibe_lesson", LessonScreenBibe(self.router))
+        self.router.register("isda_lesson", LessonScreenIsda(self.router))
+        self.router.register("kabayo_lesson", LessonScreenKabayo(self.router))
+        self.router.register("kalabaw_lesson", LessonScreenKalabaw(self.router))
+        self.router.register("kambing_lesson", LessonScreenKambing(self.router))
+        self.router.register("kuneho_lesson", LessonScreenKuneho(self.router))
+        self.router.register("manok_lesson", LessonScreenManok(self.router))
+        self.router.register("pagong_lesson", LessonScreenPagong(self.router))
+        self.router.register("palaka_lesson", LessonScreenPalaka(self.router))
+        self.router.register("pusa_lesson", LessonScreenPusa(self.router))
+        self.router.register("unggoy_lesson", LessonScreenUnggoy(self.router))
+        
+
+
+
+
 
         self.router.register("bilog", LessonScreenBilog(self.router))
         self.router.register("tatsu", LessonScreenTatsu(self.router))

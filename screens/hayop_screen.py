@@ -71,19 +71,39 @@ class HayopScreen(QWidget):
         baboy_card = CardsPicButton ("baboy.png", color = MARIGOLD)
         baboy_card.clicked.connect(lambda: self.router.navigate("baboy_lesson"))
          
-        bibe_card = CardsPicButton ("bibe.png", color = ELECTRIC_VIOLET) 
+        bibe_card = CardsPicButton ("bibe.png", color = ELECTRIC_VIOLET)
+        bibe_card.clicked.connect(lambda: self.router.navigate("bibe_lesson"))
+
         isda_card = CardsPicButton ("isda.png", color = HOT_PINK)
-        kabayo_card = CardsPicButton ("kabayo.png", color = SKY_BLUE) 
+        isda_card.clicked.connect(lambda: self.router.navigate("isda_lesson"))
 
-        kalabaw_card = CardsPicButton ("kalabaw.png", color = LIGHT_GREEN) 
-        kambing_card = CardsPicButton ("kambing.png", color = COBALT_BLUE) 
+        kabayo_card = CardsPicButton ("kabayo.png", color = SKY_BLUE)
+        kabayo_card.clicked.connect(lambda: self.router.navigate("kabayo_lesson"))
+
+        kalabaw_card = CardsPicButton ("kalabaw.png", color = LIGHT_GREEN)
+        kalabaw_card.clicked.connect(lambda: self.router.navigate("kalabaw_lesson"))
+
+        kambing_card = CardsPicButton ("kambing.png", color = COBALT_BLUE)
+        kambing_card.clicked.connect(lambda: self.router.navigate("kambing_lesson"))
+
         kuneho_card = CardsPicButton ("kuneho.png", color = TERRACOTTA) 
-        manok_card = CardsPicButton ("manok.png", color = BURNT_ORANGE) 
-        pagong_card = CardsPicButton ("pagong.png", color = MAGENTA) 
+        kuneho_card.clicked.connect(lambda: self.router.navigate("kuneho_lesson"))
 
-        palaka_card = CardsPicButton ("palaka.png", color = CORAL_RED) 
+        manok_card = CardsPicButton ("manok.png", color = BURNT_ORANGE)
+        manok_card.clicked.connect(lambda: self.router.navigate("manok_lesson"))
+
+        pagong_card = CardsPicButton ("pagong.png", color = MAGENTA)
+        pagong_card.clicked.connect(lambda: self.router.navigate("pagong_lesson"))
+
+
+        palaka_card = CardsPicButton ("palaka.png", color = CORAL_RED)
+        palaka_card.clicked.connect(lambda: self.router.navigate("palaka_lesson"))
+         
         pusa_card = CardsPicButton ("pusa.png", color = MARIGOLD) 
+        pusa_card.clicked.connect(lambda: self.router.navigate("pusa_lesson"))
+
         unggoy_card = CardsPicButton ("unggoy.png", color = ELECTRIC_VIOLET) 
+        unggoy_card.clicked.connect(lambda: self.router.navigate("unggoy_lesson"))
       
         
 
