@@ -37,7 +37,7 @@ class LessonScreenBilog(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
 
    
-        pagsasanay = QLabel("Aralin: Bilog")
+        pagsasanay = QLabel("Aralin: Baboy")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
