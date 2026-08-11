@@ -60,7 +60,7 @@ class LessonScreenBilog(QWidget):
 
         #yung image
         content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "bilog.png")).scaled(
+        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "bibe.png")).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)

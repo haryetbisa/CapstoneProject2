@@ -65,6 +65,8 @@ class ParteNgKatawanScreen(QWidget):
 
 
         mata_card = CardsPicButton ("mata.png", color = CORAL_RED) 
+        mata_card.clicked.connect(lambda: self.router.navigate("kindergarten"))
+
         ilong_card = CardsPicButton ("ilong.png", color = HONEY_YELLOW) 
         bibig_card = CardsPicButton ("bibig.png", color = ELECTRIC_VIOLET) 
         tainga_card = CardsPicButton ("tainga.png", color = HOT_PINK)
@@ -78,16 +80,6 @@ class ParteNgKatawanScreen(QWidget):
 
         binti_card = CardsPicButton ("binti.png", color = CORAL_RED) 
         paa_card = CardsPicButton ("paa.png", color = HONEY_YELLOW) 
-
-        pnk_cards = [mata_card, ilong_card, bibig_card, tainga_card, ulo_card,
-                     leeg_card, balikat_card, tiyan_card, braso_card, kamay_card,
-                     binti_card, paa_card]
-
-        def connect_screen():
-            self.router.navigate("lesson")
-        
-        for cards in pnk_cards:
-            cards.clicked.connect(connect_screen)
         
         
 

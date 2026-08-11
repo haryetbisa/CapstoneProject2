@@ -45,6 +45,12 @@ from screens.bilang_screen_g1 import BilangScreenG1
 from screens.pangungusap_screen import Pangungusap
 from features.pantig_screen_vr.A import PantigA
 
+from features.hayop_module.aso.aso import LessonScreenAso
+from features.hayop_module.baboy.baboy import LessonScreenBaboy
+
+from features.hugis_module.bilog.bilog import LessonScreenBilog
+from features.hugis_module.tatsulok.tatsulok import LessonScreenTatsu
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -77,7 +83,12 @@ class MainWindow(QMainWindow):
         self.router.register("lesson", LessonScreen(self.router))
 
         self.router.register("a", PantigA(self.router))
+        self.router.register("aso_lesson", LessonScreenAso(self.router))
+        self.router.register("baboy_lesson", LessonScreenBaboy(self.router))
 
+        self.router.register("bilog", LessonScreenBilog(self.router))
+        self.router.register("tatsu", LessonScreenTatsu(self.router))
+        
 
 
 

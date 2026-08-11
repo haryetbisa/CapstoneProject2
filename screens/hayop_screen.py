@@ -65,52 +65,44 @@ class HayopScreen(QWidget):
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
 
-        aso_card = CardsPicButton ("aso.png", color = CORAL_RED) 
-        baboy_card = CardsPicButton ("baboy.png", color = MARIGOLD) 
-        isda_card = CardsPicButton ("isda.png", color = ELECTRIC_VIOLET) 
-        kalabaw_card = CardsPicButton ("kalabaw.png", color = HOT_PINK)
+        aso_card = CardsPicButton ("aso.png", color = CORAL_RED)
+        aso_card.clicked.connect(lambda: self.router.navigate("aso_lesson"))
+
+        baboy_card = CardsPicButton ("baboy.png", color = MARIGOLD)
+        baboy_card.clicked.connect(lambda: self.router.navigate("baboy_lesson"))
+         
+        bibe_card = CardsPicButton ("bibe.png", color = ELECTRIC_VIOLET) 
+        isda_card = CardsPicButton ("isda.png", color = HOT_PINK)
         kabayo_card = CardsPicButton ("kabayo.png", color = SKY_BLUE) 
 
-        pagong_card = CardsPicButton ("pagong.png", color = LIGHT_GREEN) 
-        tarsier_card = CardsPicButton ("tarsier.png", color = COBALT_BLUE) 
-        agila_card = CardsPicButton ("agila.png", color = TERRACOTTA) 
-        bibe_card = CardsPicButton ("bibe.png", color = BURNT_ORANGE) 
-        manok_card = CardsPicButton ("manok.png", color = MAGENTA) 
+        kalabaw_card = CardsPicButton ("kalabaw.png", color = LIGHT_GREEN) 
+        kambing_card = CardsPicButton ("kambing.png", color = COBALT_BLUE) 
+        kuneho_card = CardsPicButton ("kuneho.png", color = TERRACOTTA) 
+        manok_card = CardsPicButton ("manok.png", color = BURNT_ORANGE) 
+        pagong_card = CardsPicButton ("pagong.png", color = MAGENTA) 
 
-        unggoy_card = CardsPicButton ("unggoy.png", color = CORAL_RED) 
-        elepante_card = CardsPicButton ("elepante.png", color = MARIGOLD) 
-        kambing_card = CardsPicButton ("kambing.png", color = ELECTRIC_VIOLET) 
-        palaka_card = CardsPicButton ("palaka.png", color = HOT_PINK) 
-        kuneho_card = CardsPicButton ("kuneho.png", color = SKY_BLUE) 
-
-        hayop_cards = [aso_card, baboy_card, isda_card, kalabaw_card, kabayo_card,
-                       pagong_card, tarsier_card, agila_card, bibe_card, manok_card,
-                       unggoy_card, elepante_card, kambing_card, palaka_card, kuneho_card]
-
+        palaka_card = CardsPicButton ("palaka.png", color = CORAL_RED) 
+        pusa_card = CardsPicButton ("pusa.png", color = MARIGOLD) 
+        unggoy_card = CardsPicButton ("unggoy.png", color = ELECTRIC_VIOLET) 
+      
         
-        def connect_screen():
-            self.router.navigate("lesson")
-        
-        for cards in hayop_cards:
-            cards.clicked.connect(connect_screen)
 
         grid_layout.addWidget(aso_card, 0, 0)
         grid_layout.addWidget(baboy_card, 0, 1)
-        grid_layout.addWidget(isda_card, 0, 2)
-        grid_layout.addWidget(kalabaw_card, 0, 3)
+        grid_layout.addWidget(bibe_card, 0, 2)
+        grid_layout.addWidget(isda_card, 0, 3)
         grid_layout.addWidget(kabayo_card, 0, 4)
 
-        grid_layout.addWidget(pagong_card, 1, 0)
-        grid_layout.addWidget(tarsier_card, 1, 1)
-        grid_layout.addWidget(agila_card, 1, 2)
-        grid_layout.addWidget(bibe_card, 1, 3)
-        grid_layout.addWidget(manok_card, 1, 4)
+        grid_layout.addWidget(kalabaw_card, 1, 0)
+        grid_layout.addWidget(kambing_card, 1, 1)
+        grid_layout.addWidget(kuneho_card, 1, 2)
+        grid_layout.addWidget(manok_card, 1, 3)
+        grid_layout.addWidget(pagong_card, 1, 4)
 
-        grid_layout.addWidget(unggoy_card, 2, 0)
-        grid_layout.addWidget(elepante_card, 2, 1)
-        grid_layout.addWidget(kambing_card, 2, 2)
-        grid_layout.addWidget(palaka_card, 2, 3)
-        grid_layout.addWidget(kuneho_card, 2, 4)
+        grid_layout.addWidget(palaka_card, 2, 0)
+        grid_layout.addWidget(pusa_card, 2, 1)
+        grid_layout.addWidget(unggoy_card, 2, 2)
+    
 
         main_layout.addLayout(grid_layout)
         main_layout.addStretch()

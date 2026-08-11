@@ -15,7 +15,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
 
 
-class LessonScreenBilog(QWidget):
+class LessonScreenBaboy(QWidget):
   def __init__(self, router):
         super().__init__()
         self.router = router
@@ -55,13 +55,13 @@ class LessonScreenBilog(QWidget):
 
         content_layout = QHBoxLayout()
         content_layout.setContentsMargins(70, 20, 70, 30)
-        content_layout.setSpacing(280)
+        content_layout.setSpacing(240)
         main_layout.addLayout(content_layout)
 
         #yung image
         content_image = QLabel()
         content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "bilog.png")).scaled(
-                450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         content_layout.addWidget(content_image)
@@ -77,14 +77,12 @@ class LessonScreenBilog(QWidget):
         lower_layout.setSpacing(200)
         lower_layout.setContentsMargins(70, 20, 70, 30)
         main_layout.addLayout(lower_layout)
-        
 
         audio_btn = QLabel()
         audio_btn.setPixmap(QPixmap(os.path.join(ICONS_DIR, "play.png")).scaled(
                 80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         audio_btn.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
-
         lower_layout.addWidget(audio_btn)
 
         self.speak_btn = QPushButton("Sunod")

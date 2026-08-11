@@ -53,9 +53,11 @@ class HugisScreen(QWidget):
 
 
         bilog_card = CardsPicButton("bilog.png", color = CORAL_RED)
-        bilog_card.clicked.connect(lambda: self.router.navigate("lesson"))
+        bilog_card.clicked.connect(lambda: self.router.navigate("bilog"))
 
         tatsu_card = CardsPicButton("tatsulok.png", color = MARIGOLD)
+        tatsu_card.clicked.connect(lambda: self.router.navigate("tatsu"))
+
         parisukat_card = CardsPicButton("parisukat.png", color = ELECTRIC_VIOLET) 
         puso_card = CardsPicButton("puso.png", color = HOT_PINK)
         oblong_card = CardsPicButton("oblong.png", color = SKY_BLUE) 

@@ -1,11 +1,10 @@
 from PySide6.QtCore import Qt, QSize
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 
 
 from components.cardsbutton import CardsButton
 from themes.colors import *
-from assets.icon import icon_label
 from themes.fonts import  BODY_FONT
 from components.lesson_card import LessonCard
 
@@ -15,7 +14,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
 
 
-class LessonScreenBilog(QWidget):
+class LessonScreenAso(QWidget):
   def __init__(self, router):
         super().__init__()
         self.router = router
@@ -60,7 +59,7 @@ class LessonScreenBilog(QWidget):
 
         #yung image
         content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "bilog.png")).scaled(
+        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "aso.png")).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
