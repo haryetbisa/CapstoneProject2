@@ -60,7 +60,7 @@ from features.hayop_module.palaka.palaka import LessonScreenPalaka
 from features.hayop_module.pusa.pusa import LessonScreenPusa
 from features.hayop_module.unggoy.unggoy import LessonScreenUnggoy
 
-#hugisScreen
+#hugislesson creen
 from features.hugis_module.bilog.bilog import LessonScreenBilog
 from features.hugis_module.tatsulok.tatsulok import LessonScreenTatsu
 from features.hugis_module.parisukat.parisukat import LessonScreenParisukat
@@ -69,6 +69,20 @@ from features.hugis_module.oblong.oblong import LessonScreenOblong
 from features.hugis_module.puso.puso import LessonScreenPuso
 from features.hugis_module.star.star import LessonScreenStar
 from features.hugis_module.diamond.diamond import LessonScreenDiamond
+
+#pnk lesson
+from features.pnk_module.mata.mata import LessonScreenMata
+from features.pnk_module.ilong.ilong import LessonScreenIlong
+from features.pnk_module.labi.labi import LessonScreenLabi
+from features.pnk_module.tainga.tainga import LessonScreenTaingaa
+from features.pnk_module.buhok.buhok import LessonScreenBuhok
+from features.pnk_module.leeg.leeg import LessonScreenLeeg
+from features.pnk_module.balikat.balikat import LessonScreenBalikat
+from features.pnk_module.tiyan.tiyan import LessonScreenTiyan
+from features.pnk_module.braso.braso import LessonScreenBraso
+from features.pnk_module.kamay.kamay import LessonScreenKamay
+from features.pnk_module.binti.binti import LessonScreenBinti
+from features.pnk_module.paa.paa import LessonScreenPaa
 
 
 
@@ -128,7 +142,22 @@ class MainWindow(QMainWindow):
         self.router.register("parihaba", LessonScreenParihaba(self.router))
         self.router.register("star", LessonScreenStar(self.router))       
         self.router.register("puso", LessonScreenPuso(self.router))
-        self.router.register("diamond", LessonScreenDiamond(self.router))   
+        self.router.register("diamond", LessonScreenDiamond(self.router))
+
+#PNK
+        self.router.register("mata", LessonScreenMata(self.router))
+        self.router.register("ilong", LessonScreenIlong(self.router))
+        self.router.register("labi", LessonScreenLabi(self.router))
+        self.router.register("tenga", LessonScreenTaingaa(self.router))
+        self.router.register("buhok", LessonScreenBuhok(self.router))
+        self.router.register("leeg", LessonScreenLeeg(self.router))       
+        self.router.register("balikat", LessonScreenBalikat(self.router))
+        self.router.register("tiyan", LessonScreenTiyan(self.router)) 
+        self.router.register("braso", LessonScreenBraso(self.router))
+        self.router.register("kamay", LessonScreenKamay(self.router))       
+        self.router.register("binti", LessonScreenBinti(self.router))
+        self.router.register("paa", LessonScreenPaa(self.router)) 
+        
 
 
         self.router.navigate("loading_screen")

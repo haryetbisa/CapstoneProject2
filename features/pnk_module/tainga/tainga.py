@@ -11,11 +11,11 @@ from components.lesson_card import LessonCard
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
+ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
-class LessonScreenBilog(QWidget):
+class LessonScreenTaingaa(QWidget):
   def __init__(self, router):
         super().__init__()
         self.router = router
@@ -34,7 +34,7 @@ class LessonScreenBilog(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
+        back_btn.clicked.connect(lambda: self.router.navigate("katawan"))
 
    
         pagsasanay = QLabel("Aralin: Tainga")
@@ -60,7 +60,7 @@ class LessonScreenBilog(QWidget):
 
         #yung image
         content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "bilog.png")).scaled(
+        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "tainga.png")).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)

@@ -65,27 +65,47 @@ class ParteNgKatawanScreen(QWidget):
 
 
         mata_card = CardsPicButton ("mata.png", color = CORAL_RED) 
-        mata_card.clicked.connect(lambda: self.router.navigate("kindergarten"))
+        mata_card.clicked.connect(lambda: self.router.navigate("mata"))
 
-        ilong_card = CardsPicButton ("ilong.png", color = HONEY_YELLOW) 
-        bibig_card = CardsPicButton ("bibig.png", color = ELECTRIC_VIOLET) 
+        bibig_card = CardsPicButton ("bibig.png", color = HONEY_YELLOW) 
+        bibig_card.clicked.connect(lambda: self.router.navigate("labi"))
+
+        ilong_card = CardsPicButton ("ilong.png", color = ELECTRIC_VIOLET)
+        ilong_card.clicked.connect(lambda: self.router.navigate("ilong"))
+
         tainga_card = CardsPicButton ("tainga.png", color = HOT_PINK)
-        ulo_card = CardsPicButton ("ulo.png", color = SKY_BLUE) 
+        tainga_card.clicked.connect(lambda: self.router.navigate("tenga"))
 
-        leeg_card = CardsPicButton ("leeg.png", color = LIGHT_GREEN) 
+        ulo_card = CardsPicButton ("ulo.png", color = SKY_BLUE)
+        ulo_card.clicked.connect(lambda: self.router.navigate("buhok")) 
+
+
+        leeg_card = CardsPicButton ("leeg.png", color = LIGHT_GREEN)
+        leeg_card.clicked.connect(lambda: self.router.navigate("leeg")) 
+
         balikat_card = CardsPicButton ("balikat.png", color = COBALT_BLUE) 
+        balikat_card.clicked.connect(lambda: self.router.navigate("balikat")) 
+
         tiyan_card = CardsPicButton ("tiyan.png", color = TERRACOTTA) 
-        braso_card = CardsPicButton ("braso.png", color = BURNT_ORANGE) 
-        kamay_card = CardsPicButton ("kamay.png", color = MAGENTA) 
+        tiyan_card.clicked.connect(lambda: self.router.navigate("tiyan")) 
+
+        braso_card = CardsPicButton ("braso.png", color = BURNT_ORANGE)
+        braso_card.clicked.connect(lambda: self.router.navigate("braso")) 
+
+        kamay_card = CardsPicButton ("kamay.png", color = MAGENTA)
+        kamay_card.clicked.connect(lambda: self.router.navigate("kamay")) 
 
         binti_card = CardsPicButton ("binti.png", color = CORAL_RED) 
-        paa_card = CardsPicButton ("paa.png", color = HONEY_YELLOW) 
+        binti_card.clicked.connect(lambda: self.router.navigate("binti")) 
+
+        paa_card = CardsPicButton ("paa.png", color = HONEY_YELLOW)
+        paa_card.clicked.connect(lambda: self.router.navigate("paa")) 
         
         
 
         grid_layout.addWidget(mata_card, 0, 0)
-        grid_layout.addWidget(ilong_card, 0, 1)
-        grid_layout.addWidget(bibig_card, 0, 2)
+        grid_layout.addWidget(bibig_card, 0, 1)
+        grid_layout.addWidget(ilong_card, 0, 2)
         grid_layout.addWidget(tainga_card, 0, 3)
         grid_layout.addWidget(ulo_card, 0, 4)
 
