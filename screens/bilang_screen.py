@@ -72,30 +72,7 @@ class BilangScreen(QWidget):
         eight_card = GridButton ("8", color = TERRACOTTA) 
         nine_card = GridButton ("9", color = BURNT_ORANGE)
         ten_card = GridButton ("10", color = MAGENTA)
-
-        card11 = GridButton ("11", color = LIGHT_GREEN) 
-        card12= GridButton ("12", color = COBALT_BLUE) 
-        card13 = GridButton ("13", color = TERRACOTTA) 
-        card14 = GridButton ("14", color = BURNT_ORANGE)
-        card15 = GridButton ("15", color = MAGENTA)   
-
-        card16 = GridButton ("16", color = LIGHT_GREEN) 
-        card17= GridButton ("17", color = COBALT_BLUE) 
-        card18 = GridButton ("18", color = TERRACOTTA) 
-        card19 = GridButton ("19", color = BURNT_ORANGE)
-        card20 = GridButton ("20", color = MAGENTA)  
-
-        bilang_cards = [ one_card, two_card, three_card, four_card, five_card,
-                        six_card, seven_card, eight_card, nine_card, ten_card,
-                        card11, card12, card13, card14, card15,
-                        card16, card17, card18, card19, card20]
-
-        def connect_screen():
-            self.router.navigate("vr")
-        
-        for cards in bilang_cards:
-            cards.clicked.connect(connect_screen)
-        
+ 
          
 
         grid_layout.addWidget(one_card, 0, 0)
@@ -110,17 +87,6 @@ class BilangScreen(QWidget):
         grid_layout.addWidget(nine_card, 1, 3)
         grid_layout.addWidget(ten_card, 1, 4)
 
-        grid_layout.addWidget(card11, 2, 0)
-        grid_layout.addWidget(card12, 2, 1)
-        grid_layout.addWidget(card13, 2, 2)
-        grid_layout.addWidget(card14, 2, 3)
-        grid_layout.addWidget(card15, 2, 4)
-
-        grid_layout.addWidget(card16, 3, 0)
-        grid_layout.addWidget(card17, 3, 1)
-        grid_layout.addWidget(card18, 3, 2)
-        grid_layout.addWidget(card19, 3, 3)
-        grid_layout.addWidget(card20, 3, 4)
 
         main_layout.addLayout(grid_layout)
         main_layout.addStretch()
