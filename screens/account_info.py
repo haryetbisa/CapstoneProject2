@@ -1,23 +1,26 @@
+import os
+import re
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit, QGraphicsDropShadowEffect
+from PySide6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QLineEdit,
+)
 from PySide6.QtGui import QPixmap, QColor, QPalette
-from PySide6.QtCore import QRect
-
 
 from components.btn_dropshadow import add_drop_shadow
 from themes.colors import *
-from assets.icon import icon_label
-from themes.fonts import  HEADING_FONT, BODY_FONT
-from assets.icon import icon_label
+from themes.fonts import BODY_FONT
 
-import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
 
 
 class AccountInfo(QWidget):
-    def __init__(self,router):
+    def __init__(self, router):
         super().__init__()
         self.router = router
 
@@ -26,129 +29,250 @@ class AccountInfo(QWidget):
         main_layout.setSpacing(10)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        # Logo
         logo = QLabel()
+        logo.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        logo.setPixmap(QPixmap(QPixmap(os.path.join(IMAGE_DIR, "logo.png")).scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation)))
+        logo.setPixmap(
+            QPixmap(
+                QPixmap(os.path.join(IMAGE_DIR, "logo.png")).scaled(
+                    260, 260, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
+        )
         main_layout.addWidget(logo)
 
-
+        # Form Inputs Layout
         input_layout = QVBoxLayout()
         input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        input_layout.setSpacing(10)
+        input_layout.setSpacing(4)
         main_layout.addLayout(input_layout)
 
         create = QLabel("Create an account")
         create.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        create.setStyleSheet(f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 18px;")
+        create.setStyleSheet(
+            f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 18px;"
+        )
         input_layout.addWidget(create)
 
+        # --- Email Field ---
         email_label = QLabel("Email")
-        email_label.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 16px; color: {CORAL_RED}; font-weight: 500;")
+        email_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; font-size: 16px; color: {CORAL_RED}; font-weight: 500;"
+        )
         email_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         input_layout.addWidget(email_label)
-        
-        email = QLineEdit()
-        email.setFixedSize(888, 64)
-        email.setPlaceholderText("name@gmail.com")
-        email.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
-        palette = email.palette()
+        self.email = QLineEdit()
+        self.email.setFixedSize(888, 56)
+        self.email.setPlaceholderText("name@gmail.com")
+        self.email.setAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+        )
+
+        palette = self.email.palette()
         palette.setColor(QPalette.PlaceholderText, QColor(CHOCO_BROWN))
-        email.setPalette(palette)
-        
+        self.email.setPalette(palette)
 
-        email.setStyleSheet(f"""
-            QLineEdit{{
+        input_layout.addWidget(self.email)
+
+        # Email Inline Error Label
+        self.email_error = QLabel("")
+        self.email_error.setFixedWidth(888)
+        self.email_error.setStyleSheet(f"""
             font-family: {BODY_FONT};
-            font-size: 18px;
-            color: {CHOCO_BROWN};
-            border: 2px solid {CORAL_RED};        
-            border-radius: 4px;
-            background-color: {LIGHT}; 
-            padding: 12px 16px;        
-         }} """)
-        input_layout.addWidget(email)
+            font-size: 14px;
+            color: #d93025;
+            font-weight: 600;
+            padding-top: 2px;
+        """)
+        self.email_error.hide()
+        input_layout.addWidget(self.email_error)
 
+        input_layout.addSpacing(6)
+
+        # --- Password Field ---
         pass_label = QLabel("Password")
-        pass_label.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 16px; color: {CORAL_RED}; font-weight: 500;")
+        pass_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; font-size: 16px; color: {CORAL_RED}; font-weight: 500;"
+        )
         pass_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         input_layout.addWidget(pass_label)
 
+        self.password = QLineEdit()
+        self.password.setFixedSize(888, 56)
+        self.password.setAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+        )
+        self.password.setPlaceholderText("********")
+        self.password.setEchoMode(QLineEdit.Password)
 
-        password = QLineEdit()
-        password.setFixedSize(888, 64)
-        password.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-        password.setPlaceholderText("********")
-        password.setEchoMode(QLineEdit.Password)
-
-        palette = password.palette()
+        palette = self.password.palette()
         palette.setColor(QPalette.PlaceholderText, QColor(CHOCO_BROWN))
-        password.setPalette(palette)
+        self.password.setPalette(palette)
 
-        password.setStyleSheet(f"""
-            QLineEdit{{
+        input_layout.addWidget(self.password)
+
+        # Password Inline Error Label
+        self.password_error = QLabel("")
+        self.password_error.setFixedWidth(888)
+        self.password_error.setStyleSheet(f"""
             font-family: {BODY_FONT};
-            font-size: 18px;
-            color: {CHOCO_BROWN};
-            border: 2px solid {CORAL_RED};        
-            border-radius: 6px;
-            background-color: {LIGHT}; 
-            padding: 12px 16px;              
-         }} """)
-        input_layout.addWidget(password)
+            font-size: 14px;
+            color: #d93025;
+            font-weight: 600;
+            padding-top: 2px;
+        """)
+        self.password_error.hide()
+        input_layout.addWidget(self.password_error)
 
+        input_layout.addSpacing(10)
 
-        create_btn = QPushButton("Create account")
-        create_btn.setFixedSize(340,60)
-        create_btn.setStyleSheet(
-            f"""QPushButton{{
+        # Set initial style
+        self.reset_styles()
+
+        # Create Account Button
+        self.create_btn = QPushButton("Create account")
+        self.create_btn.setFixedSize(340, 56)
+        self.create_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.create_btn.setStyleSheet(f"""
+            QPushButton {{
                 background-color: {CORAL_RED};
                 color: {LIGHT};
                 font-family: {BODY_FONT};
-                font-size: 24px;
-                font-weight: 900px;
+                font-size: 22px;
+                font-weight: 900;
                 padding: 2px 6px;
                 border-radius: 6px;
-        }}""")
-        add_drop_shadow(create_btn)
-        add_drop_shadow(email, blur=10, y_offset=2, color=(0, 0, 0, 80)) 
-        create_btn.clicked.connect(lambda: self.router.navigate("home"))
-        main_layout.addWidget(create_btn, alignment = Qt.AlignmentFlag.AlignCenter)
+            }}
+            QPushButton:hover {{
+                background-color: #d94338;
+            }}
+        """)
+        
+        # Connect click event BEFORE drop shadow
+        self.create_btn.clicked.connect(self.validate_and_create_account)
 
-       
+        # Add shadow after setting up signal
+        add_drop_shadow(self.create_btn)
 
+        # Clear errors when typing
+        self.email.textChanged.connect(self.clear_email_error)
+        self.password.textChanged.connect(self.clear_password_error)
 
+        main_layout.addWidget(
+            self.create_btn, alignment=Qt.AlignmentFlag.AlignCenter
+        )
+
+        # Bottom Graphic Images
         image_bottom = QHBoxLayout()
         image_bottom.setSpacing(10)
         image_bottom.setContentsMargins(0, 5, 0, 0)
-  
+
         kids1 = QLabel()
-        kids1.setPixmap(QPixmap(QPixmap(os.path.join(IMAGE_DIR, "kids2.png")).scaled(360, 360, Qt.KeepAspectRatio, Qt.SmoothTransformation)))
+        kids1.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        kids1.setPixmap(
+            QPixmap(
+                QPixmap(os.path.join(IMAGE_DIR, "kids2.png")).scaled(
+                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
+        )
         kids1.setAlignment(Qt.AlignmentFlag.AlignLeft)
         image_bottom.addWidget(kids1)
 
-
         kids2 = QLabel()
-        kids2.setPixmap(QPixmap(QPixmap(os.path.join(IMAGE_DIR, "kids1.png")).scaled(360, 360, Qt.KeepAspectRatio, Qt.SmoothTransformation)))
-        kids2.setAlignment(Qt.AlignmentFlag.AlignRight)
-        image_bottom.addWidget(kids2)
-
-        
-        kids1 = QLabel()
-        kids1.setPixmap(QPixmap(QPixmap(os.path.join(IMAGE_DIR, "kids2.png")).scaled(360, 360, Qt.KeepAspectRatio, Qt.SmoothTransformation)))
-        kids1.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        image_bottom.addWidget(kids1)
-        
-        
-        kids2 = QLabel()
-        kids2.setPixmap(QPixmap(QPixmap(os.path.join(IMAGE_DIR, "kids1.png")).scaled(360, 360, Qt.KeepAspectRatio, Qt.SmoothTransformation)))
+        kids2.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        kids2.setPixmap(
+            QPixmap(
+                QPixmap(os.path.join(IMAGE_DIR, "kids1.png")).scaled(
+                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
+        )
         kids2.setAlignment(Qt.AlignmentFlag.AlignRight)
         image_bottom.addWidget(kids2)
 
         main_layout.addLayout(image_bottom)
 
+    def set_normal_style(self, widget):
+        widget.setStyleSheet(f"""
+            QLineEdit {{
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                color: {CHOCO_BROWN};
+                border: 2px solid {CORAL_RED};        
+                border-radius: 6px;
+                background-color: {LIGHT}; 
+                padding: 10px 16px;        
+            }}
+        """)
 
+    def set_error_style(self, widget):
+        widget.setStyleSheet(f"""
+            QLineEdit {{
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                color: {CHOCO_BROWN};
+                border: 2px solid #d93025;        
+                border-radius: 6px;
+                background-color: {LIGHT}; 
+                padding: 10px 16px;        
+            }}
+        """)
 
+    def reset_styles(self):
+        self.set_normal_style(self.email)
+        self.set_normal_style(self.password)
 
-        
+    def clear_email_error(self):
+        self.email_error.hide()
+        self.set_normal_style(self.email)
 
+    def clear_password_error(self):
+        self.password_error.hide()
+        self.set_normal_style(self.password)
+
+    def validate_and_create_account(self):
+        print("--> BUTTON CLICKED! Validating inputs...")  # Debug print in terminal
+
+        email_text = self.email.text().strip()
+        password_text = self.password.text().strip()
+
+        email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+        has_error = False
+
+        self.email_error.hide()
+        self.password_error.hide()
+        self.reset_styles()
+
+        # Email Validation
+        if not email_text:
+            self.email_error.setText("✖  Please enter your email address.")
+            self.email_error.setVisible(True)
+            self.set_error_style(self.email)
+            has_error = True
+        elif not re.match(email_pattern, email_text):
+            self.email_error.setText("✖  Hmm... that doesn't look like a valid email address.")
+            self.email_error.setVisible(True)
+            self.set_error_style(self.email)
+            has_error = True
+
+        # Password Validation
+        if not password_text:
+            self.password_error.setText("✖  Please enter a password.")
+            self.password_error.setVisible(True)
+            self.set_error_style(self.password)
+            has_error = True
+        elif len(password_text) < 8:
+            self.password_error.setText("✖  Password must be at least 8 characters long.")
+            self.password_error.setVisible(True)
+            self.set_error_style(self.password)
+            has_error = True
+
+        if has_error:
+            print("--> Validation failed! Showing inline errors.")
+            return
+
+        print("--> Validation passed! Navigating to home...")
+        self.router.navigate("home")
