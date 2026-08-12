@@ -86,6 +86,8 @@ from features.pnk_module.paa.paa import LessonScreenPaa
 
 
 
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -158,10 +160,9 @@ class MainWindow(QMainWindow):
         self.router.register("binti", LessonScreenBinti(self.router))
         self.router.register("paa", LessonScreenPaa(self.router)) 
         
-
-
         self.router.navigate("loading_screen")
 
+       
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
