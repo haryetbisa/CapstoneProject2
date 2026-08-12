@@ -11,11 +11,11 @@ from components.lesson_card import LessonCard
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
+ICONS_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "icons")
 
 
-class LessonScreenParisukat(QWidget):
+class LessonScreenParihaba(QWidget):
   def __init__(self, router):
         super().__init__()
         self.router = router
@@ -34,10 +34,10 @@ class LessonScreenParisukat(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
+        back_btn.clicked.connect(lambda: self.router.navigate("hugis"))
 
    
-        pagsasanay = QLabel("Aralin: Bilog")
+        pagsasanay = QLabel("Aralin: Parihaba")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -60,7 +60,7 @@ class LessonScreenParisukat(QWidget):
 
         #yung image
         content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "bilog.png")).scaled(
+        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "parihaba.png")).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -68,8 +68,8 @@ class LessonScreenParisukat(QWidget):
 
         #lesson explanation
         card = LessonCard(
-        title="Aralin 3 : PARISUKAT",
-        body_text="Ang hugis parisukat ay isang karaniwang halimbawa ng malaking kahon na may apat na sulok o gilid.")
+        title="Aralin 6 : PARIHABA",
+        body_text="Ang hugis parihaba ay may apat na sulok, mas mahaba sa parisukat. Maihahalintulad ito sa mahabang tabla at bintana.")
         content_layout.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

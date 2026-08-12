@@ -60,10 +60,17 @@ from features.hayop_module.palaka.palaka import LessonScreenPalaka
 from features.hayop_module.pusa.pusa import LessonScreenPusa
 from features.hayop_module.unggoy.unggoy import LessonScreenUnggoy
 
-
-
+#hugisScreen
 from features.hugis_module.bilog.bilog import LessonScreenBilog
 from features.hugis_module.tatsulok.tatsulok import LessonScreenTatsu
+from features.hugis_module.parisukat.parisukat import LessonScreenParisukat
+from features.hugis_module.parihaba.parihaba import LessonScreenParihaba
+from features.hugis_module.oblong.oblong import LessonScreenOblong
+from features.hugis_module.puso.puso import LessonScreenPuso
+from features.hugis_module.star.star import LessonScreenStar
+from features.hugis_module.diamond.diamond import LessonScreenDiamond
+
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -113,15 +120,15 @@ class MainWindow(QMainWindow):
         self.router.register("pusa_lesson", LessonScreenPusa(self.router))
         self.router.register("unggoy_lesson", LessonScreenUnggoy(self.router))
         
-
-
-
-
-
+#HUGIS
         self.router.register("bilog", LessonScreenBilog(self.router))
         self.router.register("tatsu", LessonScreenTatsu(self.router))
-        
-
+        self.router.register("oblong", LessonScreenOblong(self.router))
+        self.router.register("parisukat", LessonScreenParisukat(self.router))
+        self.router.register("parihaba", LessonScreenParihaba(self.router))
+        self.router.register("star", LessonScreenStar(self.router))       
+        self.router.register("puso", LessonScreenPuso(self.router))
+        self.router.register("diamond", LessonScreenDiamond(self.router))   
 
 
         self.router.navigate("loading_screen")

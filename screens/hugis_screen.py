@@ -58,20 +58,24 @@ class HugisScreen(QWidget):
         tatsu_card = CardsPicButton("tatsulok.png", color = MARIGOLD)
         tatsu_card.clicked.connect(lambda: self.router.navigate("tatsu"))
 
-        parisukat_card = CardsPicButton("parisukat.png", color = ELECTRIC_VIOLET) 
+        parisukat_card = CardsPicButton("parisukat.png", color = ELECTRIC_VIOLET)
+        parisukat_card.clicked.connect(lambda: self.router.navigate("parisukat"))
+
         puso_card = CardsPicButton("puso.png", color = HOT_PINK)
-        oblong_card = CardsPicButton("oblong.png", color = SKY_BLUE) 
+        puso_card.clicked.connect(lambda: self.router.navigate("puso"))
+
+        oblong_card = CardsPicButton("oblong.png", color = SKY_BLUE)
+        oblong_card.clicked.connect(lambda: self.router.navigate("oblong"))
+
         parihaba_card = CardsPicButton("parihaba.png", color = LIGHT_GREEN)
-        bituin_card = CardsPicButton("bituin.png", color = COBALT_BLUE) 
+        parihaba_card.clicked.connect(lambda: self.router.navigate("parihaba"))
+
+        bituin_card = CardsPicButton("bituin.png", color = COBALT_BLUE)
+        bituin_card.clicked.connect(lambda: self.router.navigate("star"))
+
         rombus_card = CardsPicButton("brilyante.png", color = TERRACOTTA )
+        rombus_card.clicked.connect(lambda: self.router.navigate("diamond"))
 
-        hugis_cards = [bilog_card, tatsu_card, puso_card, oblong_card, parihaba_card, bituin_card, rombus_card]
-
-        def connect_screen():
-            self.router.navigate("lesson")
-        
-        for cards in hugis_cards:
-            cards.clicked.connect(connect_screen)
         
         grid_layout.addWidget(bilog_card, 0, 0)
         grid_layout.addWidget(tatsu_card, 0, 1)
