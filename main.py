@@ -125,7 +125,8 @@ from features.kulay_module.dilaw.dilaw import Dilaw
 from features.kulay_module.berde.berde import Berde
 from features.kulay_module.asul.asul import Asul
 
-from features.kulay_module.pula.pula_game import DragDropDemoScreenRed
+from features.kulay_module.pula.pula_game import DragDropRed
+from features.kulay_module.kahel.kahel_game import DragDropOrange
 
 
 
@@ -245,7 +246,8 @@ class MainWindow(QMainWindow):
         self.router.register("asul", Asul(self.router))
 
 #KulayGame
-        self.router.register("pula_game", DragDropDemoScreenRed(self.router))
+        self.router.register("pula_game", DragDropRed(self.router))
+        self.router.register("kahel_game", DragDropOrange(self.router))
 
 
         self.router.navigate("loading_screen")

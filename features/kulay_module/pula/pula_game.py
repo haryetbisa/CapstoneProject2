@@ -1,12 +1,16 @@
-import os
-from PySide6.QtCore import Qt, QMimeData, QSize
-from PySide6.QtGui import QDrag, QPixmap, QIcon
-from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton
-from themes.colors import *
-from themes.fonts import BODY_FONT
+from PySide6.QtCore import Qt, QSize, QMimeData
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton
+from PySide6.QtGui import QPixmap, QIcon, QDrag
 
+
+from components.cardsbutton import CardsButton
+from themes.colors import *
+from themes.fonts import  BODY_FONT
+from components.lesson_card import LessonCard
+
+import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "kulay")
+IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image_content", "kulay")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
@@ -39,7 +43,7 @@ class DraggableIcon(QLabel):
 class DropBox(QLabel):
     """The box — accepts ANY dropped item, no validation."""
 
-    def __init__(self, image_path: str, size=(240, 190)):
+    def __init__(self, image_path: str, size=(300, 300)):
         super().__init__()
         self.setAcceptDrops(True)   # required, or drops are ignored entirely
         self.setFixedSize(*size)
@@ -57,17 +61,17 @@ class DropBox(QLabel):
         event.acceptProposedAction()
 
 
-class DragDropDemoScreenRed(QWidget):
-    def __init__(self, router):
+class DragDropRed(QWidget):
+  def __init__(self, router):
         super().__init__()
         self.router = router
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0,0,0,0)
-        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 20, 0, 60)
+        top_layout.setContentsMargins(100, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -76,7 +80,7 @@ class DragDropDemoScreenRed(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kulay"))
+        back_btn.clicked.connect(lambda: self.router.navigate("pula"))
 
    
         pagsasanay = QLabel("Aralin: Pula")
@@ -87,16 +91,17 @@ class DragDropDemoScreenRed(QWidget):
             color: {CHOCO_BROWN};               
         """)
 
-        
         top_layout.addWidget(back_btn)
         top_layout.addWidget(pagsasanay)
         top_layout.setSpacing(50)
         main_layout.addLayout(top_layout)
 
-        # Row of draggable items
+# Row of draggable items
         items_row = QHBoxLayout()
-        items_row.setSpacing(60)
+        items_row.setSpacing(100)
+        items_row.setContentsMargins(0, 0, 0, 100)
         items_row.setAlignment(Qt.AlignCenter)
+
 
         item_images = ["apple.png", "strawberry.png", "blue_popsicle.png", "turtle.png"]
         for filename in item_images:
@@ -105,6 +110,11 @@ class DragDropDemoScreenRed(QWidget):
 
         main_layout.addLayout(items_row)
 
+
         # The box
         drop_box = DropBox(os.path.join(IMAGE_DIR, "red_box.png"))
         main_layout.addWidget(drop_box, alignment=Qt.AlignCenter)
+
+
+
+        
