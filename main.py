@@ -130,6 +130,8 @@ from features.kulay_module.kahel.kahel_game import DragDropOrange
 
 
 
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -236,6 +238,7 @@ class MainWindow(QMainWindow):
         self.router.register("braso", LessonScreenBraso(self.router))
         self.router.register("kamay", LessonScreenKamay(self.router))       
         self.router.register("binti", LessonScreenBinti(self.router))
+
         self.router.register("paa", LessonScreenPaa(self.router))
 
 #Kulay LS
@@ -250,8 +253,13 @@ class MainWindow(QMainWindow):
         self.router.register("kahel_game", DragDropOrange(self.router))
 
 
+
+        self.router.register("paa", LessonScreenPaa(self.router)) 
+        
+
         self.router.navigate("loading_screen")
 
+       
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
