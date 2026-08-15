@@ -85,11 +85,16 @@ class PantigScreen(QWidget):
         A_card.clicked.connect(lambda: self.router.navigate("a"))
 
         Ba_card = GridButton ("BA", color = MARIGOLD)
+        Ba_card.clicked.connect(lambda: self.router.navigate("ba")) 
 
-         
-        Ka_card = GridButton ("KA", color = ELECTRIC_VIOLET) 
+        Ka_card = GridButton ("KA", color = ELECTRIC_VIOLET)
+        Ka_card.clicked.connect(lambda: self.router.navigate("ka")) 
+
         Da_card = GridButton ("DA", color = HOT_PINK)
-        E_card = GridButton ("E", color = SKY_BLUE) 
+        Da_card.clicked.connect(lambda: self.router.navigate("da")) 
+        
+        E_card = GridButton ("E", color = SKY_BLUE)
+        E_card.clicked.connect(lambda: self.router.navigate("e")) 
 
         Ga_card = GridButton ("GA", color = LIGHT_GREEN) 
         Ha_card = GridButton ("HA", color = COBALT_BLUE) 

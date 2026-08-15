@@ -37,7 +37,7 @@ class LessonScreenPuso(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("hugis"))
 
    
-        pagsasanay = QLabel("Aralin: Bilog")
+        pagsasanay = QLabel("Aralin: Puso")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -87,7 +87,7 @@ class LessonScreenPuso(QWidget):
         """)
         self.speak_btn.setFixedSize(240, 70)
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("vr"))
+        self.speak_btn.clicked.connect(lambda: self.router.navigate("pusovs"))
 
 
 

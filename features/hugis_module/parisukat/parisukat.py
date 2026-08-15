@@ -60,7 +60,7 @@ class LessonScreenParisukat(QWidget):
 
         #yung image
         content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "puso.png")).scaled(
+        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "parisukat.png")).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -87,7 +87,7 @@ class LessonScreenParisukat(QWidget):
         """)
         self.speak_btn.setFixedSize(240, 70)
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("vr"))
+        self.speak_btn.clicked.connect(lambda: self.router.navigate("parisukatvs"))
 
 
 

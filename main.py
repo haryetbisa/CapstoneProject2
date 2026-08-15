@@ -43,7 +43,28 @@ from screens.hayop_screen import HayopScreen
 from screens.kuwento_screen import KuwentoScreen
 from screens.bilang_screen_g1 import BilangScreenG1
 from screens.pangungusap_screen import Pangungusap
+
+#Voice Screen Pantig
 from features.pantig_screen_vr.A import PantigA
+from features.pantig_screen_vr.Ba import PantigBa
+from features.pantig_screen_vr.Ka import PantigKa
+from features.pantig_screen_vr.Da import PantigDa
+from features.pantig_screen_vr.E import PantigE
+
+#VS BilangK
+from features.bilang_module.isa import Bilang1
+from features.bilang_module.dalawa import Bilang2
+from features.bilang_module.tatlo import Bilang3
+from features.bilang_module.apat import Bilang4
+from features.bilang_module.lima import Bilang5
+
+#VS BilangK
+from features.hugis_module.bilog.bilog_vs import BilogVS
+from features.hugis_module.tatsulok.tatsulok_vs import TatsulokVS
+from features.hugis_module.parisukat.parisukat_vs import ParisukatVS
+from features.hugis_module.puso.puso_vs import PusoVS
+from features.hugis_module.oblong.oblong_vs import OblongVS
+
 
 #LessonSCreen
 from features.hayop_module.aso.aso import LessonScreenAso
@@ -98,6 +119,8 @@ class MainWindow(QMainWindow):
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)
 
+#Main Screen ngani
+
         self.router = Router(self.stack)
         self.router.register("loading_screen", LoadingScreen(self.router))
         self.router.register("createacc", CreateAccount(self.router))
@@ -117,9 +140,29 @@ class MainWindow(QMainWindow):
         self.router.register("pangungusap", Pangungusap(self.router))
         self.router.register("lesson", LessonScreen(self.router))
 
+#VR Pantig
         self.router.register("a", PantigA(self.router))
+        self.router.register("ba", PantigBa(self.router))
+        self.router.register("ka", PantigKa(self.router))
+        self.router.register("da", PantigDa(self.router))
+        self.router.register("e", PantigE(self.router))
 
-#HAYOP
+#VR Bilang
+        self.router.register("1", Bilang1(self.router))
+        self.router.register("2", Bilang2(self.router))
+        self.router.register("3", Bilang3(self.router))
+        self.router.register("4", Bilang4(self.router))
+        self.router.register("5", Bilang5(self.router))
+
+#VR Hugis
+        self.router.register("bilogvs", BilogVS(self.router))
+        self.router.register("tatsulokvs", TatsulokVS(self.router))
+        self.router.register("parisukatvs", ParisukatVS(self.router))
+        self.router.register("pusovs", PusoVS(self.router))
+        self.router.register("oblongvs", OblongVS(self.router))
+
+
+#HAYOP LessonSCreen
         self.router.register("aso_lesson", LessonScreenAso(self.router))
         self.router.register("baboy_lesson", LessonScreenBaboy(self.router))
         self.router.register("bibe_lesson", LessonScreenBibe(self.router))
@@ -134,7 +177,7 @@ class MainWindow(QMainWindow):
         self.router.register("pusa_lesson", LessonScreenPusa(self.router))
         self.router.register("unggoy_lesson", LessonScreenUnggoy(self.router))
         
-#HUGIS
+#HUGIS LS
         self.router.register("bilog", LessonScreenBilog(self.router))
         self.router.register("tatsu", LessonScreenTatsu(self.router))
         self.router.register("oblong", LessonScreenOblong(self.router))
@@ -144,7 +187,7 @@ class MainWindow(QMainWindow):
         self.router.register("puso", LessonScreenPuso(self.router))
         self.router.register("diamond", LessonScreenDiamond(self.router))
 
-#PNK
+#PNK LS
         self.router.register("mata", LessonScreenMata(self.router))
         self.router.register("ilong", LessonScreenIlong(self.router))
         self.router.register("labi", LessonScreenLabi(self.router))

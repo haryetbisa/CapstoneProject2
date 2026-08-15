@@ -61,11 +61,21 @@ class BilangScreen(QWidget):
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
 
-        one_card = GridButton ("1", color = CORAL_RED) 
-        two_card = GridButton ("2", color = MARIGOLD) 
+        one_card = GridButton ("1", color = CORAL_RED)
+        one_card.clicked.connect(lambda: self.router.navigate("1"))
+
+        two_card = GridButton ("2", color = MARIGOLD)
+        two_card.clicked.connect(lambda: self.router.navigate("2"))
+
         three_card = GridButton ("3", color = ELECTRIC_VIOLET) 
+        three_card.clicked.connect(lambda: self.router.navigate("3"))
+
         four_card = GridButton ("4", color = HOT_PINK)
-        five_card = GridButton ("5", color = SKY_BLUE) 
+        four_card.clicked.connect(lambda: self.router.navigate("4"))
+
+        five_card = GridButton ("5", color = SKY_BLUE)
+        five_card.clicked.connect(lambda: self.router.navigate("5"))
+         
 
         six_card = GridButton ("6", color = LIGHT_GREEN) 
         seven_card = GridButton ("7", color = COBALT_BLUE) 
