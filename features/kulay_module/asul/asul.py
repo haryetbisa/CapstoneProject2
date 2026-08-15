@@ -99,4 +99,4 @@ class Asul(QWidget):
         """)
         self.speak_btn.setFixedSize(240, 70)
         lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("asovs"))
+        self.speak_btn.clicked.connect(lambda: self.router.navigate("asul_game"))

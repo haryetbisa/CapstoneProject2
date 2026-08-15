@@ -125,8 +125,15 @@ from features.kulay_module.dilaw.dilaw import Dilaw
 from features.kulay_module.berde.berde import Berde
 from features.kulay_module.asul.asul import Asul
 
+#kulay game
 from features.kulay_module.pula.pula_game import DragDropRed
 from features.kulay_module.kahel.kahel_game import DragDropOrange
+from features.kulay_module.dilaw.dilaw_game import DragDropYellow
+from features.kulay_module.berde.berde_game import DragDropGreen
+from features.kulay_module.asul.asul_game import DragDropBlue
+
+#pantig game
+from features.pantig_screen_vr.A_game import MatchingGame
 
 
 
@@ -251,10 +258,13 @@ class MainWindow(QMainWindow):
 #KulayGame
         self.router.register("pula_game", DragDropRed(self.router))
         self.router.register("kahel_game", DragDropOrange(self.router))
+        self.router.register("dilaw_game", DragDropYellow(self.router))
+        self.router.register("berde_game", DragDropGreen(self.router))
+        self.router.register("asul_game", DragDropBlue(self.router))
 
+#Pantig Game
+        self.router.register("A_game", MatchingGame(self.router))
 
-
-        self.router.register("paa", LessonScreenPaa(self.router)) 
         
 
         self.router.navigate("loading_screen")
