@@ -58,12 +58,26 @@ from features.bilang_module.tatlo import Bilang3
 from features.bilang_module.apat import Bilang4
 from features.bilang_module.lima import Bilang5
 
-#VS BilangK
+#VS Hugis
 from features.hugis_module.bilog.bilog_vs import BilogVS
 from features.hugis_module.tatsulok.tatsulok_vs import TatsulokVS
 from features.hugis_module.parisukat.parisukat_vs import ParisukatVS
 from features.hugis_module.puso.puso_vs import PusoVS
 from features.hugis_module.oblong.oblong_vs import OblongVS
+
+#VS Hayop
+from features.hayop_module.aso.aso_vs import AsoVS
+from features.hayop_module.baboy.baboy_vs import BaboyVS
+from features.hayop_module.bibe.bibe_vs import BibeVS
+from features.hayop_module.isda.isda_vs import IsdaVS
+from features.hayop_module.kabayo.kabayo_vs import KabayoVS
+
+#VS PNK
+from features.pnk_module.mata.mata_vs import MataVS
+from features.pnk_module.labi.labi_vs import LabiVS
+from features.pnk_module.ilong.ilong_vs import IlongVS
+from features.pnk_module.tainga.tenga_vs import TengaVS
+from features.pnk_module.buhok.buhok_vs import BuhokVS
 
 
 #LessonSCreen
@@ -160,6 +174,20 @@ class MainWindow(QMainWindow):
         self.router.register("parisukatvs", ParisukatVS(self.router))
         self.router.register("pusovs", PusoVS(self.router))
         self.router.register("oblongvs", OblongVS(self.router))
+
+#VR Hayop
+        self.router.register("asovs", AsoVS(self.router))
+        self.router.register("baboyvs", BaboyVS(self.router))
+        self.router.register("bibevs", BibeVS(self.router))
+        self.router.register("isdavs", IsdaVS(self.router))
+        self.router.register("kabayovs", KabayoVS(self.router))
+
+#VR PNK
+        self.router.register("matavs", MataVS(self.router))
+        self.router.register("labivs", LabiVS(self.router))
+        self.router.register("ilongvs", IlongVS(self.router))
+        self.router.register("tengavs", TengaVS(self.router))
+        self.router.register("buhokvs", BuhokVS(self.router))
 
 
 #HAYOP LessonSCreen
