@@ -64,13 +64,20 @@ class KulayScreen(QWidget):
 
 
         pula_card = CardsPicButton ("pula.png", color = CORAL_RED) 
-        pula_card.clicked.connect(lambda: self.router.navigate("pula_game"))
+        pula_card.clicked.connect(lambda: self.router.navigate("pula"))
 
 
-        kahel_card = CardsPicButton ("kahel.png", color = MARIGOLD) 
-        dilaw_card = CardsPicButton ("dilaw.png", color = BRIGHT_YELLOW) 
+        kahel_card = CardsPicButton ("kahel.png", color = MARIGOLD)
+        kahel_card.clicked.connect(lambda: self.router.navigate("kahel"))
+
+        dilaw_card = CardsPicButton ("dilaw.png", color = BRIGHT_YELLOW)
+        dilaw_card.clicked.connect(lambda: self.router.navigate("dilaw"))
+
         berde_card = CardsPicButton ("berde.png", color = GREEN)
-        asul_card = CardsPicButton ("asul.png", color = CORNFLOWER_BLUE) 
+        berde_card.clicked.connect(lambda: self.router.navigate("berde"))
+
+        asul_card = CardsPicButton ("asul.png", color = CORNFLOWER_BLUE)
+        asul_card.clicked.connect(lambda: self.router.navigate("asul"))
 
         lila_card = CardsPicButton ("lila.png", color = MEDIUM_PURPLE) 
         brown_card = CardsPicButton ("tsokolate.png", color = CHOCO_BROWN) 

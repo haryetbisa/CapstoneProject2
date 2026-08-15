@@ -79,8 +79,7 @@ from features.pnk_module.ilong.ilong_vs import IlongVS
 from features.pnk_module.tainga.tenga_vs import TengaVS
 from features.pnk_module.buhok.buhok_vs import BuhokVS
 
-
-#LessonSCreen
+#LessonSCreen Hayop
 from features.hayop_module.aso.aso import LessonScreenAso
 from features.hayop_module.baboy.baboy import LessonScreenBaboy
 from features.hayop_module.bibe.bibe import LessonScreenBibe
@@ -95,7 +94,7 @@ from features.hayop_module.palaka.palaka import LessonScreenPalaka
 from features.hayop_module.pusa.pusa import LessonScreenPusa
 from features.hayop_module.unggoy.unggoy import LessonScreenUnggoy
 
-#hugislesson creen
+#hugislesson screen
 from features.hugis_module.bilog.bilog import LessonScreenBilog
 from features.hugis_module.tatsulok.tatsulok import LessonScreenTatsu
 from features.hugis_module.parisukat.parisukat import LessonScreenParisukat
@@ -118,6 +117,15 @@ from features.pnk_module.braso.braso import LessonScreenBraso
 from features.pnk_module.kamay.kamay import LessonScreenKamay
 from features.pnk_module.binti.binti import LessonScreenBinti
 from features.pnk_module.paa.paa import LessonScreenPaa
+
+#kulay lesson
+from features.kulay_module.pula.pula import Pula
+from features.kulay_module.kahel.kahel import Kahel
+from features.kulay_module.dilaw.dilaw import Dilaw
+from features.kulay_module.berde.berde import Berde
+from features.kulay_module.asul.asul import Asul
+
+from features.kulay_module.pula.pula_game import DragDropDemoScreenRed
 
 
 
@@ -227,8 +235,17 @@ class MainWindow(QMainWindow):
         self.router.register("braso", LessonScreenBraso(self.router))
         self.router.register("kamay", LessonScreenKamay(self.router))       
         self.router.register("binti", LessonScreenBinti(self.router))
-        self.router.register("paa", LessonScreenPaa(self.router)) 
-        
+        self.router.register("paa", LessonScreenPaa(self.router))
+
+#Kulay LS
+        self.router.register("pula", Pula(self.router))
+        self.router.register("kahel", Kahel(self.router))
+        self.router.register("dilaw", Dilaw(self.router))
+        self.router.register("berde", Berde(self.router))
+        self.router.register("asul", Asul(self.router))
+
+#KulayGame
+        self.router.register("pula_game", DragDropDemoScreenRed(self.router))
 
 
         self.router.navigate("loading_screen")
