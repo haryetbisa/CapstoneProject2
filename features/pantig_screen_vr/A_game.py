@@ -158,7 +158,7 @@ class MatchingGame(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        pen = QPen(QColor("#FFD24C"), 4)
+        pen = QPen(QColor("#FFD24C"), 8)
         painter.setPen(pen)
 
         # finalized lines
