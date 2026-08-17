@@ -98,6 +98,28 @@ class TatsulokVS(QWidget):
         main_layout.setSpacing(40)
         main_layout.addStretch(3)
 
+        lower_layout = QHBoxLayout()
+        lower_layout.setSpacing(200)
+        lower_layout.setContentsMargins(70, 20, 70, 30)
+        main_layout.addLayout(lower_layout)
+
+        self.speak_btn = QPushButton("Sunod")
+        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
+        self.speak_btn.setIconSize(QSize(30, 30))
+        self.speak_btn.setFixedHeight(40)
+        self.speak_btn.setCursor(Qt.PointingHandCursor)
+        self.speak_btn.setStyleSheet(f"""
+            background-color: {BRIGHT_YELLOW};
+            color: {CHOCO_BROWN};
+            font-size: 22px;
+            font-weight: 800;
+            border-radius: 6px;
+            font-family: {BODY_FONT};
+        """)
+        self.speak_btn.setFixedSize(240, 70)
+        lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        self.speak_btn.clicked.connect(lambda: self.router.navigate("tatsulok_game"))
+
 
 
 
