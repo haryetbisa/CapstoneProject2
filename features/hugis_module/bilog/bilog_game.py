@@ -83,7 +83,7 @@ class BilogGame(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("bilogvs"))
 
    
-        pagsasanay = QLabel("Aralin: Asul")
+        pagsasanay = QLabel("Aralin: Bilog")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};

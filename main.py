@@ -138,9 +138,14 @@ from features.pantig_screen_vr.B_game import MatchingBa
 
 #hayop game 
 from features.hayop_module.aso.aso_game import AsoGame
+from features.hayop_module.baboy.baboy_game import BaboyGame
 
 #hugis game 
 from features.hugis_module.bilog.bilog_game import BilogGame
+from features.hugis_module.tatsulok.tatsulok_game import TatsulokGame
+from features.hugis_module.parisukat.parisukat_game import ParisukatGame
+from features.hugis_module.puso.puso_game import PusoGame
+from features.hugis_module.oblong.oblong_game import OblongGame
 
 
 
@@ -273,9 +278,14 @@ class MainWindow(QMainWindow):
 
 #Hayop Game
         self.router.register("aso_game", AsoGame(self.router))
+        self.router.register("baboy_game", BaboyGame(self.router))
 
 #Hugis Game
-        self.router.register("bilog_game", BilogGame(self.router))  
+        self.router.register("bilog_game", BilogGame(self.router))
+        self.router.register("tatsulok_game", TatsulokGame(self.router))
+        self.router.register("parisukat_game", ParisukatGame(self.router))
+        self.router.register("puso_game", PusoGame(self.router))
+        self.router.register("oblong_game", OblongGame(self.router))
 
         self.router.navigate("loading_screen")
 
