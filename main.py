@@ -125,27 +125,10 @@ from features.kulay_module.dilaw.dilaw import Dilaw
 from features.kulay_module.berde.berde import Berde
 from features.kulay_module.asul.asul import Asul
 
-#kulay game
 from features.kulay_module.pula.pula_game import DragDropRed
 from features.kulay_module.kahel.kahel_game import DragDropOrange
-from features.kulay_module.dilaw.dilaw_game import DragDropYellow
-from features.kulay_module.berde.berde_game import DragDropGreen
-from features.kulay_module.asul.asul_game import DragDropBlue
 
-#pantig game
-from features.pantig_screen_vr.A_game import MatchingGame
-from features.pantig_screen_vr.B_game import MatchingBa
 
-#hayop game 
-from features.hayop_module.aso.aso_game import AsoGame
-from features.hayop_module.baboy.baboy_game import BaboyGame
-
-#hugis game 
-from features.hugis_module.bilog.bilog_game import BilogGame
-from features.hugis_module.tatsulok.tatsulok_game import TatsulokGame
-from features.hugis_module.parisukat.parisukat_game import ParisukatGame
-from features.hugis_module.puso.puso_game import PusoGame
-from features.hugis_module.oblong.oblong_game import OblongGame
 
 
 
@@ -268,24 +251,11 @@ class MainWindow(QMainWindow):
 #KulayGame
         self.router.register("pula_game", DragDropRed(self.router))
         self.router.register("kahel_game", DragDropOrange(self.router))
-        self.router.register("dilaw_game", DragDropYellow(self.router))
-        self.router.register("berde_game", DragDropGreen(self.router))
-        self.router.register("asul_game", DragDropBlue(self.router))
 
-#Pantig Game
-        self.router.register("A_game", MatchingGame(self.router))
-        self.router.register("Ba_game", MatchingBa(self.router))
 
-#Hayop Game
-        self.router.register("aso_game", AsoGame(self.router))
-        self.router.register("baboy_game", BaboyGame(self.router))
 
-#Hugis Game
-        self.router.register("bilog_game", BilogGame(self.router))
-        self.router.register("tatsulok_game", TatsulokGame(self.router))
-        self.router.register("parisukat_game", ParisukatGame(self.router))
-        self.router.register("puso_game", PusoGame(self.router))
-        self.router.register("oblong_game", OblongGame(self.router))
+        self.router.register("paa", LessonScreenPaa(self.router)) 
+        
 
         self.router.navigate("loading_screen")
 
