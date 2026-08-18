@@ -14,16 +14,13 @@ from PySide6.QtWidgets import (
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
-BASE_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
 
-IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
-ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "bilang")
+ICONS_DIR = os.path.join(BASE_DIR, "..","..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
-    BASE_DIR, "assets", "sounds", "correct_&_wrong"
+    BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong"
 )
-
 
 class Bilang4(QWidget):
 
@@ -73,13 +70,9 @@ class Bilang4(QWidget):
 
         # Main Graphic (aso.png)
         image = QLabel()
-        image_path = os.path.join(IMAGE_DIR, "aso.png")
-        if os.path.exists(image_path):
-            image.setPixmap(
-                QPixmap(image_path).scaled(
-                    250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-                )
-            )
+        image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "4.png")).scaled(
+                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            ))
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(image)
 

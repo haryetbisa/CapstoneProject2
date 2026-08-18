@@ -83,7 +83,7 @@ class DragDropOrange(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("kahel"))
 
    
-        pagsasanay = QLabel("Aralin: Pula")
+        pagsasanay = QLabel("Aralin: Kahel")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
