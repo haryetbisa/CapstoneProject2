@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
 
-IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
+IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "bilang")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
@@ -71,9 +71,9 @@ class Bilang3(QWidget):
         top_bar.addWidget(pagsasanay)
         top_bar.setSpacing(20)
 
-        # Main Graphic (aso.png)
+        # Main Graphic (3.png)
         image = QLabel()
-        image_path = os.path.join(IMAGE_DIR, "aso.png")
+        image_path = os.path.join(IMAGE_DIR, "3.png")
         if os.path.exists(image_path):
             image.setPixmap(
                 QPixmap(image_path).scaled(
