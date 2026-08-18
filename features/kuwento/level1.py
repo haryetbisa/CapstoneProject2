@@ -1,32 +1,31 @@
-from PySide6.QtCore import Qt, QSize
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
-from PySide6.QtGui import QPixmap, QIcon
-
-
-from components.cardsbutton import CardsButton
-from themes.colors import *
-from assets.icon import icon_label
-from themes.fonts import  BODY_FONT
-from components.lesson_card import LessonCard
-
 import os
+from PySide6.QtCore import Qt, QSize, QUrl
+from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from themes.colors import * 
+from themes.fonts import BODY_FONT
+
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "..","assets", "icons")
+ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
+
 
 
 class Kuwento1(QWidget):
-  def __init__(self, router):
+    def __init__(self, router):
         super().__init__()
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
-        main_layout.setAlignment(Qt.AlignCenter)
+        main_layout.setContentsMargins(40, 30, 40, 30)
+        main_layout.setAlignment(Qt.AlignTop)
+        main_layout.setSpacing(20)
 
+        #top layout| back buttonnnn
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        top_layout.setContentsMargins(60, 50, 0, 20)
+        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
         back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
@@ -36,7 +35,6 @@ class Kuwento1(QWidget):
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
         back_btn.clicked.connect(lambda: self.router.navigate("kuwento"))
 
-   
         pagsasanay = QLabel("Kuwento 1")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
@@ -45,70 +43,77 @@ class Kuwento1(QWidget):
             color: {CHOCO_BROWN};               
         """)
 
-        
         top_layout.addWidget(back_btn)
         top_layout.addWidget(pagsasanay)
-        top_layout.setSpacing(40)
+        top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-        content_layout = QVBoxLayout()
-        content_layout.setContentsMargins(70, 30, 70, 10)
-        content_layout.setSpacing(40)
-        main_layout.addLayout(content_layout)
-
-
+        # Title
         title = QLabel("Ang Malusog na Bata")
         title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet(f"""
-                    color: {CHOCO_BROWN};
-                    font-family: {BODY_FONT};
-                    font-size: 40px;
-                    font-weight: 800;
-                """)
-        content_layout.addWidget(title)
+        title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
+        main_layout.addWidget(title)
 
+        # Illustration
+        image = QLabel()
+        image.setPixmap(
+            QPixmap(os.path.join(IMAGE_DIR, "AMNB.png")).scaled(
+                230, 230, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
+        image.setAlignment(Qt.AlignCenter)
+        main_layout.addWidget(image)
 
-        #yung image
-        content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "AMNB.png")).scaled(
-                260, 260, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(content_image)
-
-        #audio button and story
+        # Speaker icon + text row
         text_row = QHBoxLayout()
-        text_row.setSpacing(20)
-        text_row.setAlignment(Qt.AlignTop)
-        main_layout.addLayout(text_row)
-
+        text_row.setSpacing(15)
+        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
 
         self.speaker_btn = QPushButton()
         self.speaker_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "audio_icon.png")))
-        self.speaker_btn.setIconSize(QSize(28, 28))
+        self.speaker_btn.setIconSize(QSize(24, 24))
         self.speaker_btn.setFlat(True)
         self.speaker_btn.setCursor(Qt.PointingHandCursor)
         text_row.addWidget(self.speaker_btn)
 
-
-        content_words = QLabel( 
+        
+        story_text = QLabel(
             "Malusog na bata si Ken.\n"
-            "Uminom sya ng gatas.\n"
+            "Uminom siya ng gatas.\n"
             "Kumakain siya ng itlog at gulay.\n"
             "Masiglang kumilos si Ken dahil malusog ang kanyang katawan."
         )
-        content_words.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        content_words.setWordWrap(True)
-        content_words.setStyleSheet(f"""
+        story_text.setAlignment(Qt.AlignLeft)
+        story_text.setWordWrap(True)   
+        story_text.setStyleSheet(f"""
+            font-size: 28px;
+            font-weight: 400;
             font-family: {BODY_FONT};
-            font-size: 30px;
             color: {CHOCO_BROWN};
-            font-weight: 600;
         """)
-        text_row.addWidget(content_words)
+        text_row.addWidget(story_text)
 
-
+        main_layout.addLayout(text_row)
         main_layout.addStretch()
 
+        lower_layout = QHBoxLayout()
+        lower_layout.setSpacing(200)
+        lower_layout.setContentsMargins(70, 20, 70, 30)
+        main_layout.addLayout(lower_layout)
 
+        self.next_btn = QPushButton("Sunod")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            background-color: {BRIGHT_YELLOW};
+            color: {CHOCO_BROWN};
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: 6px;
+            font-family: {BODY_FONT};
+        """)
+        self.next_btn.setFixedSize(180, 50)
+        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        self.next_btn.clicked.connect(lambda: self.router.navigate("quest1"))
+
+        main_layout.addStretch()
 
