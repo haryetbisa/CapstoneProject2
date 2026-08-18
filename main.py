@@ -151,6 +151,9 @@ from features.hugis_module.oblong.oblong_game import OblongGame
 from features.kuwento.level1 import Kuwento1
 from features.kuwento.level2 import Kuwento2
 
+#kuwento question
+from features.kuwento.level1_quest import Kuwento1Question
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -293,6 +296,9 @@ class MainWindow(QMainWindow):
 #Kuwento Screen
         self.router.register("level1", Kuwento1(self.router))
         self.router.register("level2", Kuwento2(self.router))
+
+#Kuwento Question
+        self.router.register("quest1", Kuwento1Question(self.router))
 
         self.router.navigate("loading_screen")
 
