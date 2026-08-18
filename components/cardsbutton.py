@@ -55,7 +55,7 @@ class CardsButton(QPushButton):
         self.title_label.setStyleSheet(f"""
             color: #FFFFFF;
             font-family: '{font_family}';
-            font-size: 22px;
+            font-size: 14px;
             font-weight: bold;
             background: transparent;
         """)

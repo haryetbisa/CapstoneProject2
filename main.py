@@ -147,6 +147,9 @@ from features.hugis_module.parisukat.parisukat_game import ParisukatGame
 from features.hugis_module.puso.puso_game import PusoGame
 from features.hugis_module.oblong.oblong_game import OblongGame
 
+#kuwento screen
+from features.kuwento.level1 import Kuwento1
+from features.kuwento.level2 import Kuwento2
 
 
 class MainWindow(QMainWindow):
@@ -286,6 +289,10 @@ class MainWindow(QMainWindow):
         self.router.register("parisukat_game", ParisukatGame(self.router))
         self.router.register("puso_game", PusoGame(self.router))
         self.router.register("oblong_game", OblongGame(self.router))
+
+#Kuwento Screen
+        self.router.register("level1", Kuwento1(self.router))
+        self.router.register("level2", Kuwento2(self.router))
 
         self.router.navigate("loading_screen")
 

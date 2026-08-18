@@ -8,8 +8,8 @@ from themes.colors import *
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
+ICONS_DIR = os.path.join(BASE_DIR, "..", "..","assets", "icons")
 
 class KuwentoScreen(QWidget):
     def __init__(self,router):
@@ -51,8 +51,12 @@ class KuwentoScreen(QWidget):
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
 
-        lvl1 = CardsButton("Bilog", "bilog.png", color = CORAL_RED)
-        lvl2 = CardsButton("Tatsulok", "tatsulok.png", color = MARIGOLD)
+        lvl1 = CardsButton("Ang Malusog na Bata", "AMNB.png", color = CORAL_RED)
+        lvl1.clicked.connect(lambda: self.router.navigate("level1"))
+
+        lvl2 = CardsButton("Ang Aking Alaga", "AAA.png", color = MARIGOLD)
+        lvl2.clicked.connect(lambda: self.router.navigate("level2"))
+
         lvl3 = CardsButton("Parisukat", "parisukat.png", color = ELECTRIC_VIOLET) 
         lvl4 = CardsButton("Puso", "puso.png", color = HOT_PINK)
         lvl5 = CardsButton("Bilohaba", "oblong.png", color = SKY_BLUE) 
