@@ -1,106 +1,80 @@
-# screens/home_screen.py
 import os
+import json
+import queue
+import sounddevice as sd
+from vosk import Model, KaldiRecognizer
+from PySide6.QtCore import QThread, Signal
 
-from assets.icon import icon_label
-from PySide6.QtCore import Qt, QSize
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtGui import QPixmap, QIcon
-from themes.colors import *
-from themes.fonts import BODY_FONT
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_DIR = os.path.join(BASE_DIR, "model_tagalog_vr_capstone")
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+class OfflineVoiceWorker(QThread):
+    text_recognized = Signal(str)
+    status_changed = Signal(str)
 
-class VoiceRecognitionScreen(QWidget):
-    def __init__(self, router):
+    def __init__(self, parent=None):
         super().__init__()
-        self.router = router
+        self.is_listening = True
+        self.sample_rate = 16000
+        self.q = queue.Queue()
 
+    def audio_callback(self, indata, frames, time, status):
+        """Pushes raw audio buffer into the thread-safe queue."""
+        if status:
+            print(f"Audio status: {status}")
+        self.q.put(bytes(indata))
 
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(60, 60, 60, 0)
+    def run(self):
+        if not os.path.exists(MODEL_DIR):
+            self.status_changed.emit("Error: Vosk model folder not found!")
+            return
 
-        top_bar = QHBoxLayout()
-        top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        main_layout.addLayout(top_bar)
+        try:
+            model = Model(MODEL_DIR)
+            rec = KaldiRecognizer(model, self.sample_rate)
 
-        back_btn = QPushButton()
-        back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
-        back_btn.setFlat(True)
-        back_btn.setIconSize(QSize(40, 40))
-        back_btn.setCursor(Qt.PointingHandCursor)
-        back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("pantig"))
+            with sd.RawInputStream(
+                samplerate=self.sample_rate,
+                blocksize=8000,
+                dtype="int16",
+                channels=1,
+                callback=self.audio_callback
+            ):
+                self.status_changed.emit("Nakikinig... Magsalita na!")
+                last_partial = ""
 
-   
-        pagsasanay = QLabel("Pagsasanay")
-        pagsasanay.setStyleSheet(f"""
-            font-size: 30px;
-            font-family: {BODY_FONT};
-            font-weight: 800;
-            color: {CHOCO_BROWN};               
-        """)
+                while self.is_listening:
+                    try:
+                        data = self.q.get(timeout=0.5)
+                    except queue.Empty:
+                        continue
 
+                    if rec.AcceptWaveform(data):
+                        result = json.loads(rec.Result())
+                        text = result.get("text", "").strip()
+                        if text:
+                            self.text_recognized.emit(text)
+                            return
+                    else:
+                        partial = json.loads(rec.PartialResult())
+                        p_text = partial.get("partial", "").strip()
+                        if p_text:
+                            last_partial = p_text
+                            self.status_changed.emit(f"Narinig: {p_text}")
 
-        top_bar.addWidget(back_btn)
-        top_bar.addWidget(pagsasanay)
-        top_bar.setSpacing(20)
+                # If loop ended without full Result(), check FinalResult or last partial text
+                final_res = json.loads(rec.FinalResult())
+                final_text = final_res.get("text", "").strip() or last_partial
+                
+                if final_text:
+                    self.text_recognized.emit(final_text)
+                else:
+                    self.status_changed.emit("Walang narinig. Subukan ulit.")
 
+        except Exception as e:
+            self.status_changed.emit(f"Error: {str(e)}")
 
-        image = QLabel()
-        image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "giraffe.png")).scaled(
-                200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(image)
-
-
-        word = QHBoxLayout()
-        word.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        word.setSpacing(20)
-
-        self.audio = QPushButton()
-        self.audio.setIcon(QIcon(os.path.join(ICONS_DIR, "audio_icon.png")))
-        self.audio.setIconSize(QSize(40, 40))
-        self.audio.setCursor(Qt.PointingHandCursor)
-        word.addWidget(self.audio)
-        
-
-        salita = QLabel("A-so")
-        salita.setStyleSheet(f"""
-            font-size: 96px;
-            font-family: {BODY_FONT};
-            font-weight: 800;
-            color: {CHOCO_BROWN};               
-        """)
-        word.addWidget(salita)
-
-        main_layout.addLayout(word)
-
-
-        self.speak_btn = QPushButton("I-TAP KAPAG MAG-SASALITA")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
-        self.speak_btn.setFixedHeight(50)
-        self.speak_btn.setCursor(Qt.PointingHandCursor)
-        self.speak_btn.setStyleSheet(f"""
-            background-color: {BRIGHT_YELLOW};
-            color: {CHOCO_BROWN};
-            font-size: 20px;
-            font-weight: 500;
-            border-radius: 6px;
-            font-family: {BODY_FONT};
-        """)
-        self.speak_btn.setFixedSize(554, 70)
-        main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignCenter)
-        main_layout.setSpacing(40)
-        main_layout.addStretch(3)
-
-
-
-
-      
-
-
+    def stop(self):
+        """Stops the audio loop cleanly."""
+        self.is_listening = False

@@ -28,7 +28,7 @@ def load_fonts():
 from router import Router
 from screens.loading_screen import LoadingScreen
 from screens.account_info import AccountInfo
-from features.voice_recog import VoiceRecognitionScreen
+from features.voice_recog import OfflineVoiceWorker
 from features.lesson_screen import LessonScreen
 from screens.create_account import CreateAccount
 from screens.main_dashboard import HomeScreen
@@ -176,7 +176,6 @@ class MainWindow(QMainWindow):
         self.router.register("katawan", ParteNgKatawanScreen(self.router))
         self.router.register("kulay", KulayScreen(self.router))
         self.router.register("hayop", HayopScreen(self.router))
-        self.router.register("vr", VoiceRecognitionScreen(self.router))
         self.router.register("kuwento", KuwentoScreen(self.router))
         self.router.register("bilang_g1", BilangScreenG1(self.router))
         self.router.register("pangungusap", Pangungusap(self.router))
