@@ -1,26 +1,46 @@
 import os
 
-from PySide6.QtCore import Qt, QSize, Slot
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtGui import QPixmap, QIcon
+from features.voice_recog import OfflineVoiceWorker
+from PySide6.QtCore import QSize, Qt, QUrl, Slot
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
+from PySide6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
-from features.voice_recog import OfflineVoiceWorker
-
 # Path to reach project root from feature subdirectory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
+)
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
 
 
 class MataVS(QWidget):
+
     def __init__(self, router):
         super().__init__()
         self.router = router
         self.target_word = "mata"
         self.worker = None
+
+        # Feedback Audio Player Setup
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -36,7 +56,9 @@ class MataVS(QWidget):
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
-        back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
+        back_btn.setStyleSheet(
+            "border: none; background-color: transparent; border-radius: 6px;"
+        )
         back_btn.clicked.connect(self.handle_back)
 
         pagsasanay = QLabel("Pagsasanay", self)
@@ -56,9 +78,11 @@ class MataVS(QWidget):
         image = QLabel(self)
         image_path = os.path.join(IMAGE_DIR, "mata.png")
         if os.path.exists(image_path):
-            image.setPixmap(QPixmap(image_path).scaled(
-                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
+            image.setPixmap(
+                QPixmap(image_path).scaled(
+                    250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(image)
 
@@ -108,7 +132,9 @@ class MataVS(QWidget):
         """)
         self.speak_btn.setFixedSize(554, 70)
         self.speak_btn.clicked.connect(self.start_listening)
-        main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(
+            self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter
+        )
 
         # Result / Feedback Label
         self.feedback_label = QLabel("", self)
@@ -124,6 +150,14 @@ class MataVS(QWidget):
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
+    def play_feedback_sound(self, filename: str):
+        """Plays the correct/wrong feedback audio sound."""
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
+
     @Slot()
     def start_listening(self):
         """Starts background voice recognition."""
@@ -133,7 +167,10 @@ class MataVS(QWidget):
 
         self.speak_btn.setEnabled(False)
 
-        self.feedback_label.setStyleSheet(f"font-size: 24px; color: {CHOCO_BROWN}; font-family: {BODY_FONT}; font-weight: bold;")
+        self.feedback_label.setStyleSheet(
+            f"font-size: 24px; color: {CHOCO_BROWN}; font-family: {BODY_FONT};"
+            " font-weight: bold;"
+        )
         self.feedback_label.setText("Nakikinig... Magsalita na!")
 
         self.worker = OfflineVoiceWorker()
@@ -145,7 +182,11 @@ class MataVS(QWidget):
     @Slot(str)
     def update_status(self, text):
         """Updates live status feedback while listening."""
-        if "MAGALING" not in self.feedback_label.text() and not self.speak_btn.isEnabled():
+        if (
+            "MAGALING" not in self.feedback_label.text()
+            and "SUBUKAN" not in self.feedback_label.text()
+            and not self.speak_btn.isEnabled()
+        ):
             self.feedback_label.setText(text)
 
     @Slot(str)
@@ -156,27 +197,39 @@ class MataVS(QWidget):
 
         # Phonetic & common speech model misinterpretations for "mata"
         accepted_variants = [
-            target_clean,   
-            "ma ta",         
-            "ma-ta",        
+            target_clean,
+            "ma ta",
+            "ma-ta",
             "mata",
         ]
 
         # Check direct match against variants
-        is_correct = any(variant in spoken_clean for variant in accepted_variants)
+        is_correct = any(
+            variant in spoken_clean for variant in accepted_variants
+        )
 
         # Phonetic fallback check ("ma" + "ta")
         if not is_correct:
-            has_prefix = any(p in spoken_clean for p in ["ma", "mat", "me"])
-            has_suffix = any(s in spoken_clean for s in ["ta", "ter", "tha"])
+            has_prefix = any(p in spoken_clean for p in ["ma", "mat"])
+            has_suffix = any(s in spoken_clean for s in ["ta", "tha"])
             is_correct = has_prefix and has_suffix
 
         if is_correct:
             self.feedback_label.setText("✅ MAGALING! TAMA!")
-            self.feedback_label.setStyleSheet(f"font-size: 28px; color: green; font-family: {BODY_FONT}; font-weight: bold;")
+            self.feedback_label.setStyleSheet(
+                f"font-size: 28px; color: green; font-family: {BODY_FONT};"
+                " font-weight: bold;"
+            )
+            self.play_feedback_sound("correct.wav")
         else:
-            self.feedback_label.setText(f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')")
-            self.feedback_label.setStyleSheet(f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;")
+            self.feedback_label.setText(
+                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+            )
+            self.feedback_label.setStyleSheet(
+                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
+                " font-weight: bold;"
+            )
+            self.play_feedback_sound("wrong.wav")
 
     @Slot()
     def on_speech_finished(self):

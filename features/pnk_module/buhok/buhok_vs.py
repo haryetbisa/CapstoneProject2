@@ -1,26 +1,45 @@
 import os
 
-from PySide6.QtCore import Qt, QSize, Slot
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtGui import QPixmap, QIcon
+from features.voice_recog import OfflineVoiceWorker
+from PySide6.QtCore import QSize, Qt, QUrl, Slot
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
+from PySide6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
-from features.voice_recog import OfflineVoiceWorker
-
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
+)
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
 
 
 class BuhokVS(QWidget):
+
     def __init__(self, router):
         super().__init__()
         self.router = router
         self.target_word = "buhok"
         self.worker = None
+
+        # Feedback Audio Player Setup
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -32,11 +51,13 @@ class BuhokVS(QWidget):
         back_btn = QPushButton(self)
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
         if os.path.exists(back_icon_path):
-                back_btn.setIcon(QIcon(back_icon_path))
+            back_btn.setIcon(QIcon(back_icon_path))
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
-        back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
+        back_btn.setStyleSheet(
+            "border: none; background-color: transparent; border-radius: 6px;"
+        )
         back_btn.clicked.connect(self.handle_back)
 
         pagsasanay = QLabel("Pagsasanay", self)
@@ -54,11 +75,13 @@ class BuhokVS(QWidget):
 
         # Main Graphic Image Label
         image = QLabel(self)
-        image_path = os.path.join(IMAGE_DIR, "buhok.png")
+        image_path = os.path.join(IMAGE_DIR, "ulo.png")
         if os.path.exists(image_path):
-            image.setPixmap(QPixmap(image_path).scaled(
-                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
+            image.setPixmap(
+                QPixmap(image_path).scaled(
+                    250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(image)
 
@@ -108,7 +131,9 @@ class BuhokVS(QWidget):
         """)
         self.speak_btn.setFixedSize(554, 70)
         self.speak_btn.clicked.connect(self.start_listening)
-        main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(
+            self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter
+        )
 
         # Result / Feedback Label
         self.feedback_label = QLabel("", self)
@@ -124,17 +149,25 @@ class BuhokVS(QWidget):
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
+    def play_feedback_sound(self, filename: str):
+        """Plays the correct/wrong feedback audio sound."""
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
+
     @Slot()
     def start_listening(self):
         """Starts background voice recognition."""
-        if self.worker and self.worker.isRunning():
-            self.worker.stop()
-            self.worker.wait()
+        self.stop_worker()
 
         self.speak_btn.setEnabled(False)
 
-       
-        self.feedback_label.setStyleSheet(f"font-size: 24px; color: {CHOCO_BROWN}; font-family: {BODY_FONT}; font-weight: bold;")
+        self.feedback_label.setStyleSheet(
+            f"font-size: 24px; color: {CHOCO_BROWN}; font-family: {BODY_FONT};"
+            " font-weight: bold;"
+        )
         self.feedback_label.setText("Nakikinig... Magsalita na!")
 
         self.worker = OfflineVoiceWorker()
@@ -146,7 +179,11 @@ class BuhokVS(QWidget):
     @Slot(str)
     def update_status(self, text):
         """Updates live status feedback while listening."""
-        if "MAGALING" not in self.feedback_label.text() and not self.speak_btn.isEnabled():
+        if (
+            "MAGALING" not in self.feedback_label.text()
+            and "SUBUKAN" not in self.feedback_label.text()
+            and not self.speak_btn.isEnabled()
+        ):
             self.feedback_label.setText(text)
 
     @Slot(str)
@@ -159,25 +196,43 @@ class BuhokVS(QWidget):
 
         if target_clean in spoken_words:
             self.feedback_label.setText("✅ MAGALING! TAMA!")
-            self.feedback_label.setStyleSheet(f"font-size: 28px; color: green; font-family: {BODY_FONT}; font-weight: bold;")
+            self.feedback_label.setStyleSheet(
+                f"font-size: 28px; color: green; font-family: {BODY_FONT};"
+                " font-weight: bold;"
+            )
+            self.play_feedback_sound("correct.wav")
         else:
-            self.feedback_label.setText(f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')")
-            self.feedback_label.setStyleSheet(f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;")
+            self.feedback_label.setText(
+                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+            )
+            self.feedback_label.setStyleSheet(
+                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
+                " font-weight: bold;"
+            )
+            self.play_feedback_sound("wrong.wav")
 
     @Slot()
     def on_speech_finished(self):
         self.speak_btn.setEnabled(True)
 
+    def stop_worker(self):
+        """Cleanly stops the thread if running."""
+        if self.worker and self.worker.isRunning():
+            try:
+                self.worker.status_changed.disconnect()
+                self.worker.text_recognized.disconnect()
+                self.worker.finished.disconnect()
+            except RuntimeError:
+                pass
+            self.worker.terminate()
+            self.worker = None
+
     def handle_back(self):
         """Safely stops recording before navigating back."""
-        if self.worker and self.worker.isRunning():
-            self.worker.stop()
-            self.worker.wait()
+        self.stop_worker()
         self.router.navigate("buhok")
 
     def closeEvent(self, event):
         """Ensures thread cleanup when widget is closed."""
-        if self.worker and self.worker.isRunning():
-            self.worker.stop()
-            self.worker.wait()
+        self.stop_worker()
         event.accept()

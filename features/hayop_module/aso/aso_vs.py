@@ -1,26 +1,43 @@
 import os
+import sys
 
-from PySide6.QtCore import Qt, QSize, Slot
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtGui import QPixmap, QIcon
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(CURRENT_DIR)))
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
+
+from PySide6.QtCore import QSize, Qt, QUrl, Slot
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
 from features.voice_recog import OfflineVoiceWorker
 
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
+IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 
 
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
+
+
 class AsoVS(QWidget):
+
     def __init__(self, router):
         super().__init__()
         self.router = router
         self.target_word = "aso"
         self.worker = None
+
+        # Player for Voice Recognition Feedback SFX (Correct / Wrong)
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(0.8)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -28,7 +45,6 @@ class AsoVS(QWidget):
         # Top Navigation Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        main_layout.addLayout(top_bar)
 
         back_btn = QPushButton(self)
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -37,7 +53,9 @@ class AsoVS(QWidget):
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
-        back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
+        back_btn.setStyleSheet(
+            "border: none; background-color: transparent; border-radius: 6px;"
+        )
         back_btn.clicked.connect(self.handle_back)
 
         pagsasanay = QLabel("Pagsasanay", self)
@@ -51,14 +69,17 @@ class AsoVS(QWidget):
         top_bar.addWidget(back_btn)
         top_bar.addWidget(pagsasanay)
         top_bar.setSpacing(20)
+        main_layout.addLayout(top_bar)
 
         # Main Image Display
         image = QLabel(self)
         image_path = os.path.join(IMAGE_DIR, "aso.png")
         if os.path.exists(image_path):
-            image.setPixmap(QPixmap(image_path).scaled(
-                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
+            image.setPixmap(
+                QPixmap(image_path).scaled(
+                    250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(image)
 
@@ -73,6 +94,7 @@ class AsoVS(QWidget):
             self.audio.setIcon(QIcon(audio_icon_path))
         self.audio.setIconSize(QSize(40, 40))
         self.audio.setCursor(Qt.PointingHandCursor)
+
         word.addWidget(self.audio)
 
         salita = QLabel("A-so", self)
@@ -108,7 +130,9 @@ class AsoVS(QWidget):
         """)
         self.speak_btn.setFixedSize(554, 70)
         self.speak_btn.clicked.connect(self.start_listening)
-        main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(
+            self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter
+        )
 
         # Feedback Display Label
         self.feedback_label = QLabel("", self)
@@ -124,6 +148,15 @@ class AsoVS(QWidget):
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
+    def play_feedback_sound(self, filename: str):
+        """Plays correct/wrong voice evaluation feedback audio."""
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            self.feedback_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.feedback_player.play()
+        else:
+            print(f"Feedback sound missing: {sound_path}")
+
     @Slot()
     def start_listening(self):
         """Starts background voice recognition."""
@@ -132,7 +165,10 @@ class AsoVS(QWidget):
             self.worker.wait()
 
         self.speak_btn.setEnabled(False)
-        self.feedback_label.setStyleSheet(f"font-size: 24px; color: {CHOCO_BROWN}; font-family: {BODY_FONT}; font-weight: bold;")
+        self.feedback_label.setStyleSheet(
+            f"font-size: 24px; color: {CHOCO_BROWN}; font-family: {BODY_FONT};"
+            " font-weight: bold;"
+        )
         self.feedback_label.setText("Nakikinig... Magsalita na!")
 
         self.worker = OfflineVoiceWorker()
@@ -144,21 +180,34 @@ class AsoVS(QWidget):
     @Slot(str)
     def update_status(self, text):
         """Updates status text during listening."""
-        if "MAGALING" not in self.feedback_label.text() and not self.speak_btn.isEnabled():
+        if (
+            "MAGALING" not in self.feedback_label.text()
+            and not self.speak_btn.isEnabled()
+        ):
             self.feedback_label.setText(text)
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
-        """Checks spoken input against target word."""
+        """Checks spoken input against target word and triggers feedback SFX."""
         spoken_clean = spoken_text.lower().replace("-", " ").strip()
         target_clean = self.target_word.lower().strip()
 
         if target_clean in spoken_clean.split():
             self.feedback_label.setText("✅ MAGALING! TAMA!")
-            self.feedback_label.setStyleSheet(f"font-size: 28px; color: green; font-family: {BODY_FONT}; font-weight: bold;")
+            self.feedback_label.setStyleSheet(
+                f"font-size: 28px; color: green; font-family: {BODY_FONT};"
+                " font-weight: bold;"
+            )
+            self.play_feedback_sound("correct.wav")
         else:
-            self.feedback_label.setText(f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')")
-            self.feedback_label.setStyleSheet(f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;")
+            self.feedback_label.setText(
+                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+            )
+            self.feedback_label.setStyleSheet(
+                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
+                " font-weight: bold;"
+            )
+            self.play_feedback_sound("wrong.wav")
 
     @Slot()
     def on_speech_finished(self):
