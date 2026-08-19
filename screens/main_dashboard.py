@@ -93,14 +93,16 @@ class HomeScreen(QWidget):
         lower_part = QHBoxLayout()
         lower_part.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
-        pinkg = icon_label("pink_g.png", 300) 
+        pinkg = icon_label("pink_g.png", 340)
+        pinkg.setContentsMargins(0, 20, 0, 0)
         pinkg.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignBaseline)
         
         #buttons 
         button_group = QVBoxLayout()
+        button_group.setContentsMargins(0, 0, 0, 60)
         button_group.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignCenter)
 
-
+        #kinder button
         kinder = QPushButton("KINDERGARTEN")
         kinder.setCursor(Qt.PointingHandCursor)
         kinder.setStyleSheet(f"""
@@ -115,7 +117,7 @@ class HomeScreen(QWidget):
         """)
         kinder.clicked.connect(lambda: self.router.navigate("kindergarten"))
 
-
+        #grade1 button
         grade1 = QPushButton("GRADE 1")
         grade1.setCursor(Qt.PointingHandCursor)
         grade1.setStyleSheet(f"""
@@ -131,7 +133,7 @@ class HomeScreen(QWidget):
         grade1.clicked.connect(lambda: self.router.navigate("grade1_dash"))
 
 
-        redb = icon_label("red_b.png", 300)
+        redb = icon_label("red_b.png", 340)
         redb.setContentsMargins(0, 20, 0, 0)
         redb.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
 
@@ -141,7 +143,7 @@ class HomeScreen(QWidget):
         lower_part.addLayout(button_group)
         lower_part.addWidget(redb)
         main_layout.addLayout(lower_part)
-        main_layout.addStretch()
+   
 
         
 

@@ -8,8 +8,8 @@ from components.choices_button import ChoicesButton
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..","assets", "image")
+ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..","assets", "icons")
 
 
 
@@ -34,7 +34,7 @@ class BilangLvl1(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("level1"))
+        back_btn.clicked.connect(lambda: self.router.navigate("g1_bilog"))
 
         pagsasanay = QLabel("Pagsasanay: Bilog")
         pagsasanay.setStyleSheet(f"""

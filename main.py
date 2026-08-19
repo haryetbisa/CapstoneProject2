@@ -160,13 +160,25 @@ from features.salita.salita1.level1 import Salita1
 #salita game
 from features.salita.salita1.level1_game import Salita1Game
 
+#BilangG1 Screen
+from features.g1_bilangmodule.bilog.bilog import LessonMath1
+from features.g1_bilangmodule.parisukat.parisukat import LessonMath2
+from features.g1_bilangmodule.parihaba.parihaba import LessonMath3
+from features.g1_bilangmodule.tatsulok.tatsulok import LessonMath4
+
+#BilangG1 Quest
+from features.g1_bilangmodule.bilog.bilog_quest import BilangLvl1
+from features.g1_bilangmodule.parisukat.parisukat_quest import BilangLvl2
+from features.g1_bilangmodule.parihaba.parihaba_quest import BilangLvl3
+from features.g1_bilangmodule.tatsulok.tatsulok_quest import BilangLvl4
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
         self.setWindowTitle("BasaMatika")
-        self.setWindowIcon(QIcon("giraffe.png"))
+        self.setWindowIcon(QIcon("logo.png"))
         self.resize(500, 550)
         self.setStyleSheet(f"background-color: {LIGHT};")
 
@@ -313,6 +325,17 @@ class MainWindow(QMainWindow):
 #Salita Game
         self.router.register("salitaq1", Salita1Game(self.router))
 
+#Bilang G1 Screen
+        self.router.register("g1_bilog", LessonMath1(self.router))
+        self.router.register("g1_parisukat", LessonMath2(self.router))
+        self.router.register("g1_parihaba", LessonMath3(self.router))
+        self.router.register("g1_tatsulok", LessonMath4(self.router))
+
+#Bilang G1 Quest
+        self.router.register("bilog_quest", BilangLvl1(self.router))
+        self.router.register("parisukat_quest", BilangLvl2(self.router))
+        self.router.register("parihaba_quest", BilangLvl3(self.router))
+        self.router.register("tatsulok_quest", BilangLvl4(self.router))
 
 
 #starting screen

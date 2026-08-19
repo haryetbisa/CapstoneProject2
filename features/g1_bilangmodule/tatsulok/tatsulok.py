@@ -15,7 +15,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "icons")
 
 
-class LessonScreenTatsu(QWidget):
+class LessonMath4(QWidget):
   def __init__(self, router):
         super().__init__()
         self.router = router
@@ -34,7 +34,7 @@ class LessonScreenTatsu(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("hugis"))
+        back_btn.clicked.connect(lambda: self.router.navigate("bilang_g1"))
 
    
         pagsasanay = QLabel("Aralin: Tatsulok")

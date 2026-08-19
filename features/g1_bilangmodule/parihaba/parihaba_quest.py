@@ -8,12 +8,12 @@ from components.choices_button import ChoicesButton
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
+ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
 
-class BilangLvl2(QWidget):
+class BilangLvl3(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
@@ -34,7 +34,7 @@ class BilangLvl2(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("level1"))
+        back_btn.clicked.connect(lambda: self.router.navigate("g1_parihaba"))
 
         pagsasanay = QLabel("Pagsasanay: Parihaba")
         pagsasanay.setStyleSheet(f"""
@@ -50,7 +50,7 @@ class BilangLvl2(QWidget):
         main_layout.addLayout(top_layout)
 
         #question
-        title = QLabel("Ilan ang gilid ng hugis na parihaba")
+        title = QLabel("Ilan ang gilid at sulok ng hugis parihaba?")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 32px; font-weight: 800; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)

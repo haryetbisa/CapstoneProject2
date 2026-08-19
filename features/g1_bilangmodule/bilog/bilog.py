@@ -34,7 +34,7 @@ class LessonMath1(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("hugis"))
+        back_btn.clicked.connect(lambda: self.router.navigate("bilang_g1"))
 
    
         pagsasanay = QLabel("Aralin: Bilog")
@@ -87,7 +87,7 @@ class LessonMath1(QWidget):
         """)
         self.speak_btn.setFixedSize(240, 70)
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("bilogvs"))
+        self.speak_btn.clicked.connect(lambda: self.router.navigate("bilog_quest"))
 
 
 
