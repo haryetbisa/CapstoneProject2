@@ -14,5 +14,8 @@ class Router:
         self.stack.addWidget(widget)
 
     def navigate(self, name: str):
-        """Show the screen with this name."""
-        self.stack.setCurrentWidget(self.routes[name])
+        """Show the screen with this name safely."""
+        if name in self.routes:
+            self.stack.setCurrentWidget(self.routes[name])
+        else:
+            print(f"[Router Error] Screen route '{name}' does not exist!")
