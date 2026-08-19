@@ -107,7 +107,7 @@ class Salita1(QWidget):
         """)
         self.next_btn.setFixedSize(180, 50)
         lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("salita_q1"))
+        self.next_btn.clicked.connect(lambda: self.router.navigate("salitaq1"))
 
 
         main_layout.addStretch()
