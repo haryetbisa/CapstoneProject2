@@ -42,7 +42,7 @@ from screens.kulay_screen import KulayScreen
 from screens.hayop_screen import HayopScreen
 from screens.kuwento_screen import KuwentoScreen
 from screens.bilang_screen_g1 import BilangScreenG1
-from screens.pangungusap_screen import Pangungusap
+from screens.salita_screen import SalitaScreen
 
 #Voice Screen Pantig
 from features.pantig_screen_vr.A import PantigA
@@ -154,6 +154,12 @@ from features.kuwento.level2 import Kuwento2
 #kuwento question
 from features.kuwento.level1_quest import Kuwento1Question
 
+#salita screen
+from features.salita.salita1.level1 import Salita1
+
+#salita game
+from features.salita.salita1.level1_game import Salita1Game
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -185,7 +191,7 @@ class MainWindow(QMainWindow):
         self.router.register("vr", VoiceRecognitionScreen(self.router))
         self.router.register("kuwento", KuwentoScreen(self.router))
         self.router.register("bilang_g1", BilangScreenG1(self.router))
-        self.router.register("pangungusap", Pangungusap(self.router))
+        self.router.register("salita", SalitaScreen(self.router))
         self.router.register("lesson", LessonScreen(self.router))
 
 #VR Pantig
@@ -300,6 +306,16 @@ class MainWindow(QMainWindow):
 #Kuwento Question
         self.router.register("quest1", Kuwento1Question(self.router))
 
+
+#Salita Screen
+        self.router.register("salita1", Salita1(self.router))
+
+#Salita Game
+        self.router.register("salitaq1", Salita1Game(self.router))
+
+
+
+#starting screen
         self.router.navigate("loading_screen")
 
        
