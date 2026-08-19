@@ -49,7 +49,7 @@ class Kuwento2(QWidget):
         main_layout.addLayout(top_layout)
 
         # Title
-        title = QLabel("Ang Malusog na Bata")
+        title = QLabel("Ang Aking Alaga")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)

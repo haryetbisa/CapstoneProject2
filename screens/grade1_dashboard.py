@@ -57,14 +57,14 @@ class GradeOneDashboard(QWidget):
         bilang_card = CardsButton("Bilang", "Bilang.png", color = LIGHT_GREEN)
         bilang_card.clicked.connect(lambda: self.router.navigate("bilang_g1"))
 
-        pangungusap = CardsButton("Pangungusap", "Pangungusap.png", color = MAGENTA)
-        pangungusap.clicked.connect(lambda: self.router.navigate("bilang_g1"))
+        salita = CardsButton("Salita", "Pangungusap.png", color = MAGENTA)
+        salita.clicked.connect(lambda: self.router.navigate("salita"))
 
         kuwento_card = CardsButton("Kuwento", "kuwento.png", color = ORCHID_PINK)
         kuwento_card.clicked.connect(lambda: self.router.navigate("kuwento"))
         
         grid_layout.addWidget(bilang_card, 0, 0)
-        grid_layout.addWidget(pangungusap, 0, 1)
+        grid_layout.addWidget(salita, 0, 1)
         grid_layout.addWidget(kuwento_card, 0, 2)
       
 

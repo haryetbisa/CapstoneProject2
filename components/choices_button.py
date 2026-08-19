@@ -51,7 +51,7 @@ class ChoicesButton(QPushButton):
         self.title_label.setStyleSheet(f"""
             color: {WHITE};
             font-family: {BODY_FONT};
-            font-size: 80px;
+            font-size: 58px;
             font-weight: 800;
             background: transparent;
         """)
