@@ -1,0 +1,11 @@
+<<<<<<< HEAD
+PySide6
+vosk
+sounddevice
+numpy
+=======
+PySide6
+vosk
+sounddevice
+numpy
+>>>>>>> 99bef165ad445fc0e030cd8368e9174eb30226d3
