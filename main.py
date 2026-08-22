@@ -42,7 +42,7 @@ from screens.kulay_screen import KulayScreen
 from screens.hayop_screen import HayopScreen
 from screens.kuwento_screen import KuwentoScreen
 from screens.bilang_screen_g1 import BilangScreenG1
-from screens.pangungusap_screen import Pangungusap
+from screens.salita_screen import SalitaScreen
 
 #Voice Screen Pantig
 from features.pantig_screen_vr.A import PantigA
@@ -147,6 +147,30 @@ from features.hugis_module.parisukat.parisukat_game import ParisukatGame
 from features.hugis_module.puso.puso_game import PusoGame
 from features.hugis_module.oblong.oblong_game import OblongGame
 
+#kuwento screen
+from features.kuwento.level1 import Kuwento1
+from features.kuwento.level2 import Kuwento2
+
+#kuwento question
+from features.kuwento.level1_quest import Kuwento1Question
+
+#salita screen
+from features.salita.salita1.level1 import Salita1
+
+#salita game
+from features.salita.salita1.level1_game import Salita1Game
+
+#BilangG1 Screen
+from features.g1_bilangmodule.bilog.bilog import LessonMath1
+from features.g1_bilangmodule.parisukat.parisukat import LessonMath2
+from features.g1_bilangmodule.parihaba.parihaba import LessonMath3
+from features.g1_bilangmodule.tatsulok.tatsulok import LessonMath4
+
+#BilangG1 Quest
+from features.g1_bilangmodule.bilog.bilog_quest import BilangLvl1
+from features.g1_bilangmodule.parisukat.parisukat_quest import BilangLvl2
+from features.g1_bilangmodule.parihaba.parihaba_quest import BilangLvl3
+from features.g1_bilangmodule.tatsulok.tatsulok_quest import BilangLvl4
 
 
 class MainWindow(QMainWindow):
@@ -154,7 +178,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         
         self.setWindowTitle("BasaMatika")
-        self.setWindowIcon(QIcon("giraffe.png"))
+        self.setWindowIcon(QIcon("logo.png"))
         self.resize(500, 550)
         self.setStyleSheet(f"background-color: {LIGHT};")
 
@@ -178,7 +202,7 @@ class MainWindow(QMainWindow):
         self.router.register("hayop", HayopScreen(self.router))
         self.router.register("kuwento", KuwentoScreen(self.router))
         self.router.register("bilang_g1", BilangScreenG1(self.router))
-        self.router.register("pangungusap", Pangungusap(self.router))
+        self.router.register("salita", SalitaScreen(self.router))
         self.router.register("lesson", LessonScreen(self.router))
 
 #VR Pantig
@@ -286,6 +310,34 @@ class MainWindow(QMainWindow):
         self.router.register("puso_game", PusoGame(self.router))
         self.router.register("oblong_game", OblongGame(self.router))
 
+#Kuwento Screen
+        self.router.register("level1", Kuwento1(self.router))
+        self.router.register("level2", Kuwento2(self.router))
+
+#Kuwento Question
+        self.router.register("quest1", Kuwento1Question(self.router))
+
+
+#Salita Screen
+        self.router.register("salita1", Salita1(self.router))
+
+#Salita Game
+        self.router.register("salitaq1", Salita1Game(self.router))
+
+#Bilang G1 Screen
+        self.router.register("g1_bilog", LessonMath1(self.router))
+        self.router.register("g1_parisukat", LessonMath2(self.router))
+        self.router.register("g1_parihaba", LessonMath3(self.router))
+        self.router.register("g1_tatsulok", LessonMath4(self.router))
+
+#Bilang G1 Quest
+        self.router.register("bilog_quest", BilangLvl1(self.router))
+        self.router.register("parisukat_quest", BilangLvl2(self.router))
+        self.router.register("parihaba_quest", BilangLvl3(self.router))
+        self.router.register("tatsulok_quest", BilangLvl4(self.router))
+
+
+#starting screen
         self.router.navigate("loading_screen")
 
        
