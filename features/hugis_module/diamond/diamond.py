@@ -68,8 +68,8 @@ class LessonScreenDiamond(QWidget):
 
         #lesson explanation
         card = LessonCard(
-        title="Aralin 8 : DAYAMOND",
-        body_text="Ang hugis diamond/dayamond ay tinatawag rin na Rombus. Ito ay may apat na gilid na maihahalintulad sa hugis ng saranggola.")
+        title="Aralin 8 : ROMBUS",
+        body_text="Ang hugis rombus ay mas kilala na dayamond. Ito ay may apat na gilid na maihahalintulad sa hugis ng saranggola.")
         content_layout.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")
@@ -87,7 +87,7 @@ class LessonScreenDiamond(QWidget):
         """)
         self.speak_btn.setFixedSize(240, 70)
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("vr"))
+        self.speak_btn.clicked.connect(lambda: self.router.navigate("diamondvs"))
 
 
 
