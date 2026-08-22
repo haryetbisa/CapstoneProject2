@@ -2,8 +2,7 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QLabel, QPushButton, QHBoxLayout, QScrollArea
 from PySide6.QtGui import QIcon
 from themes.fonts import HEADING_FONT, BODY_FONT
-
-from components.cardsbutton import CardsButton
+from components.grid_btn import GridButton
 from themes.colors import *
 
 import os
@@ -12,27 +11,36 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
 
 
-
-class Pangungusap(QWidget):
+class SalitaScreen(QWidget):
     def __init__(self,router):
         super().__init__()
         self.router = router
 
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(60,60,60,20)
+        outer_layout = QVBoxLayout(self)
+        outer_layout.setContentsMargins(0, 0, 0, 0)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        outer_layout.addWidget(scroll)
+
+        
+        content = QWidget()
+        main_layout = QVBoxLayout(content)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         main_layout.addLayout(top_layout)
 
+        
         back_btn = QPushButton()
         back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
+        back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
 
    
         pagsasanay = QLabel("Pagsasanay")
@@ -53,22 +61,36 @@ class Pangungusap(QWidget):
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
 
-        lvl1 = CardsButton("Bilog", "bilog.png", color = CORAL_RED)
-        lvl2 = CardsButton("Tatsulok", "tatsulok.png", color = MARIGOLD)
-        lvl3 = CardsButton("Parisukat", "parisukat.png", color = ELECTRIC_VIOLET) 
-        lvl4 = CardsButton("Puso", "puso.png", color = HOT_PINK)
-        lvl5 = CardsButton("Bilohaba", "oblong.png", color = SKY_BLUE) 
-        lvl6 = CardsButton("Parihaba", "parihaba.png", color = LIGHT_GREEN)
-        lvl7 = CardsButton("Bituin", "bituin.png", color = COBALT_BLUE) 
-        lvl8 = CardsButton("Rombus", "brilyante.png", color = TERRACOTTA )
-        lvl9 = CardsButton("Rombus", "brilyante.png", color = DARK_YELLOW )
-        lvl10 = CardsButton("Rombus", "brilyante.png", color = MAGENTA )
-        
+        lvl1 = GridButton ("1", color = CORAL_RED)
+        lvl1.clicked.connect(lambda: self.router.navigate("salita1"))
+
+        lvl2 = GridButton ("2", color = MARIGOLD)
+        lvl2.clicked.connect(lambda: self.router.navigate("2"))
+
+        lvl3 = GridButton ("3", color = ELECTRIC_VIOLET) 
+        lvl3.clicked.connect(lambda: self.router.navigate("3"))
+
+        lvl4 = GridButton ("4", color = HOT_PINK)
+        lvl4.clicked.connect(lambda: self.router.navigate("4"))
+
+        lvl5 = GridButton ("5", color = SKY_BLUE)
+        lvl5.clicked.connect(lambda: self.router.navigate("5"))
+         
+
+        lvl6 = GridButton ("6", color = LIGHT_GREEN) 
+        lvl7 = GridButton ("7", color = COBALT_BLUE) 
+        lvl8 = GridButton ("8", color = TERRACOTTA) 
+        lvl9 = GridButton ("9", color = BURNT_ORANGE)
+        lvl10 = GridButton ("10", color = MAGENTA)
+ 
+         
+
         grid_layout.addWidget(lvl1, 0, 0)
         grid_layout.addWidget(lvl2, 0, 1)
         grid_layout.addWidget(lvl3, 0, 2)
         grid_layout.addWidget(lvl4, 0, 3)
         grid_layout.addWidget(lvl5, 0, 4)
+
         grid_layout.addWidget(lvl6, 1, 0)
         grid_layout.addWidget(lvl7, 1, 1)
         grid_layout.addWidget(lvl8, 1, 2)
@@ -78,3 +100,5 @@ class Pangungusap(QWidget):
 
         main_layout.addLayout(grid_layout)
         main_layout.addStretch()
+
+        scroll.setWidget(content)
