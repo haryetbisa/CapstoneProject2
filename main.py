@@ -57,6 +57,11 @@ from features.bilang_module.dalawa import Bilang2
 from features.bilang_module.tatlo import Bilang3
 from features.bilang_module.apat import Bilang4
 from features.bilang_module.lima import Bilang5
+from features.bilang_module.anim import Bilang6
+from features.bilang_module.pito import Bilang7
+from features.bilang_module.walo import Bilang8
+from features.bilang_module.siyam import Bilang9
+from features.bilang_module.sampu import Bilang10
 
 #VS Hugis
 from features.hugis_module.bilog.bilog_vs import BilogVS
@@ -64,6 +69,9 @@ from features.hugis_module.tatsulok.tatsulok_vs import TatsulokVS
 from features.hugis_module.parisukat.parisukat_vs import ParisukatVS
 from features.hugis_module.puso.puso_vs import PusoVS
 from features.hugis_module.oblong.oblong_vs import OblongVS
+from features.hugis_module.parihaba.parihaba_vs import ParihabaVS
+from features.hugis_module.diamond.diamond_vs import RombusVS
+from features.hugis_module.star.star_vs import StarVS
 
 #VS Hayop
 from features.hayop_module.aso.aso_vs import AsoVS
@@ -80,13 +88,19 @@ from features.hayop_module.palaka.palaka_vs import PalakaVS
 from features.hayop_module.pusa.pusa_vs import PusaVS
 from features.hayop_module.unggoy.unggoy_vs import UnggoyVS
 
-
 #VS PNK
 from features.pnk_module.mata.mata_vs import MataVS
 from features.pnk_module.labi.labi_vs import LabiVS
 from features.pnk_module.ilong.ilong_vs import IlongVS
 from features.pnk_module.tainga.tenga_vs import TengaVS
 from features.pnk_module.buhok.buhok_vs import BuhokVS
+from features.pnk_module.leeg.leeg_vs import LeegVS
+from features.pnk_module.balikat.balikat_vs import BalikatVS
+from features.pnk_module.tiyan.tiyan_vs import TiyanVS
+from features.pnk_module.braso.braso_vs import BrasoVS
+from features.pnk_module.kamay.kamay_vs import KamayVS
+from features.pnk_module.binti.binti_vs import BintiVS
+from features.pnk_module.paa.paa_vs import PaaVS
 
 #LessonSCreen Hayop
 from features.hayop_module.aso.aso import LessonScreenAso
@@ -166,14 +180,15 @@ from features.hayop_module.palaka.palaka_game import PalakaGame
 from features.hayop_module.pusa.pusa_game import PusaGame
 from features.hayop_module.unggoy.unggoy_game import UnggoyGame
 
-
-
 #hugis game 
 from features.hugis_module.bilog.bilog_game import BilogGame
 from features.hugis_module.tatsulok.tatsulok_game import TatsulokGame
 from features.hugis_module.parisukat.parisukat_game import ParisukatGame
 from features.hugis_module.puso.puso_game import PusoGame
 from features.hugis_module.oblong.oblong_game import OblongGame
+from features.hugis_module.parihaba.parihaba_game import ParihabaGame
+from features.hugis_module.diamond.diamond_game import DiamondGame
+from features.hugis_module.star.star_game import StarGame
 
 #kuwento screen
 from features.kuwento.level1 import Kuwento1
@@ -246,6 +261,11 @@ class MainWindow(QMainWindow):
         self.router.register("3", Bilang3(self.router))
         self.router.register("4", Bilang4(self.router))
         self.router.register("5", Bilang5(self.router))
+        self.router.register("6", Bilang6(self.router))
+        self.router.register("7", Bilang7(self.router))
+        self.router.register("8", Bilang8(self.router))
+        self.router.register("9", Bilang9(self.router))
+        self.router.register("10", Bilang10(self.router))
 
 #VR Hugis
         self.router.register("bilogvs", BilogVS(self.router))
@@ -253,6 +273,9 @@ class MainWindow(QMainWindow):
         self.router.register("parisukatvs", ParisukatVS(self.router))
         self.router.register("pusovs", PusoVS(self.router))
         self.router.register("oblongvs", OblongVS(self.router))
+        self.router.register("parihabavs", ParihabaVS(self.router))
+        self.router.register("diamondvs", RombusVS(self.router))
+        self.router.register("starvs", StarVS(self.router))
 
 #VR Hayop
         self.router.register("asovs", AsoVS(self.router))
@@ -275,6 +298,13 @@ class MainWindow(QMainWindow):
         self.router.register("ilongvs", IlongVS(self.router))
         self.router.register("tengavs", TengaVS(self.router))
         self.router.register("buhokvs", BuhokVS(self.router))
+        self.router.register("leegvs", LeegVS(self.router))
+        self.router.register("balikatvs", BalikatVS(self.router))
+        self.router.register("tiyanvs", TiyanVS(self.router))
+        self.router.register("brasovs", BrasoVS(self.router))
+        self.router.register("kamayvs", KamayVS(self.router))
+        self.router.register("bintivs", BintiVS(self.router))
+        self.router.register("paavs", PaaVS(self.router))
 
 
 #HAYOP LessonSCreen
@@ -362,6 +392,9 @@ class MainWindow(QMainWindow):
         self.router.register("parisukat_game", ParisukatGame(self.router))
         self.router.register("puso_game", PusoGame(self.router))
         self.router.register("oblong_game", OblongGame(self.router))
+        self.router.register("parihaba_game", ParihabaGame(self.router))
+        self.router.register("diamond_game", DiamondGame(self.router))
+        self.router.register("star_game", StarGame(self.router))
 
 #Kuwento Screen
         self.router.register("level1", Kuwento1(self.router))
