@@ -193,9 +193,12 @@ from features.hugis_module.star.star_game import StarGame
 #kuwento screen
 from features.kuwento.level1 import Kuwento1
 from features.kuwento.level2 import Kuwento2
+from features.kuwento.level3 import Kuwento3
 
 #kuwento question
 from features.kuwento.level1_quest import Kuwento1Question
+from features.kuwento.level2_quest import Kuwento2Question
+from features.kuwento.level3_quest import Kuwento3Question
 
 #salita screen
 from features.salita.salita1.level1 import Salita1
@@ -399,9 +402,12 @@ class MainWindow(QMainWindow):
 #Kuwento Screen
         self.router.register("level1", Kuwento1(self.router))
         self.router.register("level2", Kuwento2(self.router))
+        self.router.register("level3", Kuwento3(self.router))
 
 #Kuwento Question
         self.router.register("quest1", Kuwento1Question(self.router))
+        self.router.register("quest2", Kuwento2Question(self.router))
+        self.router.register("quest3", Kuwento3Question(self.router))
 
 
 #Salita Screen

@@ -58,7 +58,7 @@ class Kuwento1(QWidget):
         image = QLabel()
         image.setPixmap(
             QPixmap(os.path.join(IMAGE_DIR, "AMNB.png")).scaled(
-                230, 230, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
         image.setAlignment(Qt.AlignCenter)
