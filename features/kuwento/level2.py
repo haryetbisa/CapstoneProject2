@@ -35,7 +35,7 @@ class Kuwento2(QWidget):
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
         back_btn.clicked.connect(lambda: self.router.navigate("kuwento"))
 
-        pagsasanay = QLabel("Kuwento 1")
+        pagsasanay = QLabel("Kuwento 2")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -94,5 +94,26 @@ class Kuwento2(QWidget):
         text_row.addWidget(story_text)
 
         main_layout.addLayout(text_row)
+        main_layout.addStretch()
+
+        lower_layout = QHBoxLayout()
+        lower_layout.setSpacing(200)
+        lower_layout.setContentsMargins(70, 20, 70, 30)
+        main_layout.addLayout(lower_layout)
+        
+        self.next_btn = QPushButton("Sunod")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+                    background-color: {BRIGHT_YELLOW};
+                    color: {CHOCO_BROWN};
+                    font-size: 22px;
+                    font-weight: 700;
+                    border-radius: 6px;
+                    font-family: {BODY_FONT};
+                """)
+        self.next_btn.setFixedSize(180, 50)
+        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        self.next_btn.clicked.connect(lambda: self.router.navigate("quest2"))
+        
         main_layout.addStretch()
 
