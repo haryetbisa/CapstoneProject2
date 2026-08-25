@@ -13,6 +13,8 @@ class GridButton(QPushButton):
     def __init__(self, title_text, color = "gray", font_family= "noot", parent = None):
         super().__init__()
 
+        self.clicked.connect(lambda: print("GridButton itself was clicked!"))
+
         base = QColor(color)
         hover_color = base.lighter(115).name()  
         pressed_color = base.darker(115).name()
@@ -40,6 +42,7 @@ class GridButton(QPushButton):
 
         
         self.aralin = QLabel("Aralin:")
+        self.aralin.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self.aralin.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.aralin.setStyleSheet(f"""
             color: {WHITE};
@@ -51,6 +54,7 @@ class GridButton(QPushButton):
 
 
         self.title_label = QLabel(title_text)
+        self.title_label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.title_label.setStyleSheet(f"""
             color: #FFFFFF;
@@ -61,6 +65,7 @@ class GridButton(QPushButton):
         """)
 
         self.prog_bar = QProgressBar()
+        self.prog_bar.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self.prog_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.prog_bar.setRange(0, 100)
         self.prog_bar.setValue(30)

@@ -1,9 +1,9 @@
 from assets.icon import icon_label
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtGui import QPixmap, QTransform
 from themes.colors import *
-from themes.fonts import BODY_FONT, HEADING_FONT
+from themes.fonts import BODY_FONT
 from themes.colors import *
 
 import os
@@ -18,44 +18,51 @@ class CreateAccount(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 100, 0, 0)
         main_layout.setSpacing(20)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         top_layout.setSpacing(300)
-        top_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addLayout(top_layout)
 
-        left_top = QLabel()
-        left_top.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "pink_g.png")).scaled(
-                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        left_top.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+
+        #LEFT TOP KID
+        left_top = QLabel(self)
+        pixmap = QPixmap(os.path.join(IMAGE_DIR, "yellow_kid.png")).scaled(250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.transformed(QTransform().rotate(0), Qt.SmoothTransformation)
+        left_top.setPixmap(pixmap)
+        left_top.move(-160, -20)   
+        left_top.show()
         top_layout.addWidget(left_top)
 
 
+        #logo
         logo = QLabel()
-        logo.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "logo.png")).scaled(
+        logo.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "logoo.png")).scaled(
                 400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         top_layout.addWidget(logo)
 
 
-        right_top = QLabel()
-        right_top.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "red_b.png")).scaled(
-                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        right_top.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        #RIGHT TOP KID
+        right_top = QLabel(self)
+        pixmap = QPixmap(os.path.join(IMAGE_DIR, "red_kid.png")).scaled(250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.transformed(QTransform().rotate(0), Qt.SmoothTransformation)
+        right_top.setPixmap(pixmap)
+        right_top.move(200, -20)   # ← tweak these two numbers until it looks right
+        right_top.show()
         top_layout.addWidget(right_top)
 
+        main_layout.addStretch()
 
-        subtitle =QLabel("Kids reading assistant\nfor practicing early reading ")
+        subtitle =QLabel("Teachers learning tools for students,\nfor practicing basic Filipino reading and basic Math.")
         subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        subtitle.setStyleSheet(f"color: {CHOCO_BROWN}; font-size: 22px; font-weight: 300px; font-family: {BODY_FONT};")
+        subtitle.setStyleSheet(f"color: {CHOCO_BROWN}; font-size: 22px; font-weight: 500; font-family: {BODY_FONT};")
         main_layout.addWidget(subtitle)
+
+        main_layout.addStretch()
 
         create_btn = QPushButton("Create account")
         create_btn.setStyleSheet(f"background-color: {CORAL_RED}; color: {LIGHT}; font-size: 20px; font-weight: 600px; font-family: {BODY_FONT}; border-radius: 6px;")
@@ -69,19 +76,24 @@ class CreateAccount(QWidget):
         bottom_layout.setSpacing(1000)
         bottom_layout.setContentsMargins(0, 10, 0, 0)
 
-        left_bottom = QLabel()
-        left_bottom.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "pink_g.png")).scaled(
-                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        left_bottom.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignBottom)
+
+        #LEFT BOTTOM KID
+        left_bottom = QLabel(self)
+        pixmap = QPixmap(os.path.join(IMAGE_DIR, "blue_kid.png")).scaled(250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.transformed(QTransform().rotate(0), Qt.SmoothTransformation)
+        left_bottom.setPixmap(pixmap)
+        left_bottom.move(-100, -60)   # ← tweak these two numbers until it looks right
+        left_bottom.show()
         bottom_layout.addWidget(left_bottom)
 
 
-        right_bottom = QLabel()
-        right_bottom.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "red_b.png")).scaled(
-                250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        right_bottom.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
+        #RIGHT BOTTOM KID
+        right_bottom = QLabel(self)
+        pixmap = QPixmap(os.path.join(IMAGE_DIR, "pink_kid.png")).scaled(250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.transformed(QTransform().rotate(0), Qt.SmoothTransformation)
+        right_bottom.setPixmap(pixmap)
+        right_bottom.move(200, -60)   # ← tweak these two numbers until it looks right
+        right_bottom.show()
         bottom_layout.addWidget(right_bottom)
 
 

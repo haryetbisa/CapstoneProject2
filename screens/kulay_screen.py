@@ -80,8 +80,13 @@ class KulayScreen(QWidget):
         asul_card.clicked.connect(lambda: self.router.navigate("asul"))
 
         lila_card = CardsPicButton ("lila.png", color = MEDIUM_PURPLE) 
+        lila_card.clicked.connect(lambda: self.router.navigate("lila"))
+
         brown_card = CardsPicButton ("tsokolate.png", color = CHOCO_BROWN) 
+        brown_card.clicked.connect(lambda: self.router.navigate("kayumanggi"))
+
         itim_card = CardsPicButton ("itim.png", color = BLACK)
+        itim_card.clicked.connect(lambda: self.router.navigate("itim"))
         
 
         grid_layout.addWidget(pula_card, 0, 0)
