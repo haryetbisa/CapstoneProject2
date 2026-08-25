@@ -3,13 +3,13 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QLabel, QPushBu
 from PySide6.QtGui import QIcon
 from themes.fonts import HEADING_FONT, BODY_FONT
 
-from components.cardsbutton import CardsButton
+from components.cardsg1 import CardsButtonG1
 from themes.colors import *
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
+ICONS_DIR = os.path.join(BASE_DIR, "..","assets", "icons")
 
 class KuwentoScreen(QWidget):
     def __init__(self,router):
@@ -51,16 +51,22 @@ class KuwentoScreen(QWidget):
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
 
-        lvl1 = CardsButton("Bilog", "bilog.png", color = CORAL_RED)
-        lvl2 = CardsButton("Tatsulok", "tatsulok.png", color = MARIGOLD)
-        lvl3 = CardsButton("Parisukat", "parisukat.png", color = ELECTRIC_VIOLET) 
-        lvl4 = CardsButton("Puso", "puso.png", color = HOT_PINK)
-        lvl5 = CardsButton("Bilohaba", "oblong.png", color = SKY_BLUE) 
-        lvl6 = CardsButton("Parihaba", "parihaba.png", color = LIGHT_GREEN)
-        lvl7 = CardsButton("Bituin", "bituin.png", color = COBALT_BLUE) 
-        lvl8 = CardsButton("Rombus", "brilyante.png", color = TERRACOTTA )
-        lvl9 = CardsButton("Rombus", "brilyante.png", color = DARK_YELLOW )
-        lvl10 = CardsButton("Rombus", "brilyante.png", color = MAGENTA )
+        lvl1 = CardsButtonG1("Ang Malusog na Bata", "AMNB.png", color = CORAL_RED)
+        lvl1.clicked.connect(lambda: self.router.navigate("level1"))
+
+        lvl2 = CardsButtonG1("Ang Aking Alaga", "AAA.png", color = MARIGOLD)
+        lvl2.clicked.connect(lambda: self.router.navigate("level2"))
+
+        lvl3 = CardsButtonG1("Ang Ating Bandila", "AAB.png", color = ELECTRIC_VIOLET)
+        lvl3.clicked.connect(lambda: self.router.navigate("level3"))
+
+        lvl4 = CardsButtonG1("Puso", "puso.png", color = HOT_PINK)
+        lvl5 = CardsButtonG1("Bilohaba", "oblong.png", color = SKY_BLUE) 
+        lvl6 = CardsButtonG1("Parihaba", "parihaba.png", color = LIGHT_GREEN)
+        lvl7 = CardsButtonG1("Bituin", "bituin.png", color = COBALT_BLUE) 
+        lvl8 = CardsButtonG1("Rombus", "brilyante.png", color = TERRACOTTA )
+        lvl9 = CardsButtonG1("Rombus", "brilyante.png", color = DARK_YELLOW )
+        lvl10 = CardsButtonG1("Rombus", "brilyante.png", color = MAGENTA )
         
         grid_layout.addWidget(lvl1, 0, 0)
         grid_layout.addWidget(lvl2, 0, 1)

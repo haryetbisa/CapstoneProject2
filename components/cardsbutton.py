@@ -46,7 +46,7 @@ class CardsButton(QPushButton):
         self.image_label.setStyleSheet("background: transparent;")
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image_label.setPixmap(QPixmap(os.path.join(ASSETS_DIR, icon_path)).scaled(
-                155, 155, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
 
 

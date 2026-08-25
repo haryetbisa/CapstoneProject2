@@ -35,8 +35,8 @@ class AccountInfo(QWidget):
         logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         logo.setPixmap(
             QPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, "logo.png")).scaled(
-                    260, 260, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                QPixmap(os.path.join(IMAGE_DIR, "logoo.png")).scaled(
+                    400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
         )
@@ -166,9 +166,11 @@ class AccountInfo(QWidget):
 
         # Bottom Graphic Images
         image_bottom = QHBoxLayout()
-        image_bottom.setSpacing(10)
+        image_bottom.setSpacing(0)
+        image_bottom.setAlignment(Qt.AlignCenter)
         image_bottom.setContentsMargins(0, 5, 0, 0)
 
+        #horizontal image of kids
         kids1 = QLabel()
         kids1.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         kids1.setPixmap(
@@ -190,8 +192,32 @@ class AccountInfo(QWidget):
                 )
             )
         )
-        kids2.setAlignment(Qt.AlignmentFlag.AlignRight)
+        kids2.setAlignment(Qt.AlignmentFlag.AlignLeft)
         image_bottom.addWidget(kids2)
+
+        kids3 = QLabel()
+        kids3.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        kids3.setPixmap(
+            QPixmap(
+                QPixmap(os.path.join(IMAGE_DIR, "kids2.png")).scaled(
+                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
+        )
+        kids3.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        image_bottom.addWidget(kids3)
+
+        kids4 = QLabel()
+        kids4.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        kids4.setPixmap(
+            QPixmap(
+                QPixmap(os.path.join(IMAGE_DIR, "kids1.png")).scaled(
+                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+            )
+        )
+        kids4.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        image_bottom.addWidget(kids4)
 
         main_layout.addLayout(image_bottom)
 
