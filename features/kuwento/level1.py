@@ -81,7 +81,8 @@ class Kuwento1(QWidget):
             "Malusog na bata si Ken.\n"
             "Uminom siya ng gatas.\n"
             "Kumakain siya ng itlog at gulay.\n"
-            "Masiglang kumilos si Ken dahil malusog ang kanyang katawan."
+            "Masiglang kumilos si Ken dahil malusog\n" 
+            "ang kanyang katawan."
         )
         story_text.setAlignment(Qt.AlignLeft)
         story_text.setWordWrap(True)   
