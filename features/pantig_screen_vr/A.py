@@ -35,19 +35,19 @@ class PantigA(QWidget):
         self.target_word = "aso"
         self.worker = None
 
-        # Feedback Audio Setup (Correct / Wrong SFX)
+        
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
         self.feedback_audio_output.setVolume(1.0)
 
-        # Word Pronunciation Audio Setup
+       
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
         self.word_audio_output.setVolume(1.0)
 
-        # Layout Setup
+       
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
 

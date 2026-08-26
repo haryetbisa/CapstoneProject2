@@ -228,3 +228,7 @@ __pycache__/
 # Exclude virtual environment (if any)
 venv/
 .venv/
+
+**/__pycache__/
+*.pyc
+

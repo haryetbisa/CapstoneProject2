@@ -87,7 +87,7 @@ class LessonMath2(QWidget):
         """)
         self.speak_btn.setFixedSize(240, 70)
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("parihaba_quest"))
+        self.speak_btn.clicked.connect(lambda: self.router.navigate("parisukat_quest"))
 
 
 
