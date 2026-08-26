@@ -40,7 +40,7 @@ class SalitaScreen(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
+        back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
 
    
         pagsasanay = QLabel("Pagsasanay")

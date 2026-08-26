@@ -32,10 +32,10 @@ class RombusVS(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "rombus"
+        self.target_word = "rhombus"
         self.worker = None
 
-        # Feedback Audio Player Setup
+        
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
@@ -243,7 +243,7 @@ class RombusVS(QWidget):
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
-        self.router.navigate("parisukat")
+        self.router.navigate("diamond")
 
     def closeEvent(self, event):
         """Ensures thread cleanup when widget is closed."""
