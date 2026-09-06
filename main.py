@@ -81,6 +81,15 @@ from features.bilang_module.sampu import Bilang10
 
 #GameBilangK
 from features.bilang_module.isa_game import IsaGame
+from features.bilang_module.dalawa_game import DalawaGame
+from features.bilang_module.tatlo_game import TatloGame
+from features.bilang_module.apat_game import ApatGame
+from features.bilang_module.lima_game import LimaGame
+from features.bilang_module.anim_game import AnimGame
+from features.bilang_module.pito_game import PitoGame
+from features.bilang_module.walo_game import WaloGame
+from features.bilang_module.siyam_game import SiyamGame
+from features.bilang_module.sampu_game import SampuGame
 
 #VS Hugis
 from features.hugis_module.bilog.bilog_vs import BilogVS
@@ -326,7 +335,15 @@ class MainWindow(QMainWindow):
 
 #BilangK Game
         self.router.register("isa_game", IsaGame(self.router))
-
+        self.router.register("dalawa_game", DalawaGame(self.router))
+        self.router.register("tatlo_game", TatloGame(self.router))
+        self.router.register("apat_game", ApatGame(self.router))
+        self.router.register("lima_game", LimaGame(self.router))
+        self.router.register("anim_game", AnimGame(self.router))
+        self.router.register("pito_game", PitoGame(self.router))
+        self.router.register("walo_game", WaloGame(self.router))
+        self.router.register("siyam_game", SiyamGame(self.router))
+        self.router.register("sampu_game", SampuGame(self.router))
 
 #VR Hugis
         self.router.register("bilogvs", BilogVS(self.router))

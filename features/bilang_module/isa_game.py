@@ -132,6 +132,7 @@ class IsaGame(QWidget):
         words_container.setStyleSheet("border: 1px solid #D9CBB0; border-radius: 4px;")
         words_row = QHBoxLayout(words_container)
         words_row.setContentsMargins(30, 15, 30, 15)
+        words_row.setSpacing(80)
  
         for display in ["Lima", "Isa", "Tatlo"]:
             word = DraggableWord(display)
@@ -149,7 +150,6 @@ class IsaGame(QWidget):
         image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "1.png")).scaled(
                 300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
-        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         question_row.addWidget(image)
  
         picture_label = QLabel()
@@ -159,12 +159,12 @@ class IsaGame(QWidget):
             )
         )
         question_row.addWidget(picture_label)
- 
-        question_row.addStretch()
+        question_row.addSpacing(60)
  
         self.drop_box = AnswerDropBox()
         question_row.addWidget(self.drop_box)
+
+        question_row.addStretch()
  
         main_layout.addLayout(question_row)
-        main_layout.addStretch()
  
