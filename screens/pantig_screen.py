@@ -97,22 +97,49 @@ class PantigScreen(QWidget):
         E_card.clicked.connect(lambda: self.router.navigate("e")) 
 
         Ga_card = GridButton ("GA", color = LIGHT_GREEN) 
-        Ha_card = GridButton ("HA", color = COBALT_BLUE) 
-        I_card = GridButton ("I", color = TERRACOTTA) 
-        La_card = GridButton ("LA", color = BURNT_ORANGE)
-        Ma_card = GridButton ("MA", color = MAGENTA)
+        Ga_card.clicked.connect(lambda: self.router.navigate("ga")) 
 
-        Na_card = GridButton ("NA", color = CORAL_RED) 
+        Ha_card = GridButton ("HA", color = COBALT_BLUE)
+        Ha_card.clicked.connect(lambda: self.router.navigate("ha")) 
+
+        I_card = GridButton ("I", color = TERRACOTTA)
+        I_card.clicked.connect(lambda: self.router.navigate("i")) 
+
+        La_card = GridButton ("LA", color = BURNT_ORANGE)
+        La_card.clicked.connect(lambda: self.router.navigate("la")) 
+
+        Ma_card = GridButton ("MA", color = MAGENTA)
+        Ma_card.clicked.connect(lambda: self.router.navigate("ma")) 
+
+        Na_card = GridButton ("NA", color = CORAL_RED)
+        Na_card.clicked.connect(lambda: self.router.navigate("na")) 
+         
         Nga_card = GridButton ("NGA", color = MARIGOLD) 
+        Nga_card.clicked.connect(lambda: self.router.navigate("nga")) 
+
         O_card = GridButton ("O", color = ELECTRIC_VIOLET) 
+        O_card.clicked.connect(lambda: self.router.navigate("o")) 
+
         Pa_card = GridButton ("PA", color = HOT_PINK)
-        Ra_card = GridButton ("RA", color = SKY_BLUE)   
+        Pa_card.clicked.connect(lambda: self.router.navigate("pa")) 
+
+        Ra_card = GridButton ("RA", color = SKY_BLUE) 
+        Ra_card.clicked.connect(lambda: self.router.navigate("ra")) 
 
         Sa_card = GridButton ("SA", color = LIGHT_GREEN) 
+        Sa_card.clicked.connect(lambda: self.router.navigate("sa")) 
+
         Ta_card = GridButton ("TA", color = COBALT_BLUE) 
+        Ta_card.clicked.connect(lambda: self.router.navigate("ta")) 
+
         U_card = GridButton ("U", color = TERRACOTTA) 
+        U_card.clicked.connect(lambda: self.router.navigate("u")) 
+
         Wa_card = GridButton ("WA", color = BURNT_ORANGE)
+        Wa_card.clicked.connect(lambda: self.router.navigate("wa")) 
+
         Ya_card = GridButton ("YA", color = MAGENTA)
+        Ya_card.clicked.connect(lambda: self.router.navigate("ya")) 
 
         grid_layout.addWidget(A_card, 0, 0)
         grid_layout.addWidget(Ba_card, 0, 1)

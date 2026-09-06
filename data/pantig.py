@@ -168,7 +168,7 @@ PANTIG_VR = [
 
        { "id": "ta",
             "title": "Aralin 10",
-            "letter": "Pa",
+            "letter": "Ta",
             "words": [
             {"display": "Ta-sa", "image": "tasa.png", "audio": "aso.mp3"},        
             {"display": "Ta-long", "image": "talong.png", "audio": "asaw.mp3"},     
