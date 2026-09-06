@@ -147,6 +147,31 @@ class PantigE(QWidget):
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
+                # Lower Navigation Bar (Next Button)
+        lower_layout = QHBoxLayout()
+        lower_layout.setContentsMargins(20, 10, 20, 30)
+
+        self.next_btn = QPushButton("Sunod")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {BRIGHT_YELLOW};
+                color: {CHOCO_BROWN};
+                font-size: 22px;
+                font-weight: 800;
+                border-radius: 6px;
+                font-family: {BODY_FONT};
+            }}
+        """)
+        self.next_btn.setFixedSize(240, 60)
+        self.next_btn.clicked.connect(
+            lambda: self.router.navigate("E_game")
+        )
+
+        lower_layout.addStretch()
+        lower_layout.addWidget(self.next_btn)
+        main_layout.addLayout(lower_layout)
+
     def play_feedback_sound(self, filename: str):
         """Plays the correct/wrong feedback audio sound."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)

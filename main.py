@@ -50,6 +50,22 @@ from features.pantig_screen_vr.Ba import PantigBa
 from features.pantig_screen_vr.Ka import PantigKa
 from features.pantig_screen_vr.Da import PantigDa
 from features.pantig_screen_vr.E import PantigE
+from features.pantig_screen_vr.Ga import PantigGa
+from features.pantig_screen_vr.Ha import PantigHa
+from features.pantig_screen_vr.I import PantigI
+from features.pantig_screen_vr.La import PantigLa
+from features.pantig_screen_vr.Ma import PantigMa
+from features.pantig_screen_vr.Na import PantigNa
+from features.pantig_screen_vr.Nga import PantigNga
+from features.pantig_screen_vr.O import PantigO
+from features.pantig_screen_vr.Pa import PantigPa
+from features.pantig_screen_vr.Ra import PantigRa
+from features.pantig_screen_vr.Sa import PantigSa
+from features.pantig_screen_vr.Ta import PantigTa
+from features.pantig_screen_vr.U import PantigU
+from features.pantig_screen_vr.Wa import PantigWa
+from features.pantig_screen_vr.Ya import PantigYa
+
 
 #VS BilangK
 from features.bilang_module.isa import Bilang1
@@ -62,6 +78,9 @@ from features.bilang_module.pito import Bilang7
 from features.bilang_module.walo import Bilang8
 from features.bilang_module.siyam import Bilang9
 from features.bilang_module.sampu import Bilang10
+
+#GameBilangK
+from features.bilang_module.isa_game import IsaGame
 
 #VS Hugis
 from features.hugis_module.bilog.bilog_vs import BilogVS
@@ -164,6 +183,25 @@ from features.kulay_module.itim.itim_game import DragDropBlack
 #pantig game
 from features.pantig_screen_vr.A_game import MatchingGame
 from features.pantig_screen_vr.B_game import MatchingBa
+from features.pantig_screen_vr.Ka_game import MatchingKa
+from features.pantig_screen_vr.Da_game import MatchingDa
+from features.pantig_screen_vr.E_game import MatchingE
+from features.pantig_screen_vr.Ga_game import MatchingGa
+from features.pantig_screen_vr.Ha_game import MatchingHa
+from features.pantig_screen_vr.I_game import MatchingI
+from features.pantig_screen_vr.La_game import MatchingLa
+from features.pantig_screen_vr.Ma_game import MatchingMa
+from features.pantig_screen_vr.Na_game import MatchingNa
+from features.pantig_screen_vr.Nga_game import MatchingNga
+from features.pantig_screen_vr.O_game import MatchingO
+from features.pantig_screen_vr.Pa_game import MatchingPa
+from features.pantig_screen_vr.Ra_game import MatchingRa
+from features.pantig_screen_vr.Sa_game import MatchingSa
+from features.pantig_screen_vr.Ta_game import MatchingTa
+from features.pantig_screen_vr.U_game import MatchingU
+from features.pantig_screen_vr.Wa_game import MatchingWa
+from features.pantig_screen_vr.Ya_game import MatchingYa
+
 
 #hayop game 
 from features.hayop_module.aso.aso_game import AsoGame
@@ -257,6 +295,22 @@ class MainWindow(QMainWindow):
         self.router.register("ka", PantigKa(self.router))
         self.router.register("da", PantigDa(self.router))
         self.router.register("e", PantigE(self.router))
+        self.router.register("ga", PantigGa(self.router))
+        self.router.register("ha", PantigHa(self.router))
+        self.router.register("i", PantigI(self.router))
+        self.router.register("la", PantigLa(self.router))
+        self.router.register("ma", PantigMa(self.router))
+        self.router.register("na", PantigNa(self.router))
+        self.router.register("nga", PantigNga(self.router))
+        self.router.register("o", PantigO(self.router))
+        self.router.register("pa", PantigPa(self.router))
+        self.router.register("ra", PantigRa(self.router))
+        self.router.register("sa", PantigSa(self.router))
+        self.router.register("ta", PantigTa(self.router))
+        self.router.register("u", PantigU(self.router))
+        self.router.register("wa", PantigWa(self.router))
+        self.router.register("ya", PantigYa(self.router))
+        
 
 #VR Bilang
         self.router.register("1", Bilang1(self.router))
@@ -269,6 +323,10 @@ class MainWindow(QMainWindow):
         self.router.register("8", Bilang8(self.router))
         self.router.register("9", Bilang9(self.router))
         self.router.register("10", Bilang10(self.router))
+
+#BilangK Game
+        self.router.register("isa_game", IsaGame(self.router))
+
 
 #VR Hugis
         self.router.register("bilogvs", BilogVS(self.router))
@@ -373,6 +431,24 @@ class MainWindow(QMainWindow):
 #Pantig Game
         self.router.register("A_game", MatchingGame(self.router))
         self.router.register("Ba_game", MatchingBa(self.router))
+        self.router.register("Ka_game", MatchingKa(self.router))
+        self.router.register("Da_game", MatchingDa(self.router))
+        self.router.register("E_game", MatchingE(self.router))
+        self.router.register("Ga_game", MatchingGa(self.router))
+        self.router.register("Ha_game", MatchingHa(self.router))
+        self.router.register("I_game", MatchingI(self.router))
+        self.router.register("La_game", MatchingLa(self.router))
+        self.router.register("Ma_game", MatchingMa(self.router))
+        self.router.register("Na_game", MatchingNa(self.router))
+        self.router.register("Nga_game", MatchingNga(self.router))
+        self.router.register("O_game", MatchingO(self.router))
+        self.router.register("Pa_game", MatchingPa(self.router))
+        self.router.register("Ra_game", MatchingRa(self.router))
+        self.router.register("Sa_game", MatchingSa(self.router))
+        self.router.register("Ta_game", MatchingTa(self.router))
+        self.router.register("U_game", MatchingU(self.router))
+        self.router.register("Wa_game", MatchingWa(self.router))
+        self.router.register("Ya_game", MatchingYa(self.router))
 
 #Hayop Game
         self.router.register("aso_game", AsoGame(self.router))
