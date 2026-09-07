@@ -57,7 +57,7 @@ class Kuwento5(QWidget):
         # Illustration
         image = QLabel()
         image.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "AAB.png")).scaled(
+            QPixmap(os.path.join(IMAGE_DIR, "SH.png")).scaled(
                 260, 260, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
@@ -80,7 +80,7 @@ class Kuwento5(QWidget):
         story_text = QLabel(
             "Nasa halamanan si Marina.\n"
             "Nasa halamanan rin si Ligaya.\n"
-            "Namimitas sila nf rosas.\n"
+            "Namimitas sila ng rosas.\n"
             "Maya-maya lamang ay nagtakbuhan sila.\n"
             "Buzz.. buzz.. buzz.. buzz.. buzzz.\n"
             "Agad agad na pumasok sa bahay ang dalawa."
@@ -115,7 +115,7 @@ class Kuwento5(QWidget):
                 """)
         self.next_btn.setFixedSize(180, 50)
         lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("quest3"))
+        self.next_btn.clicked.connect(lambda: self.router.navigate("quest5"))
         
         main_layout.addStretch()
 

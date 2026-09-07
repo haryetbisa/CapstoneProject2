@@ -95,7 +95,7 @@ class Kuwento1(QWidget):
         text_row.addWidget(story_text)
 
         main_layout.addLayout(text_row)
-        main_layout.addStretch()
+        
 
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)

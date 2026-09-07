@@ -60,13 +60,27 @@ class KuwentoScreen(QWidget):
         lvl3 = CardsButtonG1("Ang Ating Bandila", "AAB.png", color = ELECTRIC_VIOLET)
         lvl3.clicked.connect(lambda: self.router.navigate("level3"))
 
-        lvl4 = CardsButtonG1("Puso", "puso.png", color = HOT_PINK)
-        lvl5 = CardsButtonG1("Bilohaba", "oblong.png", color = SKY_BLUE) 
-        lvl6 = CardsButtonG1("Parihaba", "parihaba.png", color = LIGHT_GREEN)
-        lvl7 = CardsButtonG1("Bituin", "bituin.png", color = COBALT_BLUE) 
-        lvl8 = CardsButtonG1("Rombus", "brilyante.png", color = TERRACOTTA )
-        lvl9 = CardsButtonG1("Rombus", "brilyante.png", color = DARK_YELLOW )
-        lvl10 = CardsButtonG1("Rombus", "brilyante.png", color = MAGENTA )
+        lvl4 = CardsButtonG1("Ang Saranggola", "AS.png", color = HOT_PINK)
+        lvl4.clicked.connect(lambda: self.router.navigate("level4"))
+
+        lvl5 = CardsButtonG1("Sa Halamanan", "SH.png", color = SKY_BLUE)
+        lvl5.clicked.connect(lambda: self.router.navigate("level5"))
+
+        lvl6 = CardsButtonG1("Ang Lapis ni Dan", "ALD.png", color = LIGHT_GREEN)
+        lvl6.clicked.connect(lambda: self.router.navigate("level6"))
+
+        lvl7 = CardsButtonG1("Ang Libro", "AL.png", color = COBALT_BLUE)
+        lvl7.clicked.connect(lambda: self.router.navigate("level7"))
+        
+        lvl8 = CardsButtonG1("Mang Dada", "MD.png", color = TERRACOTTA )
+        lvl8.clicked.connect(lambda: self.router.navigate("level8"))
+
+        lvl9 = CardsButtonG1("Ang Po a Opo", "APAO.png", color = DARK_YELLOW )
+        lvl9.clicked.connect(lambda: self.router.navigate("level9"))
+
+        lvl10 = CardsButtonG1("Ang Batang Munti", "ABM.png", color = MAGENTA )
+        lvl10.clicked.connect(lambda: self.router.navigate("level10"))
+
         
         grid_layout.addWidget(lvl1, 0, 0)
         grid_layout.addWidget(lvl2, 0, 1)

@@ -241,14 +241,28 @@ from features.hugis_module.star.star_game import StarGame
 from features.kuwento.level1 import Kuwento1
 from features.kuwento.level2 import Kuwento2
 from features.kuwento.level3 import Kuwento3
+from features.kuwento.level4 import Kuwento4
+from features.kuwento.level5 import Kuwento5
+from features.kuwento.level6 import Kuwento6
+from features.kuwento.level7 import Kuwento7
+from features.kuwento.level8 import Kuwento8
+from features.kuwento.level9 import Kuwento9
+from features.kuwento.level10 import Kuwento10
 
 #kuwento question
 from features.kuwento.level1_quest import Kuwento1Question
 from features.kuwento.level2_quest import Kuwento2Question
 from features.kuwento.level3_quest import Kuwento3Question
+from features.kuwento.level4_quest import Kuwento4Question
+from features.kuwento.level5_quest import Kuwento5Question
+from features.kuwento.level6_quest import Kuwento6Question
+from features.kuwento.level7_quest import Kuwento7Question
+from features.kuwento.level8_quest import Kuwento8Question
+from features.kuwento.level9_quest import Kuwento9Question
+from features.kuwento.level10_quest import Kuwento10Question
 
 #salita screen
-from BasaMatika.features.salita.salita1.salita1_lesson import Salita1
+from features.salita.salita1.salita1_lesson import Salita1
 
 #salita game
 from features.salita.salita1.level1_game import Salita1Game
@@ -500,11 +514,25 @@ class MainWindow(QMainWindow):
         self.router.register("level1", Kuwento1(self.router))
         self.router.register("level2", Kuwento2(self.router))
         self.router.register("level3", Kuwento3(self.router))
+        self.router.register("level4", Kuwento4(self.router))
+        self.router.register("level5", Kuwento5(self.router))
+        self.router.register("level6", Kuwento6(self.router))
+        self.router.register("level7", Kuwento7(self.router))
+        self.router.register("level8", Kuwento8(self.router))
+        self.router.register("level9", Kuwento9(self.router))
+        self.router.register("level10", Kuwento10(self.router))
 
 #Kuwento Question
         self.router.register("quest1", Kuwento1Question(self.router))
         self.router.register("quest2", Kuwento2Question(self.router))
         self.router.register("quest3", Kuwento3Question(self.router))
+        self.router.register("quest4", Kuwento4Question(self.router))
+        self.router.register("quest5", Kuwento5Question(self.router))
+        self.router.register("quest6", Kuwento6Question(self.router))
+        self.router.register("quest7", Kuwento7Question(self.router))
+        self.router.register("quest8", Kuwento8Question(self.router))
+        self.router.register("quest9", Kuwento9Question(self.router))
+        self.router.register("quest10", Kuwento10Question(self.router))
 
 
 #Salita Screen
