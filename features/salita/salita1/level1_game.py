@@ -47,7 +47,7 @@ class Salita1Game(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Aralin 1: Naglalarawan na Salita")
+        pagsasanay = QLabel("Pagsasanay 1: Naglalarawan na Salita")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};

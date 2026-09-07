@@ -60,7 +60,7 @@ class SalitaScreen(QWidget):
         grid_layout.setSpacing(50)        
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
-
+        #Lesson: Pang-uri
         lvl1 = GridButton ("1", color = CORAL_RED)
         lvl1.clicked.connect(lambda: self.router.navigate("salita1"))
 
