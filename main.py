@@ -248,10 +248,14 @@ from features.kuwento.level2_quest import Kuwento2Question
 from features.kuwento.level3_quest import Kuwento3Question
 
 #salita screen
-from features.salita.salita1.level1 import Salita1
+from BasaMatika.features.salita.salita1.salita1_lesson import Salita1
 
 #salita game
 from features.salita.salita1.level1_game import Salita1Game
+from features.salita.salita1.level2_game import Salita2Game
+from features.salita.salita1.level3_game import Salita3Game
+from features.salita.salita1.level4_game import Salita4Game
+from features.salita.salita1.level5_game import Salita5Game
 
 #BilangG1 Screen
 from features.g1_bilangmodule.bilog.bilog import LessonMath1
@@ -508,6 +512,10 @@ class MainWindow(QMainWindow):
 
 #Salita Game
         self.router.register("salitaq1", Salita1Game(self.router))
+        self.router.register("salitaq2", Salita1Game(self.router))
+        self.router.register("salitaq3", Salita1Game(self.router))
+        self.router.register("salitaq4", Salita1Game(self.router))
+        self.router.register("salitaq5", Salita1Game(self.router))
 
 #Bilang G1 Screen
         self.router.register("g1_bilog", LessonMath1(self.router))
