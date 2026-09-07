@@ -57,7 +57,7 @@ class Kuwento4(QWidget):
         # Illustration
         image = QLabel()
         image.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "AAB.png")).scaled(
+            QPixmap(os.path.join(IMAGE_DIR, "AS.png")).scaled(
                 260, 260, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
@@ -95,7 +95,7 @@ class Kuwento4(QWidget):
         text_row.addWidget(story_text)
 
         main_layout.addLayout(text_row)
-        main_layout.addStretch()
+   
 
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)
@@ -114,7 +114,7 @@ class Kuwento4(QWidget):
                 """)
         self.next_btn.setFixedSize(180, 50)
         lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("quest3"))
+        self.next_btn.clicked.connect(lambda: self.router.navigate("quest4"))
         
         main_layout.addStretch()
 

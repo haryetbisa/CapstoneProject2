@@ -71,7 +71,7 @@ class Kuwento3Question(QWidget):
         main_layout.addWidget(image)
 
         quest_row = QHBoxLayout()
-        quest_row.setSpacing(20)
+        quest_row.setSpacing(50)
         quest_row.setAlignment(Qt.AlignCenter)
 
         self.opt_1 = ChoicesButton("pula", color=SKY_BLUE) #tama

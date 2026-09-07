@@ -57,7 +57,7 @@ class Kuwento7(QWidget):
         # Illustration
         image = QLabel()
         image.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "AAB.png")).scaled(
+            QPixmap(os.path.join(IMAGE_DIR, "AL.png")).scaled(
                 260, 260, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
@@ -78,11 +78,11 @@ class Kuwento7(QWidget):
 
         
         story_text = QLabel(
-            "Ang bilin ng aking guro huwag kalimutan ang mg turo.\n"
+            "Ang bilin ng aking guro huwag kalimutan ang mga turo.\n"
             "Buksan at basahin ang libro\n"
             "sapagkat magandang aral ang dulot nito\n"
             "at gawi sa uwina itatak sa isipan\n"
-            "spaagkat ang buhay ay di biro."
+            "sapagkat ang buhay ay di biro."
         )
         story_text.setAlignment(Qt.AlignLeft)
         story_text.setWordWrap(True)   
@@ -114,7 +114,7 @@ class Kuwento7(QWidget):
                 """)
         self.next_btn.setFixedSize(180, 50)
         lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("quest3"))
+        self.next_btn.clicked.connect(lambda: self.router.navigate("quest7"))
         
         main_layout.addStretch()
 
