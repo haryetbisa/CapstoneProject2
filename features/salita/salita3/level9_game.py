@@ -13,7 +13,7 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
 
-class Salita5Game(QWidget):
+class Salita9Game(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
@@ -34,9 +34,9 @@ class Salita5Game(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kuwento"))
+        back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
 
-        pagsasanay = QLabel("Pagsasanay 5: Naglalarawan na Salita")
+        pagsasanay = QLabel("Pagsasanay 9: Pangungusap")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -49,48 +49,68 @@ class Salita5Game(QWidget):
         top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-        # Title
-        title = QLabel("Anong mga salita ang maaaring maglarawan sa kalabaw?")
+
+        content_layout = QHBoxLayout()
+        content_layout.setSpacing(5)
+        main_layout.addLayout(content_layout)
+
+        #questions and image
+        question = QVBoxLayout()
+        question.setSpacing(10)
+        content_layout.addLayout(question)
+
+        title = QLabel("Ang mga bata ay ___________.")
         title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
-        main_layout.addWidget(title)
+        title.setStyleSheet(f"font-size: 32px; font-weight: 700; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
+        question.addWidget(title)
 
         # Illustration
         image = QLabel()
         image.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "pagong.png")).scaled(
-                230, 230, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            QPixmap(os.path.join(IMAGE_DIR, "pangungusap.png")).scaled(
+                160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
         image.setAlignment(Qt.AlignCenter)
-        main_layout.addWidget(image)
+        question.addWidget(image)
 
-        # Speaker icon + text row
-        text_row = QHBoxLayout()
-        text_row.setSpacing(15)
-        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
 
-        self.speaker_btn = QPushButton()
-        self.speaker_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "audio_icon.png")))
-        self.speaker_btn.setIconSize(QSize(24, 24))
-        self.speaker_btn.setFlat(True)
-        self.speaker_btn.setCursor(Qt.PointingHandCursor)
-        text_row.addWidget(self.speaker_btn)
-
-        #choices
+        # Choices Layout
         quest_row = QHBoxLayout()
         quest_row.setSpacing(29)
         quest_row.setAlignment(Qt.AlignCenter)
 
-        self.opt_1 = ChoicesButton("mabagal", color = CORNFLOWER_BLUE) #tamang sagot
-        self.opt_2 = ChoicesButton("maingay", color = MEDIUM_PURPLE) 
-        self.opt_3 = ChoicesButton("matamis", color = HONEY_YELLOW) 
+        self.opt_1 = ChoicesButton("matamis", color=CORNFLOWER_BLUE)  # Correct
+        self.opt_2 = ChoicesButton("maalat", color=MEDIUM_PURPLE)     # Wrong
+        self.opt_3 = ChoicesButton("malamig", color=HONEY_YELLOW)     # Correct
+
+        self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1, "matamis"))
+        self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2, "maalat"))
+        self.opt_3.clicked.connect(lambda: self.handle_choice(True, self.opt_3, "malamig"))
 
         quest_row.addWidget(self.opt_1)
         quest_row.addWidget(self.opt_2)
         quest_row.addWidget(self.opt_3)
-
         main_layout.addLayout(quest_row)
 
-        main_layout.addStretch()
+
+        lower_layout = QHBoxLayout()
+        lower_layout.setSpacing(200)
+        lower_layout.setContentsMargins(70, 20, 70, 30)
+        main_layout.addLayout(lower_layout)
+
+        self.next_btn = QPushButton("Sunod")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            background-color: {BRIGHT_YELLOW};
+            color: {CHOCO_BROWN};
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: 6px;
+            font-family: {BODY_FONT};
+        """)
+        self.next_btn.setFixedSize(180, 50)
+        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        self.next_btn.clicked.connect(lambda: self.router.navigate("salitaq9"))
+
 

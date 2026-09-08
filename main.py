@@ -263,13 +263,19 @@ from features.kuwento.level10_quest import Kuwento10Question
 
 #salita screen
 from features.salita.salita1.salita1_lesson import Salita1
+from features.salita.salita2.salita2_lesson import Salita2
+from features.salita.salita3.salita3_lesson import Salita3
 
 #salita game
 from features.salita.salita1.level1_game import Salita1Game
 from features.salita.salita1.level2_game import Salita2Game
 from features.salita.salita1.level3_game import Salita3Game
 from features.salita.salita1.level4_game import Salita4Game
-from features.salita.salita1.level5_game import Salita5Game
+from features.salita.salita2.level5_game import Salita5Game
+from features.salita.salita2.level6_game import Salita6Game
+from features.salita.salita2.level7_game import Salita7Game
+from features.salita.salita2.level8_game import Salita8Game
+
 
 #BilangG1 Screen
 from features.g1_bilangmodule.bilog.bilog import LessonMath1
@@ -537,13 +543,19 @@ class MainWindow(QMainWindow):
 
 #Salita Screen
         self.router.register("salita1", Salita1(self.router))
+        self.router.register("salita2", Salita2(self.router))
+        self.router.register("salita3", Salita3(self.router))
 
 #Salita Game
         self.router.register("salitaq1", Salita1Game(self.router))
-        self.router.register("salitaq2", Salita1Game(self.router))
-        self.router.register("salitaq3", Salita1Game(self.router))
-        self.router.register("salitaq4", Salita1Game(self.router))
-        self.router.register("salitaq5", Salita1Game(self.router))
+        self.router.register("salitaq2", Salita2Game(self.router))
+        self.router.register("salitaq3", Salita3Game(self.router))
+        self.router.register("salitaq4", Salita4Game(self.router))
+        self.router.register("salitaq5", Salita5Game(self.router))
+        self.router.register("salitaq6", Salita6Game(self.router))
+        self.router.register("salitaq7", Salita7Game(self.router))
+        self.router.register("salitaq8", Salita8Game(self.router))
+      
 
 #Bilang G1 Screen
         self.router.register("g1_bilog", LessonMath1(self.router))
