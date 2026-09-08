@@ -34,7 +34,7 @@ class Salita4Game(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kuwento"))
+        back_btn.clicked.connect(lambda: self.router.navigate("salita"))
 
         pagsasanay = QLabel("Pagsasanay 4: Naglalarawan na Salita")
         pagsasanay.setStyleSheet(f"""
