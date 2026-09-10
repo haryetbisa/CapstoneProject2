@@ -97,16 +97,16 @@ class SalitaScreen(QWidget):
         lvl11.clicked.connect(lambda: self.router.navigate("salita3"))
 
         lvl12 = GridButton ("12", color = MARIGOLD)
-        lvl12.clicked.connect(lambda: self.router.navigate("salitaq1"))
+        lvl12.clicked.connect(lambda: self.router.navigate("salitaq9"))
 
         lvl13 = GridButton ("13", color = ELECTRIC_VIOLET) 
-        lvl13.clicked.connect(lambda: self.router.navigate("salitaq2"))
+        lvl13.clicked.connect(lambda: self.router.navigate("salitaq10"))
 
         lvl14 = GridButton ("14", color = HOT_PINK)
-        lvl14.clicked.connect(lambda: self.router.navigate("salitaq3"))
+        lvl14.clicked.connect(lambda: self.router.navigate("salitaq11"))
 
         lvl15 = GridButton ("15", color = SKY_BLUE)
-        lvl15.clicked.connect(lambda: self.router.navigate("salitaq4"))
+        lvl15.clicked.connect(lambda: self.router.navigate("salitaq12"))
  
          
 

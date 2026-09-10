@@ -275,6 +275,10 @@ from features.salita.salita2.level5_game import Salita5Game
 from features.salita.salita2.level6_game import Salita6Game
 from features.salita.salita2.level7_game import Salita7Game
 from features.salita.salita2.level8_game import Salita8Game
+from features.salita.salita3.level9_game import Salita9Game
+from features.salita.salita3.level10_game import Salita10Game
+from features.salita.salita3.level11_game import Salita11Game
+from features.salita.salita3.level12_game import Salita12Game
 
 
 #BilangG1 Screen
@@ -555,6 +559,10 @@ class MainWindow(QMainWindow):
         self.router.register("salitaq6", Salita6Game(self.router))
         self.router.register("salitaq7", Salita7Game(self.router))
         self.router.register("salitaq8", Salita8Game(self.router))
+        self.router.register("salitaq9", Salita9Game(self.router))
+        self.router.register("salitaq10", Salita10Game(self.router))
+        self.router.register("salitaq11", Salita11Game(self.router))
+        self.router.register("salitaq12", Salita12Game(self.router))
       
 
 #Bilang G1 Screen
