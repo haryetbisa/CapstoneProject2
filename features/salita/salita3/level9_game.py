@@ -34,7 +34,7 @@ class Salita9Game(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
+        back_btn.clicked.connect(lambda: self.router.navigate("salita"))
 
         pagsasanay = QLabel("Pagsasanay 9: Pangungusap")
         pagsasanay.setStyleSheet(f"""
@@ -49,40 +49,36 @@ class Salita9Game(QWidget):
         top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-
-        content_layout = QHBoxLayout()
-        content_layout.setSpacing(5)
-        main_layout.addLayout(content_layout)
-
-        #questions and image
-        question = QVBoxLayout()
-        question.setSpacing(10)
-        content_layout.addLayout(question)
-
         title = QLabel("Ang mga bata ay ___________.")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 32px; font-weight: 700; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
-        question.addWidget(title)
+        main_layout.addWidget(title)
+        
+        #image and choices
+        choices = QHBoxLayout()
+        main_layout.addLayout(choices)
+        choices.setContentsMargins(0, 50, 0, 0)
+        choices.addSpacing(50)
 
         # Illustration
         image = QLabel()
         image.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "pangungusap.png")).scaled(
-                160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            QPixmap(os.path.join(IMAGE_DIR, "naglalaro.png")).scaled(
+                400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
         image.setAlignment(Qt.AlignCenter)
-        question.addWidget(image)
+        choices.addWidget(image)
 
 
         # Choices Layout
-        quest_row = QHBoxLayout()
-        quest_row.setSpacing(29)
+        quest_row = QVBoxLayout()
+        quest_row.setSpacing(30)
         quest_row.setAlignment(Qt.AlignCenter)
 
-        self.opt_1 = ChoicesButton("matamis", color=CORNFLOWER_BLUE)  # Correct
-        self.opt_2 = ChoicesButton("maalat", color=MEDIUM_PURPLE)     # Wrong
-        self.opt_3 = ChoicesButton("malamig", color=HONEY_YELLOW)     # Correct
+        self.opt_1 = ChoicesButton("naglalaro", color=CORNFLOWER_BLUE)  # Correct
+        self.opt_2 = ChoicesButton("umiiyak", color=MEDIUM_PURPLE)     # Wrong
+        self.opt_3 = ChoicesButton("tahimik", color=HONEY_YELLOW)     # Correct
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1, "matamis"))
         self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2, "maalat"))
@@ -91,7 +87,7 @@ class Salita9Game(QWidget):
         quest_row.addWidget(self.opt_1)
         quest_row.addWidget(self.opt_2)
         quest_row.addWidget(self.opt_3)
-        main_layout.addLayout(quest_row)
+        choices.addLayout(quest_row)
 
 
         lower_layout = QHBoxLayout()
