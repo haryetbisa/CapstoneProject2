@@ -72,13 +72,24 @@ class BilangScreenG1(QWidget):
         four_card = GridButton ("4", color = HOT_PINK)
         four_card.clicked.connect(lambda: self.router.navigate("g1_tatsulok"))
 
-        five_card = GridButton ("5", color = SKY_BLUE) 
+        five_card = GridButton ("5", color = SKY_BLUE)
+        five_card.clicked.connect(lambda: self.router.navigate("pagbilang2"))
 
         six_card = GridButton ("6", color = LIGHT_GREEN) 
+        six_card.clicked.connect(lambda: self.router.navigate("dalawahan_quest1"))
+
         seven_card = GridButton ("7", color = COBALT_BLUE) 
+        seven_card.clicked.connect(lambda: self.router.navigate("dalawahan_quest2"))
+
         eight_card = GridButton ("8", color = TERRACOTTA) 
+        eight_card.clicked.connect(lambda: self.router.navigate("pagbilang5"))
+        
         nine_card = GridButton ("9", color = BURNT_ORANGE)
+        nine_card.clicked.connect(lambda: self.router.navigate("limahan_quest1"))
+
         ten_card = GridButton ("10", color = MAGENTA)
+        ten_card.clicked.connect(lambda: self.router.navigate("limahan_quest2"))
+
 
         card11 = GridButton ("11", color = LIGHT_GREEN) 
         card12= GridButton ("12", color = COBALT_BLUE) 
