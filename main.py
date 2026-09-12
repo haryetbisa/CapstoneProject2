@@ -288,6 +288,7 @@ from features.g1_bilangmodule.parihaba.parihaba import LessonMath3
 from features.g1_bilangmodule.tatsulok.tatsulok import LessonMath4
 from features.g1_bilangmodule.pagbilang_dalawahan.dalawahan import LessonMath5
 from features.g1_bilangmodule.pagbilang_limahan.limahan import LessonMath6
+from features.g1_bilangmodule.pagdaragdag.pagdaragdag_lesson import LessonMath7
 
 #BilangG1 Quest
 from features.g1_bilangmodule.bilog.bilog_quest import BilangLvl1
@@ -298,6 +299,10 @@ from features.g1_bilangmodule.pagbilang_dalawahan.dalawahan_q1 import BilangLvl5
 from features.g1_bilangmodule.pagbilang_dalawahan.dalawahan_q2 import BilangLvl6
 from features.g1_bilangmodule.pagbilang_limahan.limahan_q1 import BilangLvl7
 from features.g1_bilangmodule.pagbilang_limahan.limahan_q2 import BilangLvl8
+from features.g1_bilangmodule.pagdaragdag.pagdaragdag_q1 import BilangLvl9
+from features.g1_bilangmodule.pagdaragdag.pagdaragdag_q2 import BilangLvl10
+from features.g1_bilangmodule.pagdaragdag.pagdaragdag_q3 import BilangLvl11
+from features.g1_bilangmodule.pagdaragdag.pagdaragdag_q4 import BilangLvl12
 
 
 class MainWindow(QMainWindow):
@@ -578,6 +583,7 @@ class MainWindow(QMainWindow):
         self.router.register("g1_tatsulok", LessonMath4(self.router))
         self.router.register("pagbilang2", LessonMath5(self.router))
         self.router.register("pagbilang5", LessonMath6(self.router))
+        self.router.register("pagdaragdag", LessonMath7(self.router))
 
 #Bilang G1 Quest
         self.router.register("bilog_quest", BilangLvl1(self.router))
@@ -588,7 +594,11 @@ class MainWindow(QMainWindow):
         self.router.register("dalawahan_quest2", BilangLvl6(self.router))
         self.router.register("limahan_quest1", BilangLvl7(self.router))
         self.router.register("limahan_quest2", BilangLvl8(self.router))
-
+        self.router.register("pagdaragdag_q1", BilangLvl9(self.router))
+        self.router.register("pagdaragdag_q2", BilangLvl10(self.router))
+        self.router.register("pagdaragdag_q3", BilangLvl11(self.router))
+        self.router.register("pagdaragdag_q4", BilangLvl12(self.router))
+        
 #starting screen
         self.router.navigate("loading_screen")
 
