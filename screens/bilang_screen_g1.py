@@ -92,16 +92,19 @@ class BilangScreenG1(QWidget):
 
 
         card11 = GridButton ("11", color = LIGHT_GREEN) 
-        card12= GridButton ("12", color = COBALT_BLUE) 
-        card13 = GridButton ("13", color = TERRACOTTA) 
-        card14 = GridButton ("14", color = BURNT_ORANGE)
-        card15 = GridButton ("15", color = MAGENTA)   
+        card11.clicked.connect(lambda: self.router.navigate("pagdaragdag"))
 
-        card16 = GridButton ("16", color = LIGHT_GREEN) 
-        card17= GridButton ("17", color = COBALT_BLUE) 
-        card18 = GridButton ("18", color = TERRACOTTA) 
-        card19 = GridButton ("19", color = BURNT_ORANGE)
-        card20 = GridButton ("20", color = MAGENTA)  
+        card12= GridButton ("12", color = COBALT_BLUE) 
+        card12.clicked.connect(lambda: self.router.navigate("pagdaragdag_q1"))
+
+        card13 = GridButton ("13", color = TERRACOTTA) 
+        card13.clicked.connect(lambda: self.router.navigate("pagdaragdag_q2"))
+
+        card14 = GridButton ("14", color = BURNT_ORANGE)
+        card14.clicked.connect(lambda: self.router.navigate("pagdaragdag_q3"))
+
+        card15 = GridButton ("15", color = MAGENTA)
+        card15.clicked.connect(lambda: self.router.navigate("pagdaragdag_q4"))
 
         
 
@@ -122,12 +125,6 @@ class BilangScreenG1(QWidget):
         grid_layout.addWidget(card13, 2, 2)
         grid_layout.addWidget(card14, 2, 3)
         grid_layout.addWidget(card15, 2, 4)
-
-        grid_layout.addWidget(card16, 3, 0)
-        grid_layout.addWidget(card17, 3, 1)
-        grid_layout.addWidget(card18, 3, 2)
-        grid_layout.addWidget(card19, 3, 3)
-        grid_layout.addWidget(card20, 3, 4)
 
         main_layout.addLayout(grid_layout)
         main_layout.addStretch()

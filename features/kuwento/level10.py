@@ -24,7 +24,7 @@ class Kuwento10(QWidget):
 
         #top layout| back buttonnnn
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(60, 50, 0, 50)
+        top_layout.setContentsMargins(60, 50, 0, 20)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -78,11 +78,11 @@ class Kuwento10(QWidget):
 
         
         story_text = QLabel(
-            "Ako ay batang munti,\n"
-            "Na ang tanging mithi,\n"
-            "Magandang ugali,\n"
-            "Mabuting gawi,\n"
-            "Kahit na batang munti."
+            "Ako ay batang munti,<br>"
+            "Na ang tanging mithi,<br>"
+            "Magandang ugali,<br>"
+            "Mabuting gawi,<br>"
+            "Kahit na batang munti.<br>"
         )
         story_text.setAlignment(Qt.AlignLeft)
         story_text.setWordWrap(True)   
