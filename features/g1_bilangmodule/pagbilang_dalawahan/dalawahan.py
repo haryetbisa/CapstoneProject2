@@ -13,13 +13,13 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
 
-class BilangLvl4(QWidget):
+class LessonMath5(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(40, 30, 40, 30)
+        main_layout.setContentsMargins(60, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
 
@@ -34,7 +34,7 @@ class BilangLvl4(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
+        back_btn.clicked.connect(lambda: self.router.navigate("bilang_g1"))
 
         pagsasanay = QLabel("Aralin: Laktaw na Pagbilang (Skip Counting)")
         pagsasanay.setStyleSheet(f"""
@@ -55,25 +55,14 @@ class BilangLvl4(QWidget):
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
 
-        # Illustration
-        image = QLabel()
-        image.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "frame.png")).scaled(
-                230, 230, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            )
-        )
-        image.setAlignment(Qt.AlignCenter)
-        main_layout.addWidget(image)
-
-
         # Speaker icon + text row
         text_row = QHBoxLayout()
-        text_row.setSpacing(15)
-        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
+        text_row.setSpacing(5)
+        text_row.setAlignment(Qt.AlignCenter | Qt.AlignJustify)
 
         lesson_text = QLabel(
-            "Sa Pagbilang ng Dalawahan, magdadagdag tayo ng dalawang bilang upang makuha ang\n"
-            "kasunod na bilang. \n"
+            "Sa Pagbilang ng Dalawahan, magdadagdag tayo ng dalawang bilang upang\n"
+            "makuha ang kasunod na bilang. \n"
         )
         lesson_text.setAlignment(Qt.AlignLeft)
         lesson_text.setWordWrap(True)   
@@ -86,7 +75,59 @@ class BilangLvl4(QWidget):
         text_row.addWidget(lesson_text)
 
         main_layout.addLayout(text_row)
-        main_layout.addStretch()
+
+
+        # Illustration
+        example_image = QHBoxLayout()
+        example_image.setSpacing(1)
+        main_layout.addLayout(example_image)
+
+
+        pic1 = QLabel()
+        pic1.setPixmap(
+            QPixmap(os.path.join(IMAGE_DIR, "dalawahan_2.png")).scaled(
+                280, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
+        pic1.setAlignment(Qt.AlignCenter)
+        example_image.addWidget(pic1)
+
+        pic2 = QLabel()
+        pic2.setPixmap(
+            QPixmap(os.path.join(IMAGE_DIR, "dalawahan_4.png")).scaled(
+                280, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
+        pic2.setAlignment(Qt.AlignCenter)
+        example_image.addWidget(pic2)
+
+        pic3 = QLabel()
+        pic3.setPixmap(
+            QPixmap(os.path.join(IMAGE_DIR, "dalawahan_6.png")).scaled(
+                280, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
+        pic3.setAlignment(Qt.AlignCenter)
+        example_image.addWidget(pic3)
+
+        pic4 = QLabel()
+        pic4.setPixmap(
+            QPixmap(os.path.join(IMAGE_DIR, "dalawahan_8.png")).scaled(
+                280, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
+        pic4.setAlignment(Qt.AlignCenter)
+        example_image.addWidget(pic4)
+
+        pic5 = QLabel()
+        pic5.setPixmap(
+            QPixmap(os.path.join(IMAGE_DIR, "dalawahan_10.png")).scaled(
+                280, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
+        pic5.setAlignment(Qt.AlignCenter)
+        example_image.addWidget(pic5)
+
 
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)

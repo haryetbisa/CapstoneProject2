@@ -286,12 +286,18 @@ from features.g1_bilangmodule.bilog.bilog import LessonMath1
 from features.g1_bilangmodule.parisukat.parisukat import LessonMath2
 from features.g1_bilangmodule.parihaba.parihaba import LessonMath3
 from features.g1_bilangmodule.tatsulok.tatsulok import LessonMath4
+from features.g1_bilangmodule.pagbilang_dalawahan.dalawahan import LessonMath5
+from features.g1_bilangmodule.pagbilang_limahan.limahan import LessonMath6
 
 #BilangG1 Quest
 from features.g1_bilangmodule.bilog.bilog_quest import BilangLvl1
 from features.g1_bilangmodule.parisukat.parisukat_quest import BilangLvl2
 from features.g1_bilangmodule.parihaba.parihaba_quest import BilangLvl3
 from features.g1_bilangmodule.tatsulok.tatsulok_quest import BilangLvl4
+from features.g1_bilangmodule.pagbilang_dalawahan.dalawahan_q1 import BilangLvl5
+from features.g1_bilangmodule.pagbilang_dalawahan.dalawahan_q2 import BilangLvl6
+from features.g1_bilangmodule.pagbilang_limahan.limahan_q1 import BilangLvl7
+from features.g1_bilangmodule.pagbilang_limahan.limahan_q2 import BilangLvl8
 
 
 class MainWindow(QMainWindow):
@@ -570,13 +576,18 @@ class MainWindow(QMainWindow):
         self.router.register("g1_parisukat", LessonMath2(self.router))
         self.router.register("g1_parihaba", LessonMath3(self.router))
         self.router.register("g1_tatsulok", LessonMath4(self.router))
+        self.router.register("pagbilang2", LessonMath5(self.router))
+        self.router.register("pagbilang5", LessonMath6(self.router))
 
 #Bilang G1 Quest
         self.router.register("bilog_quest", BilangLvl1(self.router))
         self.router.register("parisukat_quest", BilangLvl2(self.router))
         self.router.register("parihaba_quest", BilangLvl3(self.router))
         self.router.register("tatsulok_quest", BilangLvl4(self.router))
-
+        self.router.register("dalawahan_quest1", BilangLvl5(self.router))
+        self.router.register("dalawahan_quest2", BilangLvl6(self.router))
+        self.router.register("limahan_quest1", BilangLvl7(self.router))
+        self.router.register("limahan_quest2", BilangLvl8(self.router))
 
 #starting screen
         self.router.navigate("loading_screen")
