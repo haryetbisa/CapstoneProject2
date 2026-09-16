@@ -82,34 +82,34 @@ class PantigScreen(QWidget):
 
 
         A_card = GridButton ("A", color = CORAL_RED)
-        A_card.clicked.connect(lambda: self.router.navigate("a"))
+        A_card.clicked.connect(lambda: self.router.navigate("aso"))
 
         Ba_card = GridButton ("BA", color = MARIGOLD)
-        Ba_card.clicked.connect(lambda: self.router.navigate("ba")) 
+        Ba_card.clicked.connect(lambda: self.router.navigate("baso")) 
 
         Ka_card = GridButton ("KA", color = ELECTRIC_VIOLET)
-        Ka_card.clicked.connect(lambda: self.router.navigate("ka")) 
+        Ka_card.clicked.connect(lambda: self.router.navigate("kahoy")) 
 
         Da_card = GridButton ("DA", color = HOT_PINK)
-        Da_card.clicked.connect(lambda: self.router.navigate("da")) 
+        Da_card.clicked.connect(lambda: self.router.navigate("dahon")) 
         
         E_card = GridButton ("E", color = SKY_BLUE)
-        E_card.clicked.connect(lambda: self.router.navigate("e")) 
+        E_card.clicked.connect(lambda: self.router.navigate("elepante")) 
 
         Ga_card = GridButton ("GA", color = LIGHT_GREEN) 
-        Ga_card.clicked.connect(lambda: self.router.navigate("ga")) 
+        Ga_card.clicked.connect(lambda: self.router.navigate("gatas")) 
 
         Ha_card = GridButton ("HA", color = COBALT_BLUE)
-        Ha_card.clicked.connect(lambda: self.router.navigate("ha")) 
+        Ha_card.clicked.connect(lambda: self.router.navigate("halaman")) 
 
         I_card = GridButton ("I", color = TERRACOTTA)
-        I_card.clicked.connect(lambda: self.router.navigate("i")) 
+        I_card.clicked.connect(lambda: self.router.navigate("ibon")) 
 
         La_card = GridButton ("LA", color = BURNT_ORANGE)
-        La_card.clicked.connect(lambda: self.router.navigate("la")) 
+        La_card.clicked.connect(lambda: self.router.navigate("lapis")) 
 
         Ma_card = GridButton ("MA", color = MAGENTA)
-        Ma_card.clicked.connect(lambda: self.router.navigate("ma")) 
+        Ma_card.clicked.connect(lambda: self.router.navigate("mata")) 
 
         Na_card = GridButton ("NA", color = CORAL_RED)
         Na_card.clicked.connect(lambda: self.router.navigate("na")) 

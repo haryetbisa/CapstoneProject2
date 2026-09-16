@@ -27,7 +27,7 @@ PANTIG_VR = [
         "words": [
             {"display": "Ka-hoy", "image": "kahoy.png", "audio": "aso.mp3"},        
             {"display": "Ka-ma", "image": "kama.png", "audio": "asaw.mp3"},     
-            {"display": "Ka-bi-be", "kabibe": "salt.png", "audio": "asin.mp3"},     
+            {"display": "Ka-bi-be", "image": "salt.png", "audio": "asin.mp3"},     
         ],          
       },
 
@@ -54,7 +54,7 @@ PANTIG_VR = [
 
        { "id": "ga",
             "title": "Aralin 6",
-            "letter": "Da",
+            "letter": "Ga",
             "words": [
             {"display": "Ga-tas", "image": "gatas.png", "audio": "aso.mp3"},        
             {"display": "Ga-gam-ba", "image": "gagamba.png", "audio": "asaw.mp3"},     
@@ -73,7 +73,7 @@ PANTIG_VR = [
       },
 
      { "id": "i",
-            "title": "Aralin 7",
+            "title": "Aralin 8",
             "letter": "I",
             "words": [
                 {"display": "I-bon", "image": "ibon.png", "audio": "aso.mp3"},        
@@ -84,7 +84,7 @@ PANTIG_VR = [
 
 
        { "id": "la",
-            "title": "Aralin 8",
+            "title": "Aralin 9",
             "letter": "La",
             "words": [
             {"display": "La-pis", "image": "lapis.png", "audio": "aso.mp3"},        
@@ -94,7 +94,7 @@ PANTIG_VR = [
         },
 
        { "id": "ma",
-            "title": "Aralin 9",
+            "title": "Aralin 10",
             "letter": "Ma",
             "words": [
             {"display": "Ma-ta", "image": "mata.png", "audio": "aso.mp3"},        
@@ -104,7 +104,7 @@ PANTIG_VR = [
         },
 
        { "id": "na",
-            "title": "Aralin 10",
+            "title": "Aralin 11",
             "letter": "Na",
             "words": [
             {"display": "Na-nay", "image": "nanay.png", "audio": "aso.mp3"},        
@@ -115,7 +115,7 @@ PANTIG_VR = [
 
 
        { "id": "nga",
-            "title": "Aralin 10",
+            "title": "Aralin 12",
             "letter": "Nga",
             "words": [
             {"display": "Nga-nga", "image": "nga nga.png", "audio": "aso.mp3"},             
@@ -123,7 +123,7 @@ PANTIG_VR = [
         },
 
        { "id": "o",
-              "title": "Aralin 7",
+              "title": "Aralin 13",
               "letter": "O",
               "words": [
                   {"display": "O-ra-san", "image": "orasan.png", "audio": "aso.mp3"},        
@@ -134,7 +134,7 @@ PANTIG_VR = [
 
 
        { "id": "pa",
-            "title": "Aralin 11",
+            "title": "Aralin 14",
             "letter": "Pa",
             "words": [
             {"display": "Pa-ro-pa-ro", "image": "paro paro.png", "audio": "aso.mp3"},        
@@ -145,7 +145,7 @@ PANTIG_VR = [
 
 
        { "id": "ra",
-            "title": "Aralin 12",
+            "title": "Aralin 15",
             "letter": "Ra",
             "words": [
             {"display": "Rad-yo", "image": "radyo.png", "audio": "aso.mp3"},        
@@ -156,7 +156,7 @@ PANTIG_VR = [
 
 
        { "id": "sa",
-            "title": "Aralin 10",
+            "title": "Aralin 16",
             "letter": "Sa",
             "words": [
             {"display": "Sa-bon", "image": "sabon.png", "audio": "aso.mp3"},        
@@ -167,7 +167,7 @@ PANTIG_VR = [
 
 
        { "id": "ta",
-            "title": "Aralin 10",
+            "title": "Aralin 17",
             "letter": "Ta",
             "words": [
             {"display": "Ta-sa", "image": "tasa.png", "audio": "aso.mp3"},        
@@ -177,7 +177,7 @@ PANTIG_VR = [
         },
 
        { "id": "u",
-            "title": "Aralin 10",
+            "title": "Aralin 18",
             "letter": "U",
             "words": [
             {"display": "U-bas", "image": "ubas.png", "audio": "aso.mp3"},        
@@ -187,7 +187,7 @@ PANTIG_VR = [
         },
 
        { "id": "wa",
-            "title": "Aralin 10",
+            "title": "Aralin 19",
             "letter": "Wa",
             "words": [
             {"display": "Wa-lis", "image": "walis.png", "audio": "aso.mp3"},        
@@ -197,7 +197,7 @@ PANTIG_VR = [
         },
 
        { "id": "ya",
-            "title": "Aralin 10",
+            "title": "Aralin 20",
             "letter": "Ya",
             "words": [
             {"display": "Ya-pak", "image": "yapak.png", "audio": "aso.mp3"},        

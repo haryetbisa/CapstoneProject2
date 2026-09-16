@@ -45,26 +45,83 @@ from screens.bilang_screen_g1 import BilangScreenG1
 from screens.salita_screen import SalitaScreen
 
 #Voice Screen Pantig
-from features.pantig_screen_vr.A import PantigA
-from features.pantig_screen_vr.Ba import PantigBa
-from features.pantig_screen_vr.Ka import PantigKa
-from features.pantig_screen_vr.Da import PantigDa
-from features.pantig_screen_vr.E import PantigE
-from features.pantig_screen_vr.Ga import PantigGa
-from features.pantig_screen_vr.Ha import PantigHa
-from features.pantig_screen_vr.I import PantigI
-from features.pantig_screen_vr.La import PantigLa
-from features.pantig_screen_vr.Ma import PantigMa
-from features.pantig_screen_vr.Na import PantigNa
+from features.pantig_screen_vr.Aso import PantigAso
+from features.pantig_screen_vr.Aklat import PantigAklat
+from features.pantig_screen_vr.Araw import PantigAraw
+
+from features.pantig_screen_vr.Baso import PantigBaso
+from features.pantig_screen_vr.Bahay import PantigBahay
+from features.pantig_screen_vr.Bata import PantigBata
+
+from features.pantig_screen_vr.Kahoy import PantigKahoy
+from features.pantig_screen_vr.Kabibe import PantigKabibe
+from features.pantig_screen_vr.Kama import PantigKama
+
+from features.pantig_screen_vr.Dahon import PantigDahon
+from features.pantig_screen_vr.Damit import PantigDamit
+from features.pantig_screen_vr.Dasal import PantigDasal
+
+from features.pantig_screen_vr.Elepante import PantigElepante
+from features.pantig_screen_vr.Elisi import PantigElisi
+from features.pantig_screen_vr.Eroplano import PantigEroplano
+
+from features.pantig_screen_vr.Gatas import PantigGatas
+from features.pantig_screen_vr.Gagamba import PantigGagamba
+from features.pantig_screen_vr.Gamot import PantigGamot
+
+from features.pantig_screen_vr.Halaman import PantigHalaman
+from features.pantig_screen_vr.Hangin import PantigHangin
+from features.pantig_screen_vr.Hari import PantigHari
+
+from features.pantig_screen_vr.Ibon import PantigIbon
+from features.pantig_screen_vr.Ilaw import PantigIlaw
+from features.pantig_screen_vr.Ipon import PantigIpon
+
+from features.pantig_screen_vr.Lapis import PantigLapis
+from features.pantig_screen_vr.Labi import PantigLabi
+from features.pantig_screen_vr.Lamok import PantigLamok
+
+from features.pantig_screen_vr.Mata import PantigMata
+from features.pantig_screen_vr.Mais import PantigMais
+from features.pantig_screen_vr.Manok import PantigManok
+
+from features.pantig_screen_vr.Nanay import PantigNanay
+from features.pantig_screen_vr.Nara import PantigNara
+from features.pantig_screen_vr.Nata import PantigNata
+
 from features.pantig_screen_vr.Nga import PantigNga
-from features.pantig_screen_vr.O import PantigO
-from features.pantig_screen_vr.Pa import PantigPa
-from features.pantig_screen_vr.Ra import PantigRa
-from features.pantig_screen_vr.Sa import PantigSa
-from features.pantig_screen_vr.Ta import PantigTa
-from features.pantig_screen_vr.U import PantigU
-from features.pantig_screen_vr.Wa import PantigWa
-from features.pantig_screen_vr.Ya import PantigYa
+
+from features.pantig_screen_vr.Orasan import PantigOrasan
+from features.pantig_screen_vr.Oso import PantigOso
+from features.pantig_screen_vr.Ospital import PantigOspital
+
+from features.pantig_screen_vr.Paa import PantigPaa
+from features.pantig_screen_vr.Paso import PantigPaso
+from features.pantig_screen_vr.Paroparo import PantigParoParo
+
+from features.pantig_screen_vr.Radyo import PantigRadyo
+from features.pantig_screen_vr.Raketa import PantigRaketa
+from features.pantig_screen_vr.Rambutan import PantigRambutan
+
+from features.pantig_screen_vr.Sabon import PantigSabon
+from features.pantig_screen_vr.Saging import PantigSaging
+from features.pantig_screen_vr.Sapatos import PantigSapatos
+
+from features.pantig_screen_vr.Tasa import PantigTasa
+from features.pantig_screen_vr.Talong import PantigTalong
+from features.pantig_screen_vr.Tabo import PantigTabo
+
+from features.pantig_screen_vr.Ubas import PantigUbas
+from features.pantig_screen_vr.Ulap import PantigUlap
+from features.pantig_screen_vr.Upuan import PantigUpuan
+
+from features.pantig_screen_vr.Walis import PantigWalis
+from features.pantig_screen_vr.Walo import PantigWalo
+from features.pantig_screen_vr.Watawat import PantigWatawat
+
+from features.pantig_screen_vr.Yapak import PantigYapak
+from features.pantig_screen_vr.Yate import PantigYate
+from features.pantig_screen_vr.Yaya import PantigYaya
 
 
 #VS BilangK
@@ -129,6 +186,9 @@ from features.pnk_module.braso.braso_vs import BrasoVS
 from features.pnk_module.kamay.kamay_vs import KamayVS
 from features.pnk_module.binti.binti_vs import BintiVS
 from features.pnk_module.paa.paa_vs import PaaVS
+
+#PNK Games
+from features.pnk_module.pnk_games.mukha import MukhaGame
 
 #LessonSCreen Hayop
 from features.hayop_module.aso.aso import LessonScreenAso
@@ -338,16 +398,36 @@ class MainWindow(QMainWindow):
         self.router.register("lesson", LessonScreen(self.router))
 
 #VR Pantig
-        self.router.register("a", PantigA(self.router))
-        self.router.register("ba", PantigBa(self.router))
-        self.router.register("ka", PantigKa(self.router))
-        self.router.register("da", PantigDa(self.router))
-        self.router.register("e", PantigE(self.router))
-        self.router.register("ga", PantigGa(self.router))
-        self.router.register("ha", PantigHa(self.router))
-        self.router.register("i", PantigI(self.router))
-        self.router.register("la", PantigLa(self.router))
-        self.router.register("ma", PantigMa(self.router))
+        self.router.register("aso", PantigAso(self.router))
+        self.router.register("aklat", PantigAklat(self.router))
+        self.router.register("araw", PantigAraw(self.router))
+        self.router.register("baso", PantigBaso(self.router))
+        self.router.register("bahay", PantigBahay(self.router))
+        self.router.register("bata", PantigBata(self.router))
+        self.router.register("kahoy", PantigKahoy(self.router))
+        self.router.register("kabibe", PantigKabibe(self.router))
+        self.router.register("kama", PantigKama(self.router))
+        self.router.register("dahon", PantigDahon(self.router))
+        self.router.register("damit", PantigDamit(self.router))
+        self.router.register("dasal", PantigDasal(self.router))   
+        self.router.register("elepante", PantigElepante(self.router))
+        self.router.register("elisi", PantigElisi(self.router))
+        self.router.register("eroplano", PantigEroplano(self.router))
+        self.router.register("gatas", PantigGatas(self.router))
+        self.router.register("gagamba", PantigGagamba(self.router))
+        self.router.register("gamot", PantigGamot(self.router))
+        self.router.register("halaman", PantigHalaman(self.router))
+        self.router.register("hangin", PantigHangin(self.router))
+        self.router.register("hari", PantigHari(self.router))
+        self.router.register("ibon", PantigIbon(self.router))
+        self.router.register("ilaw", PantigIlaw(self.router))
+        self.router.register("ipon", PantigIpon(self.router))
+        self.router.register("lapis", PantigLapis(self.router))
+        self.router.register("labi", PantigLabi(self.router))
+        self.router.register("lamok", PantigLamok(self.router))
+        self.router.register("mata", PantigMata(self.router))
+        self.router.register("mais", PantigMais(self.router))
+        self.router.register("manok", PantigManok(self.router))
         self.router.register("na", PantigNa(self.router))
         self.router.register("nga", PantigNga(self.router))
         self.router.register("o", PantigO(self.router))
@@ -422,6 +502,9 @@ class MainWindow(QMainWindow):
         self.router.register("kamayvs", KamayVS(self.router))
         self.router.register("bintivs", BintiVS(self.router))
         self.router.register("paavs", PaaVS(self.router))
+
+#PNK Game
+        self.router.register("mukha_game", MukhaGame(self.router))
 
 
 #HAYOP LessonSCreen
