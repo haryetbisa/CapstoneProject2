@@ -181,7 +181,7 @@ class MatchingPa(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("pa")
+        self.router.navigate("paso")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"

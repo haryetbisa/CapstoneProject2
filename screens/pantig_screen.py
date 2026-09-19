@@ -112,34 +112,34 @@ class PantigScreen(QWidget):
         Ma_card.clicked.connect(lambda: self.router.navigate("mata")) 
 
         Na_card = GridButton ("NA", color = CORAL_RED)
-        Na_card.clicked.connect(lambda: self.router.navigate("na")) 
+        Na_card.clicked.connect(lambda: self.router.navigate("nanay")) 
          
         Nga_card = GridButton ("NGA", color = MARIGOLD) 
         Nga_card.clicked.connect(lambda: self.router.navigate("nga")) 
 
         O_card = GridButton ("O", color = ELECTRIC_VIOLET) 
-        O_card.clicked.connect(lambda: self.router.navigate("o")) 
+        O_card.clicked.connect(lambda: self.router.navigate("orasan")) 
 
         Pa_card = GridButton ("PA", color = HOT_PINK)
-        Pa_card.clicked.connect(lambda: self.router.navigate("pa")) 
+        Pa_card.clicked.connect(lambda: self.router.navigate("paa")) 
 
         Ra_card = GridButton ("RA", color = SKY_BLUE) 
-        Ra_card.clicked.connect(lambda: self.router.navigate("ra")) 
+        Ra_card.clicked.connect(lambda: self.router.navigate("radyo")) 
 
         Sa_card = GridButton ("SA", color = LIGHT_GREEN) 
-        Sa_card.clicked.connect(lambda: self.router.navigate("sa")) 
+        Sa_card.clicked.connect(lambda: self.router.navigate("sabon")) 
 
         Ta_card = GridButton ("TA", color = COBALT_BLUE) 
-        Ta_card.clicked.connect(lambda: self.router.navigate("ta")) 
+        Ta_card.clicked.connect(lambda: self.router.navigate("tasa")) 
 
         U_card = GridButton ("U", color = TERRACOTTA) 
-        U_card.clicked.connect(lambda: self.router.navigate("u")) 
+        U_card.clicked.connect(lambda: self.router.navigate("ubas")) 
 
         Wa_card = GridButton ("WA", color = BURNT_ORANGE)
-        Wa_card.clicked.connect(lambda: self.router.navigate("wa")) 
+        Wa_card.clicked.connect(lambda: self.router.navigate("walis")) 
 
         Ya_card = GridButton ("YA", color = MAGENTA)
-        Ya_card.clicked.connect(lambda: self.router.navigate("ya")) 
+        Ya_card.clicked.connect(lambda: self.router.navigate("yapak")) 
 
         grid_layout.addWidget(A_card, 0, 0)
         grid_layout.addWidget(Ba_card, 0, 1)

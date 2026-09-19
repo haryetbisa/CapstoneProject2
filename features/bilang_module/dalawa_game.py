@@ -61,17 +61,22 @@ class AnswerDropBox(QFrame):
     def __init__(self):
         super().__init__()
         self.setAcceptDrops(True)
-        self.setFixedSize(300, 100)
+        self.setFixedSize(400, 100)
         self.setStyleSheet(f"""
-            background-color: #FFF9EE;
-            border: 2px solid {CHOCO_BROWN};
-            border-radius: 6px;
+            AnswerDropBox {{
+                background-color: none;
+                border: 2px solid {CHOCO_BROWN};
+                border-radius: 10px;
+            }}
+            QLabel {{
+                border: none;
+            }}
         """)
  
         layout = QVBoxLayout(self)
         self.answer_label = QLabel("")
         self.answer_label.setAlignment(Qt.AlignCenter)
-        self.answer_label.setStyleSheet(f"font-size: 24px; font-family: {BODY_FONT}; font-weight: 800; color: {CHOCO_BROWN};")
+        self.answer_label.setStyleSheet(f"font-size: 50px; font-family: {BODY_FONT}; font-weight: 800; color: {CHOCO_BROWN};")
         layout.addWidget(self.answer_label)
  
     def dragEnterEvent(self, event):
@@ -88,6 +93,8 @@ class DalawaGame(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.current_number = 2
  
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -146,20 +153,25 @@ class DalawaGame(QWidget):
         question_row.setSpacing(10)
         question_row.setContentsMargins(0, 20, 0, 0)
  
-        image = QLabel()
-        image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "2.png")).scaled(
-                300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        question_row.addWidget(image)
+
+        #Picture group
+        picture_group = QWidget()
+        picture_group_layout = QHBoxLayout(picture_group)
+        picture_group_layout.setContentsMargins(0, 0, 0, 0)
+        picture_group_layout.setSpacing(10)
  
-        picture_label = QLabel()
-        picture_label.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "damit.png")).scaled(
-                140, 140, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        for _ in range(self.current_number):
+            single_picture = QLabel()
+            single_picture.setPixmap(
+                QPixmap(os.path.join(IMAGE_DIR, "damit.png")).scaled(
+                    200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
             )
-        )
-        question_row.addWidget(picture_label)
-        question_row.addSpacing(60)
+            picture_group_layout.addWidget(single_picture)
+ 
+        question_row.addWidget(picture_group)
+
+        question_row.addSpacing(80)
  
         self.drop_box = AnswerDropBox()
         question_row.addWidget(self.drop_box)

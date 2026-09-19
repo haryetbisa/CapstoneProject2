@@ -181,7 +181,7 @@ class MatchingGa(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("ga")
+        self.router.navigate("gamot")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"

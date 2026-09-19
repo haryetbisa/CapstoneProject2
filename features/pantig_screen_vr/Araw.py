@@ -267,7 +267,7 @@ class PantigAraw(QWidget):
     def handle_back(self):
         """Safely stops recording before navigating back."""
         self.stop_worker()
-        self.router.navigate("pantig")
+        self.router.navigate("aklat")
 
     def stop_worker(self):
         """Safely terminates active voice worker threads."""
