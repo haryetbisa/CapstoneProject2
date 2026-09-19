@@ -181,7 +181,7 @@ class MatchingTa(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("ta")
+        self.router.navigate("tasa")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"

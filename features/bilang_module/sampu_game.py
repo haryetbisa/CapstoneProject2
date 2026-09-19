@@ -6,6 +6,7 @@ from PySide6.QtGui import QIcon, QPixmap, QDrag
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import (
     QHBoxLayout,
+    QGridLayout,
     QLabel,
     QPushButton,
     QVBoxLayout,
@@ -61,17 +62,22 @@ class AnswerDropBox(QFrame):
     def __init__(self):
         super().__init__()
         self.setAcceptDrops(True)
-        self.setFixedSize(300, 100)
+        self.setFixedSize(400, 100)
         self.setStyleSheet(f"""
-            background-color: #FFF9EE;
-            border: 2px solid {CHOCO_BROWN};
-            border-radius: 6px;
+            AnswerDropBox {{
+                background-color: none;
+                border: 2px solid {CHOCO_BROWN};
+                border-radius: 10px;
+            }}
+            QLabel {{
+                border: none;
+            }}
         """)
  
         layout = QVBoxLayout(self)
         self.answer_label = QLabel("")
         self.answer_label.setAlignment(Qt.AlignCenter)
-        self.answer_label.setStyleSheet(f"font-size: 24px; font-family: {BODY_FONT}; font-weight: 800; color: {CHOCO_BROWN};")
+        self.answer_label.setStyleSheet(f"font-size: 50px; font-family: {BODY_FONT}; font-weight: 800; color: {CHOCO_BROWN};")
         layout.addWidget(self.answer_label)
  
     def dragEnterEvent(self, event):
@@ -88,6 +94,8 @@ class SampuGame(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.current_number = 10
  
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -134,7 +142,7 @@ class SampuGame(QWidget):
         words_row.setContentsMargins(30, 15, 30, 15)
         words_row.setSpacing(80)
  
-        for display in ["Sampu", "Siyam", "Pito"]:
+        for display in ["Sampu", "Siyam", "Pito", "Walo"]:
             word = DraggableWord(display)
             words_row.addWidget(word)
             words_row.addStretch()
@@ -143,23 +151,32 @@ class SampuGame(QWidget):
  
         # Question row: number + picture on the left, drop box on the right
         question_row = QHBoxLayout()
-        question_row.setSpacing(10)
+        question_row.setAlignment(Qt.AlignCenter)
+        question_row.setSpacing(50)
         question_row.setContentsMargins(0, 20, 0, 0)
  
-        image = QLabel()
-        image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "10.png")).scaled(
-                300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        question_row.addWidget(image)
- 
-        picture_label = QLabel()
-        picture_label.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "oso.png")).scaled(
-                140, 140, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            )
+        picture_group = QWidget()
+        picture_group_layout = QGridLayout(picture_group)
+        picture_group_layout.setContentsMargins(0, 0, 0, 0)
+        picture_group_layout.setSpacing(10)
+
+        araw_pixmap = QPixmap(os.path.join(IMAGE_DIR, "bat.png")).scaled(
+            150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation
         )
-        question_row.addWidget(picture_label)
-        question_row.addSpacing(60)
+
+        max_item = 5
+
+        for i in range(self.current_number):
+            row = i // max_item  # 0 for first 2 images, 1 for next 2 images
+            col = i % max_item  # 0, 1, 0, 1
+
+            img_label = QLabel()
+            img_label.setPixmap(araw_pixmap)
+            picture_group_layout.addWidget(img_label, row, col)
+
+        question_row.addWidget(picture_group)
+
+        question_row.addSpacing(80)
  
         self.drop_box = AnswerDropBox()
         question_row.addWidget(self.drop_box)
