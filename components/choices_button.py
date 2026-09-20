@@ -14,7 +14,7 @@ class ChoicesButton(QPushButton):
         pressed_color = base.darker(115).name()
 
 
-        self.setFixedSize(300, 150)
+        self.setFixedSize(340, 100)
         self.setStyleSheet(f"""
             QPushButton {{
                 background-color: {color};           
@@ -47,11 +47,12 @@ class ChoicesButton(QPushButton):
 
 
         self.title_label = QLabel(title_text)
+        self.title_label.setWordWrap(True)
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.title_label.setStyleSheet(f"""
             color: {WHITE};
             font-family: {BODY_FONT};
-            font-size: 58px;
+            font-size: 48px;
             font-weight: 800;
             background: transparent;
         """)

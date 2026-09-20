@@ -82,37 +82,64 @@ class PantigScreen(QWidget):
 
 
         A_card = GridButton ("A", color = CORAL_RED)
-        A_card.clicked.connect(lambda: self.router.navigate("a"))
+        A_card.clicked.connect(lambda: self.router.navigate("aso"))
 
         Ba_card = GridButton ("BA", color = MARIGOLD)
-        Ba_card.clicked.connect(lambda: self.router.navigate("ba")) 
+        Ba_card.clicked.connect(lambda: self.router.navigate("baso")) 
 
         Ka_card = GridButton ("KA", color = ELECTRIC_VIOLET)
-        Ka_card.clicked.connect(lambda: self.router.navigate("ka")) 
+        Ka_card.clicked.connect(lambda: self.router.navigate("kahoy")) 
 
         Da_card = GridButton ("DA", color = HOT_PINK)
-        Da_card.clicked.connect(lambda: self.router.navigate("da")) 
+        Da_card.clicked.connect(lambda: self.router.navigate("dahon")) 
         
         E_card = GridButton ("E", color = SKY_BLUE)
-        E_card.clicked.connect(lambda: self.router.navigate("e")) 
+        E_card.clicked.connect(lambda: self.router.navigate("elepante")) 
 
         Ga_card = GridButton ("GA", color = LIGHT_GREEN) 
-        Ha_card = GridButton ("HA", color = COBALT_BLUE) 
-        I_card = GridButton ("I", color = TERRACOTTA) 
-        La_card = GridButton ("LA", color = BURNT_ORANGE)
-        Ma_card = GridButton ("MA", color = MAGENTA)
+        Ga_card.clicked.connect(lambda: self.router.navigate("gatas")) 
 
-        Na_card = GridButton ("NA", color = CORAL_RED) 
+        Ha_card = GridButton ("HA", color = COBALT_BLUE)
+        Ha_card.clicked.connect(lambda: self.router.navigate("halaman")) 
+
+        I_card = GridButton ("I", color = TERRACOTTA)
+        I_card.clicked.connect(lambda: self.router.navigate("ibon")) 
+
+        La_card = GridButton ("LA", color = BURNT_ORANGE)
+        La_card.clicked.connect(lambda: self.router.navigate("lapis")) 
+
+        Ma_card = GridButton ("MA", color = MAGENTA)
+        Ma_card.clicked.connect(lambda: self.router.navigate("mata")) 
+
+        Na_card = GridButton ("NA", color = CORAL_RED)
+        Na_card.clicked.connect(lambda: self.router.navigate("nanay")) 
+         
         Nga_card = GridButton ("NGA", color = MARIGOLD) 
+        Nga_card.clicked.connect(lambda: self.router.navigate("nga")) 
+
         O_card = GridButton ("O", color = ELECTRIC_VIOLET) 
+        O_card.clicked.connect(lambda: self.router.navigate("orasan")) 
+
         Pa_card = GridButton ("PA", color = HOT_PINK)
-        Ra_card = GridButton ("RA", color = SKY_BLUE)   
+        Pa_card.clicked.connect(lambda: self.router.navigate("paa")) 
+
+        Ra_card = GridButton ("RA", color = SKY_BLUE) 
+        Ra_card.clicked.connect(lambda: self.router.navigate("radyo")) 
 
         Sa_card = GridButton ("SA", color = LIGHT_GREEN) 
+        Sa_card.clicked.connect(lambda: self.router.navigate("sabon")) 
+
         Ta_card = GridButton ("TA", color = COBALT_BLUE) 
+        Ta_card.clicked.connect(lambda: self.router.navigate("tasa")) 
+
         U_card = GridButton ("U", color = TERRACOTTA) 
+        U_card.clicked.connect(lambda: self.router.navigate("ubas")) 
+
         Wa_card = GridButton ("WA", color = BURNT_ORANGE)
+        Wa_card.clicked.connect(lambda: self.router.navigate("walis")) 
+
         Ya_card = GridButton ("YA", color = MAGENTA)
+        Ya_card.clicked.connect(lambda: self.router.navigate("yapak")) 
 
         grid_layout.addWidget(A_card, 0, 0)
         grid_layout.addWidget(Ba_card, 0, 1)
