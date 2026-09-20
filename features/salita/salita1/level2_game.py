@@ -34,9 +34,9 @@ class Salita2Game(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kuwento"))
+        back_btn.clicked.connect(lambda: self.router.navigate("salita"))
 
-        pagsasanay = QLabel("Aralin 1: Naglalarawan na Salita")
+        pagsasanay = QLabel("Pagsasanay 2: Naglalarawan na Salita")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -55,15 +55,21 @@ class Salita2Game(QWidget):
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
 
+        #image and choices
+        choices = QHBoxLayout()
+        main_layout.addLayout(choices)
+        choices.setContentsMargins(0, 50, 0, 0)
+        choices.addSpacing(50)
+
         # Illustration
         image = QLabel()
         image.setPixmap(
             QPixmap(os.path.join(IMAGE_DIR, "xmast.png")).scaled(
-                230, 230, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
         image.setAlignment(Qt.AlignCenter)
-        main_layout.addWidget(image)
+        choices.addWidget(image)
 
         # Speaker icon + text row
         text_row = QHBoxLayout()
@@ -78,7 +84,7 @@ class Salita2Game(QWidget):
         text_row.addWidget(self.speaker_btn)
 
         #choices
-        quest_row = QHBoxLayout()
+        quest_row = QVBoxLayout()
         quest_row.setSpacing(29)
         quest_row.setAlignment(Qt.AlignCenter)
 
@@ -90,7 +96,7 @@ class Salita2Game(QWidget):
         quest_row.addWidget(self.opt_2)
         quest_row.addWidget(self.opt_3)
 
-        main_layout.addLayout(quest_row)
+        choices.addLayout(quest_row)
 
         main_layout.addStretch()
 

@@ -3,7 +3,7 @@ from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
-from themes.colors import * 
+from themes.colors import *
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
 
@@ -47,7 +47,7 @@ class Salita1Game(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Aralin 1: Naglalarawan na Salita")
+        pagsasanay = QLabel("Pagsasanay 1: Naglalarawan na Salita")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -66,21 +66,27 @@ class Salita1Game(QWidget):
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
 
+        #image and choices
+        choices = QHBoxLayout()
+        main_layout.addLayout(choices)
+        choices.setContentsMargins(0, 50, 0, 0)
+        choices.addSpacing(50)
+
         # Illustration
         image = QLabel()
         image_path = os.path.join(IMAGE_DIR, "icecream.png")
         if os.path.exists(image_path):
             image.setPixmap(
                 QPixmap(image_path).scaled(
-                    230, 230, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                    400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
         image.setAlignment(Qt.AlignCenter)
-        main_layout.addWidget(image)
+        choices.addWidget(image)
 
         # Choices Layout
-        quest_row = QHBoxLayout()
-        quest_row.setSpacing(29)
+        quest_row = QVBoxLayout()
+        quest_row.setSpacing(20)
         quest_row.setAlignment(Qt.AlignCenter)
 
         self.opt_1 = ChoicesButton("matamis", color=CORNFLOWER_BLUE)  # Correct
@@ -94,7 +100,7 @@ class Salita1Game(QWidget):
         quest_row.addWidget(self.opt_1)
         quest_row.addWidget(self.opt_2)
         quest_row.addWidget(self.opt_3)
-        main_layout.addLayout(quest_row)
+        choices.addLayout(quest_row)
 
         # Centered Restart Button Layout (Below Choices)
         restart_layout = QHBoxLayout()

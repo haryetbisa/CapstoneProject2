@@ -79,6 +79,10 @@ class ParteNgKatawanScreen(QWidget):
         ulo_card = CardsPicButton ("ulo.png", color = SKY_BLUE)
         ulo_card.clicked.connect(lambda: self.router.navigate("buhok")) 
 
+        mukha_game = CardsPicButton ("ulo.png", color = CHOCO_BROWN)
+        mukha_game.clicked.connect(lambda: self.router.navigate("mukha_game")) 
+
+
 
         leeg_card = CardsPicButton ("leeg.png", color = LIGHT_GREEN)
         leeg_card.clicked.connect(lambda: self.router.navigate("leeg")) 
@@ -95,11 +99,19 @@ class ParteNgKatawanScreen(QWidget):
         kamay_card = CardsPicButton ("kamay.png", color = MAGENTA)
         kamay_card.clicked.connect(lambda: self.router.navigate("kamay")) 
 
+        katawan_game = CardsPicButton ("ulo.png", color = CHOCO_BROWN)
+        katawan_game.clicked.connect(lambda: self.router.navigate("katawan_game"))
+
+
         binti_card = CardsPicButton ("binti.png", color = CORAL_RED) 
         binti_card.clicked.connect(lambda: self.router.navigate("binti")) 
 
         paa_card = CardsPicButton ("paa.png", color = HONEY_YELLOW)
         paa_card.clicked.connect(lambda: self.router.navigate("paa")) 
+
+
+        paa_game = CardsPicButton ("ulo.png", color = CHOCO_BROWN)
+        paa_game.clicked.connect(lambda: self.router.navigate("paa_game"))
         
         
 
@@ -109,14 +121,17 @@ class ParteNgKatawanScreen(QWidget):
         grid_layout.addWidget(tainga_card, 0, 3)
         grid_layout.addWidget(ulo_card, 0, 4)
 
-        grid_layout.addWidget(leeg_card, 1, 0)
-        grid_layout.addWidget(balikat_card, 1, 1)
-        grid_layout.addWidget(tiyan_card, 1, 2)
-        grid_layout.addWidget(braso_card, 1, 3)
-        grid_layout.addWidget(kamay_card, 1, 4)
+        grid_layout.addWidget(mukha_game, 1, 0)
+        grid_layout.addWidget(leeg_card, 1, 1)
+        grid_layout.addWidget(balikat_card, 1, 2)
+        grid_layout.addWidget(tiyan_card, 1, 3)
+        grid_layout.addWidget(braso_card, 1, 4)
 
-        grid_layout.addWidget(binti_card, 2, 0)
-        grid_layout.addWidget(paa_card, 2, 1)
+        grid_layout.addWidget(kamay_card, 2, 0)
+        grid_layout.addWidget(katawan_game, 2, 1)
+        grid_layout.addWidget(binti_card, 2, 2)
+        grid_layout.addWidget(paa_card, 2, 3)
+        grid_layout.addWidget(paa_game, 2, 4)
      
  
 
