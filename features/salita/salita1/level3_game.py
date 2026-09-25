@@ -92,7 +92,7 @@ class Salita3Game(QWidget):
 
         self.opt_1 = ChoicesButton("mabait", color=CORNFLOWER_BLUE)   # Correct
         self.opt_2 = ChoicesButton("masipag", color=MEDIUM_PURPLE)    # Correct
-        self.opt_3 = ChoicesButton("mapait", color=HONEY_YELLOW)       # Wrong
+        self.opt_3 = ChoicesButton("mapait", color=HONEY_YELLOW)      # Wrong
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1, "mabait"))
         self.opt_2.clicked.connect(lambda: self.handle_choice(True, self.opt_2, "masipag"))
@@ -185,15 +185,16 @@ class Salita3Game(QWidget):
         self.router.navigate("salita")
 
     def handle_next(self):
-        """Resets game state and routes back to module menu or completion screen."""
+        """Resets game state and routes forward to Pagsasanay 4."""
         self.reset_game()
-        self.router.navigate("salita")
+        self.router.navigate("salitaq4")
 
     def play_feedback_sound(self, is_correct: bool):
         """Plays correct or wrong SFX."""
         filename = "correct.wav" if is_correct else "wrong.wav"
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
+            self.feedback_player.stop()
             self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
             self.feedback_player.play()
 
