@@ -23,7 +23,6 @@ SOUNDS_DIR = os.path.join(
 
 
 class DraggableIcon(QLabel):
-    """A shape widget that can be dragged into the drop box target."""
 
     def __init__(self, image_path: str, item_id: str, size: int = 140):
         super().__init__()
@@ -61,7 +60,6 @@ class DraggableIcon(QLabel):
 
 
 class DropBox(QLabel):
-    """Drop box container with hover feedback and drag drop evaluation."""
 
     def __init__(
         self,
@@ -142,7 +140,6 @@ class PusoGame(QWidget):
         super().__init__()
         self.router = router
 
-        # Correct heart (puso) items configuration
         self.target_items = {"leaf.png", "necklace.png", "pancake_heart.png"}
         self.all_items = [
             "leaf.png",
@@ -153,7 +150,6 @@ class PusoGame(QWidget):
         self.remaining_targets = set(self.target_items)
         self.active_item_widgets = []
 
-        # Audio setup
         self.audio_output = QAudioOutput(self)
         self.audio_player = QMediaPlayer(self)
         self.audio_player.setAudioOutput(self.audio_output)
@@ -163,7 +159,6 @@ class PusoGame(QWidget):
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        # Header Navigation Bar
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(60, 40, 0, 20)
         top_layout.setAlignment(
@@ -195,20 +190,17 @@ class PusoGame(QWidget):
         top_layout.setSpacing(20)
         main_layout.addLayout(top_layout)
 
-        # Draggable Items Row
         self.items_row = QHBoxLayout()
         self.items_row.setSpacing(50)
         self.items_row.setContentsMargins(0, 20, 0, 20)
         self.items_row.setAlignment(Qt.AlignCenter)
         main_layout.addLayout(self.items_row)
 
-        # Target Drop Box
         self.drop_box = DropBox(
             os.path.join(IMAGE_DIR, "box.png"), parent_game=self
         )
         main_layout.addWidget(self.drop_box, alignment=Qt.AlignCenter)
 
-        # Feedback Label
         self.feedback_label = QLabel("", self)
         self.feedback_label.setAlignment(Qt.AlignCenter)
         self.feedback_label.setStyleSheet(f"""
@@ -220,9 +212,9 @@ class PusoGame(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
-        # Restart Button Setup
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -246,14 +238,33 @@ class PusoGame(QWidget):
         self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         self.setup_items()
         main_layout.addStretch()
 
     def setup_items(self):
-        """Instantiates draggable item components dynamically."""
         for widget in self.active_item_widgets:
             widget.setParent(None)
             widget.deleteLater()
@@ -266,7 +277,6 @@ class PusoGame(QWidget):
             self.active_item_widgets.append(icon)
 
     def play_sound(self, filename: str):
-        """Plays audio feedback clips dynamically."""
         sound_path = os.path.join(SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
@@ -274,7 +284,6 @@ class PusoGame(QWidget):
             self.audio_player.play()
 
     def handle_item_drop(self, source_widget: DraggableIcon, item_id: str):
-        """Evaluates dropped items against target set."""
         if item_id in self.target_items:
             if source_widget:
                 source_widget.deleteLater()
@@ -293,6 +302,7 @@ class PusoGame(QWidget):
                     " font-weight: bold;"
                 )
                 self.restart_btn.show()
+                self.next_btn.show()
             else:
                 self.feedback_label.setText("✅ TAMA! HUGIS PUSO ANG BAGAY NA ITO!")
                 self.feedback_label.setStyleSheet(
@@ -311,18 +321,20 @@ class PusoGame(QWidget):
             self.reset_game()
 
     def reset_game(self):
-        """Resets activity state, clears target set, and reinstantiates items."""
         self.remaining_targets = set(self.target_items)
         self.restart_btn.hide()
+        self.next_btn.hide()
         self.setup_items()
 
     def showEvent(self, event):
-        """Resets activity state upon navigating into this screen."""
         self.reset_game()
         self.feedback_label.setText("")
         super().showEvent(event)
 
     def handle_back(self):
-        """Resets state safely before invoking route navigation."""
         self.reset_game()
         self.router.navigate("pusovs")
+
+    def handle_next(self):
+        self.reset_game()
+        self.router.navigate("oblong")
