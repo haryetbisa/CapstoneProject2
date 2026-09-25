@@ -99,7 +99,7 @@ class PaaVS(QWidget):
         self.audio.setCursor(Qt.PointingHandCursor)
         word.addWidget(self.audio)
 
-        salita = QLabel("Ma-ta", self)
+        salita = QLabel("Pa-a", self)
         salita.setStyleSheet(f"""
             font-size: 96px;
             font-family: {BODY_FONT};
