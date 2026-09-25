@@ -12,6 +12,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", 
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 
+
 class Salita1Game(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -66,11 +67,11 @@ class Salita1Game(QWidget):
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
 
-        #image and choices
+        # Image and Choices Container
         choices = QHBoxLayout()
-        main_layout.addLayout(choices)
         choices.setContentsMargins(0, 50, 0, 0)
         choices.addSpacing(50)
+        main_layout.addLayout(choices)
 
         # Illustration
         image = QLabel()
@@ -84,7 +85,7 @@ class Salita1Game(QWidget):
         image.setAlignment(Qt.AlignCenter)
         choices.addWidget(image)
 
-        # Choices Layout
+        # Choices Column
         quest_row = QVBoxLayout()
         quest_row.setSpacing(20)
         quest_row.setAlignment(Qt.AlignCenter)
@@ -102,9 +103,10 @@ class Salita1Game(QWidget):
         quest_row.addWidget(self.opt_3)
         choices.addLayout(quest_row)
 
-        # Centered Restart Button Layout (Below Choices)
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        # Action Buttons Layout (Restart + Next)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -125,25 +127,46 @@ class Salita1Game(QWidget):
                 background-color: #E08E00;
             }}
         """)
-        self.restart_btn.hide()  # Hidden by default
+        self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         main_layout.addStretch()
 
     def reset_game(self):
-        """Resets choice states, clears answers, and hides the restart button."""
+        """Resets choice states, clears answers, and hides action buttons."""
         self.correct_found.clear()
         self.restart_btn.hide()
-        
+        self.next_btn.hide()
+
         button_configs = [
             (self.opt_1, CORNFLOWER_BLUE),
             (self.opt_2, MEDIUM_PURPLE),
             (self.opt_3, HONEY_YELLOW),
         ]
-        
+
         for opt, color in button_configs:
             opt.setEnabled(True)
             if hasattr(opt, "reset"):
@@ -161,6 +184,11 @@ class Salita1Game(QWidget):
         self.reset_game()
         self.router.navigate("salita")
 
+    def handle_next(self):
+        """Resets game state and routes to the next level."""
+        self.reset_game()
+        self.router.navigate("salitaq2")
+
     def play_feedback_sound(self, is_correct: bool):
         """Plays correct or wrong SFX."""
         filename = "correct.wav" if is_correct else "wrong.wav"
@@ -170,7 +198,7 @@ class Salita1Game(QWidget):
             self.feedback_player.play()
 
     def handle_choice(self, is_correct: bool, button: QPushButton, choice_key: str):
-        """Handles answer checking, plays SFX, and reveals restart button on complete or wrong choice."""
+        """Handles answer checking, plays SFX, and reveals navigation buttons."""
         self.play_feedback_sound(is_correct)
 
         if is_correct:
@@ -178,10 +206,10 @@ class Salita1Game(QWidget):
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
             self.correct_found.add(choice_key)
 
-            # Reveal restart button when all correct choices are found
+            # Reveal navigation buttons when all required correct choices are found
             if len(self.correct_found) == self.total_correct_answers:
                 self.restart_btn.show()
+                self.next_btn.show()
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
-            # Reveal restart button when a wrong choice is picked
             self.restart_btn.show()
