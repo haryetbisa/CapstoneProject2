@@ -1,6 +1,7 @@
 import os
-from PySide6.QtCore import Qt, QPoint, QSize
+from PySide6.QtCore import Qt, QPoint, QSize, QUrl
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
 from themes.colors import *
 from themes.fonts import BODY_FONT
@@ -8,10 +9,9 @@ from themes.fonts import BODY_FONT
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
 
 class Dot(QLabel):
-    """A small circular anchor point. Left dots are draggable; right dots are drop targets."""
-
     def __init__(self, dot_id: str, is_source: bool, parent_game):
         super().__init__()
         self.dot_id = dot_id
@@ -55,9 +55,20 @@ class MatchingBa(QWidget):
         super().__init__()
         self.router = router
 
-        self.connections = []   # list of (source_dot, target_dot) — no correctness tracked
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(0.8)
+
+        self.connections = []
         self.dragging_from = None
         self.temp_end_point = None
+
+        self.correct_pairs = {
+            "house": "bahay",
+            "glass": "baso",
+            "kid": "bata"
+        }
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 30, 40, 30)
@@ -68,22 +79,22 @@ class MatchingBa(QWidget):
         main_layout.addLayout(top_bar)
 
         back_btn = QPushButton()
-        back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
+        back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
+        if os.path.exists(back_icon_path):
+            back_btn.setIcon(QIcon(back_icon_path))
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
-        back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("pantig"))
+        back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
+        back_btn.clicked.connect(self.handle_back)
 
-   
         pagsasanay = QLabel("Pagsasanay")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
             font-weight: 800;
-            color: {CHOCO_BROWN};               
+            color: {CHOCO_BROWN};             
         """)
-
 
         top_bar.addWidget(back_btn)
         top_bar.addWidget(pagsasanay)
@@ -91,7 +102,7 @@ class MatchingBa(QWidget):
 
         rows_layout = QVBoxLayout()
         rows_layout.setSpacing(40)
-        rows_layout.setContentsMargins(80, 60, 80, 30)
+        rows_layout.setContentsMargins(80, 40, 80, 20)
         main_layout.addLayout(rows_layout)
 
         items = [
@@ -104,11 +115,13 @@ class MatchingBa(QWidget):
             row = QHBoxLayout()
 
             image_label = QLabel()
-            image_label.setPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, image_file)).scaled(
-                    160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            img_path = os.path.join(IMAGE_DIR, image_file)
+            if os.path.exists(img_path):
+                image_label.setPixmap(
+                    QPixmap(img_path).scaled(
+                        160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                    )
                 )
-            )
             row.addWidget(image_label)
 
             source_dot = Dot(image_id, is_source=True, parent_game=self)
@@ -125,8 +138,57 @@ class MatchingBa(QWidget):
 
             rows_layout.addLayout(row)
 
+        restart_layout = QHBoxLayout()
+        restart_layout.setAlignment(Qt.AlignCenter)
+
+        self.restart_btn = QPushButton(" Restart")
+        restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
+        if os.path.exists(restart_icon_path):
+            self.restart_btn.setIcon(QIcon(restart_icon_path))
+        self.restart_btn.setCursor(Qt.PointingHandCursor)
+        self.restart_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {MARIGOLD};
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #E08E00;
+            }}
+        """)
+        self.restart_btn.hide()
+        self.restart_btn.clicked.connect(self.reset_game)
+
+        restart_layout.addWidget(self.restart_btn)
+        main_layout.addLayout(restart_layout)
 
         main_layout.addStretch()
+
+    def reset_game(self):
+        self.connections.clear()
+        self.dragging_from = None
+        self.temp_end_point = None
+        self.restart_btn.hide()
+        self.update()
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
+
+    def handle_back(self):
+        self.reset_game()
+        self.router.navigate("bata")
+
+    def play_feedback_sound(self, is_correct: bool):
+        filename = "correct.wav" if is_correct else "wrong.wav"
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+            self.feedback_player.play()
 
     def start_drag(self, source_dot: Dot):
         self.dragging_from = source_dot
@@ -143,12 +205,16 @@ class MatchingBa(QWidget):
         self.update()
 
     def finalize_connection(self, source_dot: Dot, target_dot: Dot):
-        # replace any previous line from this same source
         self.connections = [c for c in self.connections if c[0] != source_dot]
-        self.connections.append((source_dot, target_dot))
+
+        is_correct = self.correct_pairs.get(source_dot.dot_id) == target_dot.dot_id
+        self.connections.append((source_dot, target_dot, is_correct))
+
+        self.play_feedback_sound(is_correct)
 
         self.dragging_from = None
         self.temp_end_point = None
+        self.restart_btn.show()
         self.update()
 
     def dot_center(self, dot: Dot) -> QPoint:
@@ -158,13 +224,16 @@ class MatchingBa(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        pen = QPen(QColor(f"{CADET_BLUE}"), 8)
-        painter.setPen(pen)
+        for conn in self.connections:
+            source_dot, target_dot = conn[0], conn[1]
+            is_correct = conn[2] if len(conn) > 2 else True
 
-        # finalized lines
-        for source_dot, target_dot in self.connections:
+            color_hex = "#2ECC71" if is_correct else "#E74C3C"
+            pen = QPen(QColor(color_hex), 8)
+            painter.setPen(pen)
             painter.drawLine(self.dot_center(source_dot), self.dot_center(target_dot))
 
-        # line currently being dragged
         if self.dragging_from and self.temp_end_point:
+            pen = QPen(QColor(f"{CADET_BLUE}"), 8)
+            painter.setPen(pen)
             painter.drawLine(self.dot_center(self.dragging_from), self.temp_end_point)

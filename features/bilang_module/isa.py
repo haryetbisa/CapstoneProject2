@@ -138,6 +138,25 @@ class Bilang1(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
+        lower_layout = QHBoxLayout()
+        lower_layout.setSpacing(200)
+        lower_layout.setContentsMargins(70, 20, 70, 30)
+        main_layout.addLayout(lower_layout)
+
+        self.next_btn = QPushButton("Sunod")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            background-color: {BRIGHT_YELLOW};
+            color: {CHOCO_BROWN};
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: 6px;
+            font-family: {BODY_FONT};
+        """)
+        self.next_btn.setFixedSize(180, 50)
+        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        self.next_btn.clicked.connect(lambda: self.router.navigate("isa_game"))
+
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 

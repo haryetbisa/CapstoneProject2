@@ -58,7 +58,7 @@ class Kuwento1(QWidget):
         image = QLabel()
         image.setPixmap(
             QPixmap(os.path.join(IMAGE_DIR, "AMNB.png")).scaled(
-                230, 230, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
         image.setAlignment(Qt.AlignCenter)
@@ -81,7 +81,8 @@ class Kuwento1(QWidget):
             "Malusog na bata si Ken.\n"
             "Uminom siya ng gatas.\n"
             "Kumakain siya ng itlog at gulay.\n"
-            "Masiglang kumilos si Ken dahil malusog ang kanyang katawan."
+            "Masiglang kumilos si Ken dahil malusog\n" 
+            "ang kanyang katawan."
         )
         story_text.setAlignment(Qt.AlignLeft)
         story_text.setWordWrap(True)   
@@ -94,7 +95,7 @@ class Kuwento1(QWidget):
         text_row.addWidget(story_text)
 
         main_layout.addLayout(text_row)
-        main_layout.addStretch()
+        
 
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)

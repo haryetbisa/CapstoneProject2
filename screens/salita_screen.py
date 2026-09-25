@@ -40,7 +40,7 @@ class SalitaScreen(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("kindergarten"))
+        back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
 
    
         pagsasanay = QLabel("Pagsasanay")
@@ -60,28 +60,53 @@ class SalitaScreen(QWidget):
         grid_layout.setSpacing(50)        
         grid_layout.setContentsMargins(0, 50, 0, 0)
 
-
+        #Lesson: Pang-uri
         lvl1 = GridButton ("1", color = CORAL_RED)
         lvl1.clicked.connect(lambda: self.router.navigate("salita1"))
 
         lvl2 = GridButton ("2", color = MARIGOLD)
-        lvl2.clicked.connect(lambda: self.router.navigate("2"))
+        lvl2.clicked.connect(lambda: self.router.navigate("salitaq1"))
 
         lvl3 = GridButton ("3", color = ELECTRIC_VIOLET) 
-        lvl3.clicked.connect(lambda: self.router.navigate("3"))
+        lvl3.clicked.connect(lambda: self.router.navigate("salitaq2"))
 
         lvl4 = GridButton ("4", color = HOT_PINK)
-        lvl4.clicked.connect(lambda: self.router.navigate("4"))
+        lvl4.clicked.connect(lambda: self.router.navigate("salitaq3"))
 
         lvl5 = GridButton ("5", color = SKY_BLUE)
-        lvl5.clicked.connect(lambda: self.router.navigate("5"))
+        lvl5.clicked.connect(lambda: self.router.navigate("salitaq4"))
          
 
-        lvl6 = GridButton ("6", color = LIGHT_GREEN) 
-        lvl7 = GridButton ("7", color = COBALT_BLUE) 
-        lvl8 = GridButton ("8", color = TERRACOTTA) 
+        lvl6 = GridButton ("6", color = LIGHT_GREEN)
+        lvl6.clicked.connect(lambda: self.router.navigate("salita2"))
+
+        lvl7 = GridButton ("7", color = COBALT_BLUE)
+        lvl7.clicked.connect(lambda: self.router.navigate("salitaq5"))
+
+        lvl8 = GridButton ("8", color = TERRACOTTA)
+        lvl8.clicked.connect(lambda: self.router.navigate("salitaq6"))
+
         lvl9 = GridButton ("9", color = BURNT_ORANGE)
+        lvl9.clicked.connect(lambda: self.router.navigate("salitaq7"))
+
         lvl10 = GridButton ("10", color = MAGENTA)
+        lvl10.clicked.connect(lambda: self.router.navigate("salitaq8"))
+
+
+        lvl11 = GridButton ("11", color = CORAL_RED)
+        lvl11.clicked.connect(lambda: self.router.navigate("salita3"))
+
+        lvl12 = GridButton ("12", color = MARIGOLD)
+        lvl12.clicked.connect(lambda: self.router.navigate("salitaq9"))
+
+        lvl13 = GridButton ("13", color = ELECTRIC_VIOLET) 
+        lvl13.clicked.connect(lambda: self.router.navigate("salitaq10"))
+
+        lvl14 = GridButton ("14", color = HOT_PINK)
+        lvl14.clicked.connect(lambda: self.router.navigate("salitaq11"))
+
+        lvl15 = GridButton ("15", color = SKY_BLUE)
+        lvl15.clicked.connect(lambda: self.router.navigate("salitaq12"))
  
          
 
@@ -96,6 +121,13 @@ class SalitaScreen(QWidget):
         grid_layout.addWidget(lvl8, 1, 2)
         grid_layout.addWidget(lvl9, 1, 3)
         grid_layout.addWidget(lvl10, 1, 4)
+
+        grid_layout.addWidget(lvl11, 2, 0)
+        grid_layout.addWidget(lvl12, 2, 1)
+        grid_layout.addWidget(lvl13, 2, 2)
+        grid_layout.addWidget(lvl14, 2, 3)
+        grid_layout.addWidget(lvl15, 2, 4)
+
 
 
         main_layout.addLayout(grid_layout)

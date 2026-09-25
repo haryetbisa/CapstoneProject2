@@ -1,9 +1,8 @@
 import os
 from PySide6.QtCore import QMimeData, QSize, Qt, QUrl
-from PySide6.QtGui import QColor, QDrag, QIcon, QPixmap
+from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import (
-    QGraphicsDropShadowEffect,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -32,17 +31,18 @@ class DraggableIcon(QLabel):
         self.filename = filename
 
         pixmap = QPixmap(image_path)
-        self.setPixmap(
-            pixmap.scaled(
-                size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        if not pixmap.isNull():
+            self.setPixmap(
+                pixmap.scaled(
+                    size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
             )
-        )
         self.setFixedSize(size, size)
         self.setAlignment(Qt.AlignCenter)
         self.setCursor(Qt.OpenHandCursor)
 
     def mousePressEvent(self, event):
-        if event.button() != Qt.LeftButton:
+        if event.button() != Qt.LeftButton or not self.isVisible():
             return
 
         drag = QDrag(self)
@@ -50,8 +50,9 @@ class DraggableIcon(QLabel):
         mime_data.setText(self.filename)
         drag.setMimeData(mime_data)
 
-        drag.setPixmap(self.pixmap())
-        drag.setHotSpot(event.pos())
+        if self.pixmap():
+            drag.setPixmap(self.pixmap())
+            drag.setHotSpot(event.pos())
 
         self.hide()
         result = drag.exec(Qt.MoveAction)
@@ -69,7 +70,6 @@ class DropBox(QLabel):
         self.setFixedSize(*size)
         self.setAlignment(Qt.AlignCenter)
 
-        # Base styling setup
         self.default_style = """
             QLabel {
                 border: 3px dashed #B8860B;
@@ -95,18 +95,18 @@ class DropBox(QLabel):
         self.setStyleSheet(self.default_style)
 
         box_pixmap = QPixmap(image_path)
-        self.setPixmap(
-            box_pixmap.scaled(
-                *size, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        if not box_pixmap.isNull():
+            self.setPixmap(
+                box_pixmap.scaled(
+                    *size, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
             )
-        )
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasText():
             event.acceptProposedAction()
             filename = event.mimeData().text()
 
-            # Change border highlights on hover
             if (
                 self.parent_game
                 and hasattr(self.parent_game, "correct_items")
@@ -117,12 +117,10 @@ class DropBox(QLabel):
                 self.setStyleSheet(self.wrong_style)
 
     def dragLeaveEvent(self, event):
-        """Restores default border when item leaves."""
         self.setStyleSheet(self.default_style)
         event.accept()
 
     def dropEvent(self, event):
-        """Restores default border and processes dropped item."""
         self.setStyleSheet(self.default_style)
         filename = event.mimeData().text()
         source_widget = event.source()
@@ -139,7 +137,7 @@ class DragDropRed(QWidget):
         super().__init__()
         self.router = router
 
-        # Validation rules
+        # Correct red items: apple, strawberry
         self.correct_items = ["apple.png", "strawberry.png"]
         self.REQUIRED_CORRECT_COUNT = 2
         self.current_correct_count = 0
@@ -148,33 +146,36 @@ class DragDropRed(QWidget):
         self.audio_output = QAudioOutput(self)
         self.audio_player = QMediaPlayer(self)
         self.audio_player.setAudioOutput(self.audio_output)
+        self.audio_output.setVolume(0.8)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(100, 50, 0, 20)
+        top_layout.setContentsMargins(60, 50, 0, 20)
         top_layout.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter
         )
 
         back_btn = QPushButton()
-        back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
+        back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
+        if os.path.exists(back_icon_path):
+            back_btn.setIcon(QIcon(back_icon_path))
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(
-            "border: none; background-color: none; border-radius: 6px"
+            "border: none; background-color: transparent; border-radius: 6px;"
         )
-        back_btn.clicked.connect(lambda: self.router.navigate("pula"))
+        back_btn.clicked.connect(self.handle_back)
 
         pagsasanay = QLabel("Aralin: Pula")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
             font-weight: 600;
-            color: {CHOCO_BROWN};               
+            color: {CHOCO_BROWN};             
         """)
 
         top_layout.addWidget(back_btn)
@@ -184,8 +185,8 @@ class DragDropRed(QWidget):
 
         # Draggable items container
         self.items_row = QHBoxLayout()
-        self.items_row.setSpacing(100)
-        self.items_row.setContentsMargins(0, 0, 0, 40)
+        self.items_row.setSpacing(80)
+        self.items_row.setContentsMargins(0, 0, 0, 20)
         self.items_row.setAlignment(Qt.AlignCenter)
         main_layout.addLayout(self.items_row)
 
@@ -203,9 +204,38 @@ class DragDropRed(QWidget):
             font-family: {BODY_FONT};
             font-weight: bold;
             color: {CHOCO_BROWN};
-            margin-top: 20px;
+            margin-top: 10px;
         """)
         main_layout.addWidget(self.feedback_label)
+
+        # Restart button setup
+        restart_layout = QHBoxLayout()
+        restart_layout.setAlignment(Qt.AlignCenter)
+
+        self.restart_btn = QPushButton(" Restart")
+        restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
+        if os.path.exists(restart_icon_path):
+            self.restart_btn.setIcon(QIcon(restart_icon_path))
+        self.restart_btn.setCursor(Qt.PointingHandCursor)
+        self.restart_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {MARIGOLD};
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #E08E00;
+            }}
+        """)
+        self.restart_btn.hide()
+        self.restart_btn.clicked.connect(self.reset_game)
+
+        restart_layout.addWidget(self.restart_btn)
+        main_layout.addLayout(restart_layout)
 
         self.item_images = [
             "apple.png",
@@ -215,6 +245,8 @@ class DragDropRed(QWidget):
         ]
         self.active_icons = []
         self.setup_items()
+
+        main_layout.addStretch()
 
     def setup_items(self):
         """Resets and creates draggable icon instances."""
@@ -240,11 +272,13 @@ class DragDropRed(QWidget):
 
     def handle_item_drop(self, source_widget: DraggableIcon, filename: str):
         """Evaluates correctness when an item is dropped into the box."""
+        self.restart_btn.show()
+
         if filename in self.correct_items:
             self.current_correct_count += 1
-            source_widget.deleteLater()
             if source_widget in self.active_icons:
                 self.active_icons.remove(source_widget)
+            source_widget.deleteLater()
 
             if self.current_correct_count >= self.REQUIRED_CORRECT_COUNT:
                 self.feedback_label.setText("✅ MAGALING! TAMA LAHAT!")
@@ -259,8 +293,8 @@ class DragDropRed(QWidget):
                     f"font-size: 24px; color: green; font-family: {BODY_FONT};"
                     " font-weight: bold;"
                 )
+                self.play_sound("correct.wav")
         else:
-            # Wrong color penalty: Play wrong sound and reset
             self.play_sound("wrong.wav")
             self.feedback_label.setText(
                 "❌ SUBUKAN ULIT! Maling kulay! Na-reset ang laro."
@@ -272,6 +306,18 @@ class DragDropRed(QWidget):
             self.reset_game()
 
     def reset_game(self):
-        """Resets target score and restores item layout."""
+        """Resets target score, hides restart button, clears feedback text, and restores items."""
         self.current_correct_count = 0
+        self.restart_btn.hide()
         self.setup_items()
+
+    def showEvent(self, event):
+        """Resets state on scene navigation."""
+        self.reset_game()
+        self.feedback_label.setText("")
+        super().showEvent(event)
+
+    def handle_back(self):
+        """Handles back button click safely."""
+        self.reset_game()
+        self.router.navigate("pula")
