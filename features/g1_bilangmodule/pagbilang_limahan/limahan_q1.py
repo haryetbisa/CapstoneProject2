@@ -6,7 +6,7 @@ from themes.fonts import BODY_FONT
 from themes.colors import *
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image_content", "bilang_g1")
+IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "bilang_g1")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
@@ -50,7 +50,6 @@ class BlankDropTarget(QLabel):
         self.setAcceptDrops(True)
         self.setAlignment(Qt.AlignCenter)
         self.target_size = size
-        self._apply_empty_style()
 
         self.setFixedSize(size, size)
         self._apply_empty_style()
@@ -66,7 +65,7 @@ class BlankDropTarget(QLabel):
         self.setStyleSheet(f"""
             border: 2px solid {CHOCO_BROWN};
             border-radius: 10px;
-            background-color: none;
+            background-color: {PASTEL_YELLOW};
         """)
 
     def dragEnterEvent(self, event):
@@ -100,8 +99,7 @@ class BilangLvl7(QWidget):
 
         top_bar = QHBoxLayout()
         top_bar.setContentsMargins(60, 50, 0, 20)
-        top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
-
+        top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
 
         back_btn = QPushButton()
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -120,7 +118,7 @@ class BilangLvl7(QWidget):
         top_bar.addStretch()
         main_layout.addLayout(top_bar)
 
-        #Picture Bank
+        # Picture Bank
         pic_bank = QFrame()
         pic_bank.setMinimumWidth(800)
         pic_bank.setStyleSheet(f"border: 1px solid #D9CBB0; border-radius: 4px; ")
@@ -142,11 +140,9 @@ class BilangLvl7(QWidget):
 
         main_layout.addWidget(pic_bank)
 
-
         # Image & sentence words at blank
         image_layout = QHBoxLayout()
         image_layout.setSpacing(10)
-
 
         lima = QLabel()
         lima.setAlignment(Qt.AlignCenter)
@@ -171,7 +167,6 @@ class BilangLvl7(QWidget):
             )
         )
         image_layout.addWidget(dalawampu)
-
 
         main_layout.addLayout(image_layout)
         main_layout.addStretch()

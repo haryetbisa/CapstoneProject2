@@ -78,7 +78,7 @@ class Kuwento9Question(QWidget):
         self.opt_2 = ChoicesButton("ha", color=HOT_PINK)
         self.opt_3 = ChoicesButton("opo", color=LIGHT_GREEN)
 
-        self.opt_1.clicked.connect(lambda: self.handle_choice(False, self.opt_1))
+        self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1))
         self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2))
         self.opt_3.clicked.connect(lambda: self.handle_choice(True, self.opt_3))
 
@@ -139,7 +139,7 @@ class Kuwento9Question(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("level1")
+        self.router.navigate("level9")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"

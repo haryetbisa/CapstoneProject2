@@ -141,7 +141,7 @@ class Kuwento4Question(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("level3")
+        self.router.navigate("level4")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"

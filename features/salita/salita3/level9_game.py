@@ -107,6 +107,6 @@ class Salita9Game(QWidget):
         """)
         self.next_btn.setFixedSize(180, 50)
         lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("salitaq9"))
+        self.next_btn.clicked.connect(lambda: self.router.navigate("salitaq10"))
 
 
