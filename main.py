@@ -188,7 +188,9 @@ from features.pnk_module.binti.binti_vs import BintiVS
 from features.pnk_module.paa.paa_vs import PaaVS
 
 #PNK Games
-from features.pnk_module.pnk_games.mukha import MukhaGame
+from features.pnk_module.pnk_games.mukhasample import MukhaGameSample
+from features.pnk_module.pnk_games.katawan import KatawanGame
+from features.pnk_module.pnk_games.paa import PaaGame
 
 #LessonSCreen Hayop
 from features.hayop_module.aso.aso import LessonScreenAso
@@ -522,7 +524,9 @@ class MainWindow(QMainWindow):
         self.router.register("paavs", PaaVS(self.router))
 
 #PNK Game
-        self.router.register("mukha_game", MukhaGame(self.router))
+        self.router.register("mukha_game", MukhaGameSample(self.router))
+        self.router.register("katawan_game", KatawanGame(self.router))
+        self.router.register("paa_game", PaaGame(self.router))
 
 
 #HAYOP LessonSCreen
