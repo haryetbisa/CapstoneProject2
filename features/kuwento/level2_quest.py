@@ -12,12 +12,12 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwen
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
 
+
 class Kuwento2Question(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
 
-        
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
@@ -28,7 +28,7 @@ class Kuwento2Question(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
 
-        
+        # Header Navigation Bar
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(60, 50, 0, 20)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
@@ -56,13 +56,13 @@ class Kuwento2Question(QWidget):
         top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-        
+        # Question Title
         title = QLabel("Ano ang alagang hayop sa kuwento?")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 32px; font-weight: 800; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
 
-        
+        # Image Container
         image = QLabel()
         image_path = os.path.join(IMAGE_DIR, "AAA.png")
         if os.path.exists(image_path):
@@ -92,9 +92,10 @@ class Kuwento2Question(QWidget):
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
-        
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        # Action Buttons Layout (Restart + Next)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -115,17 +116,38 @@ class Kuwento2Question(QWidget):
                 background-color: #E08E00;
             }}
         """)
-        self.restart_btn.hide()  
+        self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         main_layout.addStretch()
 
     def reset_game(self):
-        """Resets choice states, restores default styles, and hides restart button."""
+        """Resets choice states, restores default styles, and hides action buttons."""
         self.restart_btn.hide()
+        self.next_btn.hide()
         
         button_configs = [
             (self.opt_1, SKY_BLUE),
@@ -150,6 +172,11 @@ class Kuwento2Question(QWidget):
         self.reset_game()
         self.router.navigate("level2")
 
+    def handle_next(self):
+        """Resets game state and navigates to the next question."""
+        self.reset_game()
+        self.router.navigate("level3")
+
     def play_feedback_sound(self, is_correct: bool):
         """Plays correct or wrong SFX."""
         filename = "correct.wav" if is_correct else "wrong.wav"
@@ -159,14 +186,17 @@ class Kuwento2Question(QWidget):
             self.feedback_player.play()
 
     def handle_choice(self, is_correct: bool, button: QPushButton):
-        """Handles choice interaction, plays SFX, and reveals restart button."""
+        """Handles choice interaction, plays SFX, disables options, and shows navigation buttons."""
         self.play_feedback_sound(is_correct)
 
+        self.opt_1.setEnabled(False)
+        self.opt_2.setEnabled(False)
+        self.opt_3.setEnabled(False)
+
         if is_correct:
-            button.setEnabled(False)
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+            self.next_btn.show()
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
-
-        
-        self.restart_btn.show()
+            self.restart_btn.show()
