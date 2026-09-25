@@ -321,3 +321,8 @@ class ParisukatGame(QWidget):
         """Resets state safely before invoking route navigation."""
         self.reset_game()
         self.router.navigate("parisukatvs")
+
+    def handle_next(self):
+        """Resets state safely before advancing to the next lesson page."""
+        self.reset_game()
+        self.router.navigate("puso")

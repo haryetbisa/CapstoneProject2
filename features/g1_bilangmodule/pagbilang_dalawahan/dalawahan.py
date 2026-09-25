@@ -12,7 +12,6 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", 
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
-
 class LessonMath5(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -23,10 +22,10 @@ class LessonMath5(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
 
-        #top layout| back buttonnnn
+        # Top layout | back button
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(60, 50, 0, 20)
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
+        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
 
         back_btn = QPushButton()
         back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
@@ -55,7 +54,7 @@ class LessonMath5(QWidget):
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
 
-        # Speaker icon + text row
+        # Text row
         text_row = QHBoxLayout()
         text_row.setSpacing(5)
         text_row.setAlignment(Qt.AlignCenter | Qt.AlignJustify)
@@ -76,12 +75,10 @@ class LessonMath5(QWidget):
 
         main_layout.addLayout(text_row)
 
-
         # Illustration
         example_image = QHBoxLayout()
         example_image.setSpacing(1)
         main_layout.addLayout(example_image)
-
 
         pic1 = QLabel()
         pic1.setPixmap(
@@ -128,7 +125,6 @@ class LessonMath5(QWidget):
         pic5.setAlignment(Qt.AlignCenter)
         example_image.addWidget(pic5)
 
-
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)
         lower_layout.setContentsMargins(70, 20, 70, 30)
@@ -145,9 +141,7 @@ class LessonMath5(QWidget):
             font-family: {BODY_FONT};
         """)
         self.next_btn.setFixedSize(180, 50)
-        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("salitaq1"))
-
+        lower_layout.addWidget(self.next_btn, alignment=Qt.AlignmentFlag.AlignRight)
+        self.next_btn.clicked.connect(lambda: self.router.navigate("dalawahan_quest1"))
 
         main_layout.addStretch()
-

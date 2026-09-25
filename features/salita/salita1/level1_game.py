@@ -159,7 +159,7 @@ class Salita1Game(QWidget):
     def handle_back(self):
         """Resets game state and routes back."""
         self.reset_game()
-        self.router.navigate("salita1")
+        self.router.navigate("salita")
 
     def play_feedback_sound(self, is_correct: bool):
         """Plays correct or wrong SFX."""

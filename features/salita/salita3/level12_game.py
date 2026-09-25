@@ -109,7 +109,7 @@ class Salita12Game(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("salita"))
         top_bar.addWidget(back_btn)
 
-        title = QLabel("Pagsasanay 11: Pangungusap")
+        title = QLabel("Pagsasanay 12: Pangungusap")
         title.setStyleSheet(f"font-size: 30px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
         top_bar.addWidget(title)
         top_bar.addStretch()
