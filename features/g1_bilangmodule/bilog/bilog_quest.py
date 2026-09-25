@@ -12,6 +12,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 
+
 class BilangLvl1(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -92,9 +93,10 @@ class BilangLvl1(QWidget):
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
-        # Centered Restart Button Layout (Below Choices)
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        # Action Buttons Layout (Restart + Next)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -115,24 +117,45 @@ class BilangLvl1(QWidget):
                 background-color: #E08E00;
             }}
         """)
-        self.restart_btn.hide()  # Hidden by default
+        self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         main_layout.addStretch()
 
     def reset_game(self):
-        """Resets choice states, restores default styles, and hides restart button."""
+        """Resets choice states, restores default styles, and hides action buttons."""
         self.restart_btn.hide()
-        
+        self.next_btn.hide()
+
         button_configs = [
             (self.opt_1, SKY_BLUE),
             (self.opt_2, HOT_PINK),
             (self.opt_3, LIGHT_GREEN),
         ]
-        
+
         for opt, color in button_configs:
             opt.setEnabled(True)
             if hasattr(opt, "reset"):
@@ -150,23 +173,32 @@ class BilangLvl1(QWidget):
         self.reset_game()
         self.router.navigate("g1_bilog")
 
+    def handle_next(self):
+        """Resets game state and routes to the next level."""
+        self.reset_game()
+        self.router.navigate("g1_parisukat")
+
     def play_feedback_sound(self, is_correct: bool):
         """Plays correct or wrong SFX."""
         filename = "correct.wav" if is_correct else "wrong.wav"
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
+            self.feedback_player.stop()
             self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
             self.feedback_player.play()
 
     def handle_choice(self, is_correct: bool, button: QPushButton):
-        """Handles choice interaction, plays SFX, and reveals restart button."""
+        """Handles choice interaction, plays SFX, and toggles navigation buttons."""
         self.play_feedback_sound(is_correct)
 
+        self.opt_1.setEnabled(False)
+        self.opt_2.setEnabled(False)
+        self.opt_3.setEnabled(False)
+
         if is_correct:
-            button.setEnabled(False)
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+            self.next_btn.show()
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
-
-        # Reveal restart button regardless of right/wrong answer
-        self.restart_btn.show()
+            self.restart_btn.show()

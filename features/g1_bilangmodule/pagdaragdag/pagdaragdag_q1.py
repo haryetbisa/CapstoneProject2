@@ -12,14 +12,11 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", 
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 
+
 class BilangLvl9(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-
-        # Track correctly clicked answers
-        self.correct_found = set()
-        self.total_correct_answers = 2  # "matamis" and "malamig"
 
         # Audio Player Setup for SFX
         self.feedback_audio_output = QAudioOutput(self)
@@ -60,13 +57,13 @@ class BilangLvl9(QWidget):
         top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-        #Horizontal container for image and word problem
+        # Horizontal container for image and word problem
         graphics = QHBoxLayout()
         graphics.setAlignment(Qt.AlignCenter)
         graphics.setSpacing(80)
         main_layout.addLayout(graphics)
 
-        #Oliva Container
+        # Oliva Container
         sentence1 = QVBoxLayout()
         sentence1.setSpacing(10)
         graphics.addLayout(sentence1)
@@ -87,7 +84,7 @@ class BilangLvl9(QWidget):
         words.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         sentence1.addWidget(words)
 
-        # Oca container
+        # Oca Container
         sentence2 = QVBoxLayout()
         sentence2.setSpacing(10)
         graphics.addLayout(sentence2)
@@ -103,12 +100,12 @@ class BilangLvl9(QWidget):
         oca.setAlignment(Qt.AlignCenter)
         sentence2.addWidget(oca)
 
-        words = QLabel("Si Oca naman ay may tatlong lobo")
-        words.setAlignment(Qt.AlignCenter)
-        words.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
-        sentence2.addWidget(words)
+        words2 = QLabel("Si Oca naman ay may tatlong lobo")
+        words2.setAlignment(Qt.AlignCenter)
+        words2.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
+        sentence2.addWidget(words2)
 
-        # Number and Sign
+        # Number Equation Layout (6 + 3 = ?)
         number_add = QHBoxLayout()
         number_add.setAlignment(Qt.AlignCenter)
         number_add.setSpacing(200)
@@ -134,35 +131,33 @@ class BilangLvl9(QWidget):
         equals.setStyleSheet(f"font-size: 50px; font-weight: 800; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         number_add.addWidget(equals)
 
+        self.qmark = QLabel("?")
+        self.qmark.setAlignment(Qt.AlignCenter)
+        self.qmark.setStyleSheet(f"font-size: 50px; font-weight: 800; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
+        number_add.addWidget(self.qmark)
 
-        qmark = QLabel("?")
-        qmark.setAlignment(Qt.AlignCenter)
-        qmark.setStyleSheet(f"font-size: 50px; font-weight: 800; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
-        number_add.addWidget(qmark)
-        
-    
-        
         # Choices Layout
         quest_row = QHBoxLayout()
         quest_row.setSpacing(20)
         quest_row.setAlignment(Qt.AlignCenter)
 
-        self.opt_1 = ChoicesButton("8", color=CORNFLOWER_BLUE)  # Correct
-        self.opt_2 = ChoicesButton("9", color=MEDIUM_PURPLE)     # Wrong
-        self.opt_3 = ChoicesButton("7", color=HONEY_YELLOW)     # Correct
+        self.opt_1 = ChoicesButton("8", color=CORNFLOWER_BLUE)  # Wrong
+        self.opt_2 = ChoicesButton("9", color=MEDIUM_PURPLE)     # Correct (6 + 3 = 9)
+        self.opt_3 = ChoicesButton("7", color=HONEY_YELLOW)     # Wrong
 
-        self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1, "matamis"))
-        self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2, "maalat"))
-        self.opt_3.clicked.connect(lambda: self.handle_choice(True, self.opt_3, "malamig"))
+        self.opt_1.clicked.connect(lambda: self.handle_choice(False, self.opt_1))
+        self.opt_2.clicked.connect(lambda: self.handle_choice(True, self.opt_2))
+        self.opt_3.clicked.connect(lambda: self.handle_choice(False, self.opt_3))
 
         quest_row.addWidget(self.opt_1)
         quest_row.addWidget(self.opt_2)
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
-        # Centered Restart Button Layout (Below Choices)
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        # Action Buttons Layout (Restart + Next)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -183,25 +178,46 @@ class BilangLvl9(QWidget):
                 background-color: #E08E00;
             }}
         """)
-        self.restart_btn.hide()  # Hidden by default
+        self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         main_layout.addStretch()
 
     def reset_game(self):
-        """Resets choice states, clears answers, and hides the restart button."""
-        self.correct_found.clear()
+        """Resets choice button styles, question label, and hides action buttons."""
+        self.qmark.setText("?")
         self.restart_btn.hide()
-        
+        self.next_btn.hide()
+
         button_configs = [
             (self.opt_1, CORNFLOWER_BLUE),
             (self.opt_2, MEDIUM_PURPLE),
             (self.opt_3, HONEY_YELLOW),
         ]
-        
+
         for opt, color in button_configs:
             opt.setEnabled(True)
             if hasattr(opt, "reset"):
@@ -210,36 +226,35 @@ class BilangLvl9(QWidget):
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
 
     def showEvent(self, event):
-        """Resets state whenever screen becomes visible."""
         self.reset_game()
         super().showEvent(event)
 
     def handle_back(self):
-        """Resets game state and routes back."""
         self.reset_game()
         self.router.navigate("bilang_g1")
 
+    def handle_next(self):
+        self.reset_game()
+        self.router.navigate("pagdaragdag_q2")
+
     def play_feedback_sound(self, is_correct: bool):
-        """Plays correct or wrong SFX."""
         filename = "correct.wav" if is_correct else "wrong.wav"
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
             self.feedback_player.play()
 
-    def handle_choice(self, is_correct: bool, button: QPushButton, choice_key: str):
-        """Handles answer checking, plays SFX, and reveals restart button on complete or wrong choice."""
+    def handle_choice(self, is_correct: bool, button: QPushButton):
         self.play_feedback_sound(is_correct)
+        self.restart_btn.show()
 
         if is_correct:
-            button.setEnabled(False)
+            self.qmark.setText("9")
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
-            self.correct_found.add(choice_key)
-
-            # Reveal restart button when all correct choices are found
-            if len(self.correct_found) == self.total_correct_answers:
-                self.restart_btn.show()
+            self.opt_1.setEnabled(False)
+            self.opt_2.setEnabled(False)
+            self.opt_3.setEnabled(False)
+            self.next_btn.show()
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
-            # Reveal restart button when a wrong choice is picked
-            self.restart_btn.show()
+            self.next_btn.hide()

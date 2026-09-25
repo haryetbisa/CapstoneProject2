@@ -185,15 +185,16 @@ class Salita4Game(QWidget):
         self.router.navigate("salita")
 
     def handle_next(self):
-        """Resets game state and routes back to module menu or completion screen."""
+        """Resets game state and routes forward to Pagsasanay 5."""
         self.reset_game()
-        self.router.navigate("salita")
+        self.router.navigate("salitaq5")
 
     def play_feedback_sound(self, is_correct: bool):
         """Plays correct or wrong SFX."""
         filename = "correct.wav" if is_correct else "wrong.wav"
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
+            self.feedback_player.stop()
             self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
             self.feedback_player.play()
 
