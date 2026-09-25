@@ -34,7 +34,7 @@ class LessonMath7(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
-        back_btn.clicked.connect(lambda: self.router.navigate("bilang_g1"))
+        back_btn.clicked.connect(self.handle_back)
 
         pagsasanay = QLabel("Aralin: Pagdaragdag (Addition)")
         pagsasanay.setStyleSheet(f"""
@@ -58,10 +58,11 @@ class LessonMath7(QWidget):
         self.player = QMediaPlayer(self)
         self.audio_output = QAudioOutput(self)
         self.player.setAudioOutput(self.audio_output)
-        self.player.setVideoOutput(self.video_widget)   # connects player's video frames to the widget
+        self.player.setVideoOutput(self.video_widget)
 
         video_path = os.path.join(VIDEO_DIR, "addition.mp4")
-        self.player.setSource(QUrl.fromLocalFile(video_path))
+        if os.path.exists(video_path):
+            self.player.setSource(QUrl.fromLocalFile(video_path))
 
         # ---- Controls row ----
         controls = QHBoxLayout()
@@ -72,15 +73,40 @@ class LessonMath7(QWidget):
         self.play_pause_btn.setFixedSize(140, 50)
         self.play_pause_btn.setCursor(Qt.PointingHandCursor)
         self.play_pause_btn.setStyleSheet("""
-            background-color: #FFD24C;
-            color: #3A2E1F;
-            font-size: 18px;
-            font-weight: 800;
-            border-radius: 10px;
+            QPushButton {
+                background-color: #FFD24C;
+                color: #3A2E1F;
+                font-size: 18px;
+                font-weight: 800;
+                border-radius: 10px;
+            }
+            QPushButton:hover {
+                background-color: #E6BD44;
+            }
         """)
         self.play_pause_btn.clicked.connect(self.toggle_play_pause)
-        controls.addWidget(self.play_pause_btn)
 
+        # ---- Susunod (Next) Button ----
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setFixedSize(160, 50)
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.clicked.connect(self.handle_next)
+
+        controls.addWidget(self.play_pause_btn)
+        controls.addWidget(self.next_btn)
         main_layout.addLayout(controls)
 
         # ---- Keep the button label in sync with actual playback state ----
@@ -97,3 +123,18 @@ class LessonMath7(QWidget):
             self.play_pause_btn.setText("⏸ Pause")
         else:
             self.play_pause_btn.setText("▶ Play")
+
+    def handle_back(self):
+        """Stops video playback and navigates back to Grade 1 Math dashboard."""
+        self.player.stop()
+        self.router.navigate("bilang_g1")
+
+    def handle_next(self):
+        """Stops video playback and navigates to Pagdaragdag Question 1."""
+        self.player.stop()
+        self.router.navigate("pagdaragdag_q1")
+
+    def showEvent(self, event):
+        """Resets video playback when screen is displayed."""
+        self.player.stop()
+        super().showEvent(event)

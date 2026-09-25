@@ -1,16 +1,16 @@
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "salita")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 
 
 class Salita9Game(QWidget):
@@ -18,23 +18,34 @@ class Salita9Game(QWidget):
         super().__init__()
         self.router = router
 
+        # Audio Setup
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(0.8)
+
+        self._setup_ui()
+
+    def _setup_ui(self):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
 
-        #top layout| back buttonnnn
+        # Top Bar
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(60, 50, 0, 20)
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
+        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
 
         back_btn = QPushButton()
-        back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
+        back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
+        if os.path.exists(back_icon_path):
+            back_btn.setIcon(QIcon(back_icon_path))
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
-        back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-        back_btn.clicked.connect(lambda: self.router.navigate("salita"))
+        back_btn.setStyleSheet("border: none; background-color: transparent;")
+        back_btn.clicked.connect(self.handle_back)
 
         pagsasanay = QLabel("Pagsasanay 9: Pangungusap")
         pagsasanay.setStyleSheet(f"""
@@ -49,64 +60,150 @@ class Salita9Game(QWidget):
         top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-        title = QLabel("Ang mga bata ay ___________.")
-        title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet(f"font-size: 32px; font-weight: 700; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
-        main_layout.addWidget(title)
+        # Question Title
+        self.title_label = QLabel("Ang mga bata ay ___________.")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setStyleSheet(f"font-size: 32px; font-weight: 700; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
+        main_layout.addWidget(self.title_label)
         
-        #image and choices
-        choices = QHBoxLayout()
-        main_layout.addLayout(choices)
-        choices.setContentsMargins(0, 50, 0, 0)
-        choices.addSpacing(50)
+        # Image and Choices Container
+        choices_container = QHBoxLayout()
+        choices_container.setContentsMargins(0, 30, 0, 0)
+        choices_container.addSpacing(50)
+        main_layout.addLayout(choices_container)
 
         # Illustration
         image = QLabel()
-        image.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "naglalaro.png")).scaled(
-                400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        image_path = os.path.join(IMAGE_DIR, "naglalaro.png")
+        if os.path.exists(image_path):
+            image.setPixmap(
+                QPixmap(image_path).scaled(
+                    380, 380, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
             )
-        )
         image.setAlignment(Qt.AlignCenter)
-        choices.addWidget(image)
+        choices_container.addWidget(image)
 
-
-        # Choices Layout
+        # Choices Column
         quest_row = QVBoxLayout()
-        quest_row.setSpacing(30)
+        quest_row.setSpacing(20)
         quest_row.setAlignment(Qt.AlignCenter)
 
         self.opt_1 = ChoicesButton("naglalaro", color=CORNFLOWER_BLUE)  # Correct
         self.opt_2 = ChoicesButton("umiiyak", color=MEDIUM_PURPLE)     # Wrong
-        self.opt_3 = ChoicesButton("tahimik", color=HONEY_YELLOW)     # Correct
+        self.opt_3 = ChoicesButton("tahimik", color=HONEY_YELLOW)      # Wrong
 
-        self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1, "matamis"))
-        self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2, "maalat"))
-        self.opt_3.clicked.connect(lambda: self.handle_choice(True, self.opt_3, "malamig"))
+        self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1, "naglalaro"))
+        self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2, "umiiyak"))
+        self.opt_3.clicked.connect(lambda: self.handle_choice(False, self.opt_3, "tahimik"))
 
         quest_row.addWidget(self.opt_1)
         quest_row.addWidget(self.opt_2)
         quest_row.addWidget(self.opt_3)
-        choices.addLayout(quest_row)
+        choices_container.addLayout(quest_row)
 
+        # Action Buttons Layout (Restart + Next)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
-        lower_layout = QHBoxLayout()
-        lower_layout.setSpacing(200)
-        lower_layout.setContentsMargins(70, 20, 70, 30)
-        main_layout.addLayout(lower_layout)
+        self.restart_btn = QPushButton(" Restart")
+        restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
+        if os.path.exists(restart_icon_path):
+            self.restart_btn.setIcon(QIcon(restart_icon_path))
+        self.restart_btn.setCursor(Qt.PointingHandCursor)
+        self.restart_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {MARIGOLD};
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #E08E00;
+            }}
+        """)
+        self.restart_btn.hide()
+        self.restart_btn.clicked.connect(self.reset_game)
 
-        self.next_btn = QPushButton("Sunod")
+        self.next_btn = QPushButton("Susunod ➔")
         self.next_btn.setCursor(Qt.PointingHandCursor)
         self.next_btn.setStyleSheet(f"""
-            background-color: {BRIGHT_YELLOW};
-            color: {CHOCO_BROWN};
-            font-size: 22px;
-            font-weight: 700;
-            border-radius: 6px;
-            font-family: {BODY_FONT};
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
         """)
-        self.next_btn.setFixedSize(180, 50)
-        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("salitaq10"))
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
 
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
+        main_layout.addStretch()
+
+    def play_feedback_sound(self, is_correct: bool):
+        filename = "correct.wav" if is_correct else "wrong.wav"
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            self.feedback_player.stop()
+            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+            self.feedback_player.play()
+
+    def handle_choice(self, is_correct: bool, button: QPushButton, word: str):
+        self.play_feedback_sound(is_correct)
+
+        self.opt_1.setEnabled(False)
+        self.opt_2.setEnabled(False)
+        self.opt_3.setEnabled(False)
+
+        if is_correct:
+            self.title_label.setText(f"Ang mga bata ay {word}.")
+            button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+            self.next_btn.show()
+        else:
+            button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+
+    def reset_game(self):
+        self.title_label.setText("Ang mga bata ay ___________.")
+        self.restart_btn.hide()
+        self.next_btn.hide()
+
+        button_configs = [
+            (self.opt_1, CORNFLOWER_BLUE),
+            (self.opt_2, MEDIUM_PURPLE),
+            (self.opt_3, HONEY_YELLOW),
+        ]
+
+        for opt, color in button_configs:
+            opt.setEnabled(True)
+            if hasattr(opt, "reset"):
+                opt.reset()
+            else:
+                opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
+
+    def handle_back(self):
+        self.reset_game()
+        self.router.navigate("salita")
+
+    def handle_next(self):
+        self.reset_game()
+        self.router.navigate("salitaq10")

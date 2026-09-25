@@ -1,6 +1,7 @@
 import os
-from PySide6.QtCore import Qt, QPoint, QSize
+from PySide6.QtCore import Qt, QPoint, QSize, QUrl
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
 from themes.colors import *
 from themes.fonts import BODY_FONT
@@ -8,18 +9,18 @@ from themes.fonts import BODY_FONT
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "salita")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 
 
 class Dot(QLabel):
-    """A small circular anchor point. Left dots are draggable; right dots are drop targets."""
-
-    def __init__(self, is_source: bool, parent_game):
+    def __init__(self, is_source: bool, item_id: str, parent_game):
         super().__init__()
         self.is_source = is_source
+        self.item_id = item_id
         self.game = parent_game
 
         self.setFixedSize(20, 20)
-        self.setStyleSheet(f"background-color: {CHOCO_BROWN}; border-radius: 20px;")
+        self.setStyleSheet(f"background-color: {CHOCO_BROWN}; border-radius: 10px;")
         if is_source:
             self.setCursor(Qt.OpenHandCursor)
 
@@ -55,15 +56,25 @@ class Salita5Game(QWidget):
         super().__init__()
         self.router = router
 
-        self.connections = []   # list of (source_dot, target_dot) — no correctness tracked
+        self.connections = []   # (source_dot, target_dot, is_correct)
         self.dragging_from = None
         self.temp_end_point = None
+        self.total_pairs = 5
 
+        # Audio Setup
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(0.8)
+
+        self._setup_ui()
+
+    def _setup_ui(self):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
 
-        # Top bar
+        # Top Bar
         top_bar = QHBoxLayout()
         back_btn = QPushButton()
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -73,70 +84,127 @@ class Salita5Game(QWidget):
         back_btn.setIconSize(QSize(30, 30))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet("border: none; background-color: transparent;")
-        back_btn.clicked.connect(lambda: self.router.navigate("salita"))
+        back_btn.clicked.connect(self.handle_back)
         top_bar.addWidget(back_btn)
 
         title = QLabel("Pagsasanay 5: Salitang Magkatugma")
-        title.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT} ;")
+        title.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
         top_bar.addWidget(title)
         top_bar.addStretch()
         main_layout.addLayout(top_bar)
 
-        # Rows of matching items — same image+word appears on both sides
+        # Matching items layout
         rows_layout = QVBoxLayout()
-        rows_layout.setSpacing(40)
-        rows_layout.setContentsMargins(60, 40, 60, 20)
+        rows_layout.setSpacing(30)
+        rows_layout.setContentsMargins(60, 20, 60, 10)
         main_layout.addLayout(rows_layout)
 
-        # each row: (left_image, left_word, right_image, right_word) — can be fully different per side
         items = [
-            ("bola.png", "bola", "bato.png", "bato"),
-            ("mata.png", "mata", "braso.png", "siko"),
-            ("buto.png", "buto", "ipis.png", "ipis"),
-            ("lapis.png", "lapis", "lola.png", "lola"),
-            ("sako.png", "sako", "bata.png", "bata"),
+            ("bola.png", "bola", "lola", "lola.png", "lola", "lola"),
+            ("mata.png", "mata", "bata", "bata.png", "bata", "bata"),
+            ("buto.png", "buto", "bato", "bato.png", "bato", "bato"),
+            ("lapis.png", "lapis", "ipis", "ipis.png", "ipis", "ipis"),
+            ("sako.png", "sako", "siko", "braso.png", "siko", "siko"),
         ]
 
-        for left_image_file, left_word_text, right_image_file, right_word_text in items:
+        for left_img, left_txt, left_key, right_img, right_txt, right_key in items:
             row = QHBoxLayout()
 
-            # ---- LEFT: image + word ----
-            left_image = QLabel()
-            left_path = os.path.join(IMAGE_DIR, left_image_file)
+            # Left side
+            left_image_lbl = QLabel()
+            left_path = os.path.join(IMAGE_DIR, left_img)
             if os.path.exists(left_path):
-                left_image.setPixmap(
-                    QPixmap(left_path).scaled(90, 90, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                left_image_lbl.setPixmap(
+                    QPixmap(left_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
-            row.addWidget(left_image)
+            row.addWidget(left_image_lbl)
 
-            left_word = QLabel(left_word_text)
-            left_word.setStyleSheet(f"font-size: 30px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
-            row.addWidget(left_word)
+            left_word_lbl = QLabel(left_txt)
+            left_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
+            row.addWidget(left_word_lbl)
 
-            source_dot = Dot(is_source=True, parent_game=self)
+            source_dot = Dot(is_source=True, item_id=left_key, parent_game=self)
             row.addWidget(source_dot)
 
             row.addStretch()
 
-            # ---- RIGHT: dot + image + word ----
-            target_dot = Dot(is_source=False, parent_game=self)
+            # Right side
+            target_dot = Dot(is_source=False, item_id=right_key, parent_game=self)
             row.addWidget(target_dot)
 
-            right_image = QLabel()
-            right_path = os.path.join(IMAGE_DIR, right_image_file)
+            right_image_lbl = QLabel()
+            right_path = os.path.join(IMAGE_DIR, right_img)
             if os.path.exists(right_path):
-                right_image.setPixmap(
-                    QPixmap(right_path).scaled(90, 90, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                right_image_lbl.setPixmap(
+                    QPixmap(right_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
-            row.addWidget(right_image)
+            row.addWidget(right_image_lbl)
 
-            right_word = QLabel(right_word_text)
-            right_word.setStyleSheet(f"font-size: 30px; font-weight: 700; color:{CHOCO_BROWN}; font-family: {BODY_FONT} ;")
-            row.addWidget(right_word)
+            right_word_lbl = QLabel(right_txt)
+            right_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
+            row.addWidget(right_word_lbl)
 
             rows_layout.addLayout(row)
 
+        # Action Buttons Layout
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
+
+        self.restart_btn = QPushButton(" Restart")
+        restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
+        if os.path.exists(restart_icon_path):
+            self.restart_btn.setIcon(QIcon(restart_icon_path))
+        self.restart_btn.setCursor(Qt.PointingHandCursor)
+        self.restart_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {MARIGOLD};
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #E08E00;
+            }}
+        """)
+        self.restart_btn.hide()
+        self.restart_btn.clicked.connect(self.reset_game)
+
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
+
         main_layout.addStretch()
+
+    def play_feedback_sound(self, is_correct: bool):
+        filename = "correct.wav" if is_correct else "wrong.wav"
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            self.feedback_player.stop()
+            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+            self.feedback_player.play()
 
     def start_drag(self, source_dot: Dot):
         self.dragging_from = source_dot
@@ -153,13 +221,20 @@ class Salita5Game(QWidget):
         self.update()
 
     def finalize_connection(self, source_dot: Dot, target_dot: Dot):
-        # replace any previous line from this same source
+        is_correct = (source_dot.item_id == target_dot.item_id)
+        self.play_feedback_sound(is_correct)
+
         self.connections = [c for c in self.connections if c[0] != source_dot]
-        self.connections.append((source_dot, target_dot))
+        self.connections.append((source_dot, target_dot, is_correct))
 
         self.dragging_from = None
         self.temp_end_point = None
         self.update()
+
+        self.restart_btn.show()
+
+        if sum(1 for _, _, ok in self.connections if ok) == self.total_pairs:
+            self.next_btn.show()
 
     def dot_center(self, dot: Dot) -> QPoint:
         return dot.mapTo(self, dot.rect().center())
@@ -168,11 +243,33 @@ class Salita5Game(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        pen = QPen(QColor(MAGENTA), 6)
-        painter.setPen(pen)
-
-        for source_dot, target_dot in self.connections:
+        for source_dot, target_dot, is_correct in self.connections:
+            line_color = QColor("#2ECC71") if is_correct else QColor("#E74C3C")
+            pen = QPen(line_color, 5)
+            painter.setPen(pen)
             painter.drawLine(self.dot_center(source_dot), self.dot_center(target_dot))
 
         if self.dragging_from and self.temp_end_point:
+            pen = QPen(QColor(MAGENTA), 5)
+            painter.setPen(pen)
             painter.drawLine(self.dot_center(self.dragging_from), self.temp_end_point)
+
+    def reset_game(self):
+        self.connections.clear()
+        self.dragging_from = None
+        self.temp_end_point = None
+        self.restart_btn.hide()
+        self.next_btn.hide()
+        self.update()
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
+
+    def handle_back(self):
+        self.reset_game()
+        self.router.navigate("salita")
+
+    def handle_next(self):
+        self.reset_game()
+        self.router.navigate("salitaq6")
