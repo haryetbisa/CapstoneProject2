@@ -20,6 +20,7 @@ BASE_DIR = os.path.dirname(
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
+AUDIO_DIR = os.path.join(BASE_DIR, "assets", "audio_content", "pantig")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
@@ -32,6 +33,12 @@ class PantigYate(QWidget):
         self.router = router
         self.target_word = "yate"
         self.worker = None
+
+        # Speech & Audio Player Setup
+        self.word_audio_output = QAudioOutput(self)
+        self.word_player = QMediaPlayer(self)
+        self.word_player.setAudioOutput(self.word_audio_output)
+        self.word_audio_output.setVolume(1.0)
 
         # Feedback Audio Player Setup
         self.feedback_audio_output = QAudioOutput(self)
@@ -71,7 +78,7 @@ class PantigYate(QWidget):
         top_bar.addWidget(pagsasanay)
         top_bar.setSpacing(20)
 
-        # Main Graphic (kahoy.png)
+        # Main Graphic (yate.png)
         image = QLabel()
         image_path = os.path.join(IMAGE_DIR, "yate.png")
         if os.path.exists(image_path):
@@ -94,6 +101,7 @@ class PantigYate(QWidget):
             self.audio.setIcon(QIcon(audio_icon_path))
         self.audio.setIconSize(QSize(40, 40))
         self.audio.setCursor(Qt.PointingHandCursor)
+        self.audio.clicked.connect(self.play_word_audio)
         word.addWidget(self.audio)
 
         salita = QLabel("Ya-te")
@@ -164,13 +172,18 @@ class PantigYate(QWidget):
             }}
         """)
         self.next_btn.setFixedSize(240, 60)
-        self.next_btn.clicked.connect(
-            lambda: self.router.navigate("Yaya")
-        )
+        self.next_btn.clicked.connect(self.handle_next)
 
         lower_layout.addStretch()
         lower_layout.addWidget(self.next_btn)
         main_layout.addLayout(lower_layout)
+
+    def play_word_audio(self):
+        """Plays the target word pronunciation sound."""
+        audio_path = os.path.join(AUDIO_DIR, "yate.wav")
+        if os.path.exists(audio_path):
+            self.word_player.setSource(QUrl.fromLocalFile(os.path.abspath(audio_path)))
+            self.word_player.play()
 
     def play_feedback_sound(self, filename: str):
         """Plays the correct/wrong feedback audio sound."""
@@ -237,6 +250,13 @@ class PantigYate(QWidget):
     @Slot()
     def on_speech_finished(self):
         self.speak_btn.setEnabled(True)
+
+    def handle_next(self):
+        """Safely stops recording before navigating forward."""
+        if self.worker and self.worker.isRunning():
+            self.worker.stop()
+            self.worker.wait()
+        self.router.navigate("yaya")
 
     def handle_back(self):
         """Safely stops recording before navigating away."""

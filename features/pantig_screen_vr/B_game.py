@@ -11,6 +11,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "panti
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
 
+
 class Dot(QLabel):
     def __init__(self, dot_id: str, is_source: bool, parent_game):
         super().__init__()
@@ -138,8 +139,10 @@ class MatchingBa(QWidget):
 
             rows_layout.addLayout(row)
 
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        # Action Buttons Layout (Restart + Next)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -163,8 +166,28 @@ class MatchingBa(QWidget):
         self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         main_layout.addStretch()
 
@@ -173,6 +196,7 @@ class MatchingBa(QWidget):
         self.dragging_from = None
         self.temp_end_point = None
         self.restart_btn.hide()
+        self.next_btn.hide()
         self.update()
 
     def showEvent(self, event):
@@ -182,6 +206,10 @@ class MatchingBa(QWidget):
     def handle_back(self):
         self.reset_game()
         self.router.navigate("bata")
+
+    def handle_next(self):
+        self.reset_game()
+        self.router.navigate("kahoy")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"
@@ -215,6 +243,11 @@ class MatchingBa(QWidget):
         self.dragging_from = None
         self.temp_end_point = None
         self.restart_btn.show()
+
+        # Reveal Susunod button when all pairs are matched correctly
+        if len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
+            self.next_btn.show()
+
         self.update()
 
     def dot_center(self, dot: Dot) -> QPoint:
