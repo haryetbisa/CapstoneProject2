@@ -35,19 +35,16 @@ class PantigAso(QWidget):
         self.target_word = "aso"
         self.worker = None
 
-        
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
         self.feedback_audio_output.setVolume(1.0)
 
-       
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
         self.word_audio_output.setVolume(1.0)
 
-       
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
 
@@ -177,9 +174,7 @@ class PantigAso(QWidget):
             }}
         """)
         self.next_btn.setFixedSize(240, 60)
-        self.next_btn.clicked.connect(
-            lambda: self.router.navigate("aklat")
-        )
+        self.next_btn.clicked.connect(self.handle_next)
 
         lower_layout.addStretch()
         lower_layout.addWidget(self.next_btn)
@@ -268,6 +263,11 @@ class PantigAso(QWidget):
         """Safely stops recording before navigating back."""
         self.stop_worker()
         self.router.navigate("pantig")
+
+    def handle_next(self):
+        """Safely stops recording before navigating to next screen."""
+        self.stop_worker()
+        self.router.navigate("aklat")
 
     def stop_worker(self):
         """Safely terminates active voice worker threads."""

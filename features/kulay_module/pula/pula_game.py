@@ -1,8 +1,9 @@
 import os
-from PySide6.QtCore import QMimeData, QSize, Qt, QUrl
+from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import (
+    QApplication,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -23,12 +24,13 @@ SOUNDS_DIR = os.path.join(
 
 
 class DraggableIcon(QLabel):
-    """An image the user can pick up and drag anywhere."""
+    """An image the user can pick up and drag with distance threshold protection."""
 
     def __init__(self, image_path: str, filename: str, size: int = 160):
         super().__init__()
         self.image_path = image_path
         self.filename = filename
+        self.drag_start_position = QPoint()
 
         pixmap = QPixmap(image_path)
         if not pixmap.isNull():
@@ -42,7 +44,15 @@ class DraggableIcon(QLabel):
         self.setCursor(Qt.OpenHandCursor)
 
     def mousePressEvent(self, event):
-        if event.button() != Qt.LeftButton or not self.isVisible():
+        if event.button() == Qt.LeftButton:
+            self.drag_start_position = event.pos()
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if not (event.buttons() & Qt.LeftButton) or not self.isVisible():
+            return
+
+        if (event.pos() - self.drag_start_position).manhattanLength() < QApplication.startDragDistance():
             return
 
         drag = QDrag(self)
@@ -54,10 +64,12 @@ class DraggableIcon(QLabel):
             drag.setPixmap(self.pixmap())
             drag.setHotSpot(event.pos())
 
+        self.setCursor(Qt.ClosedHandCursor)
         self.hide()
-        result = drag.exec(Qt.MoveAction)
-        if result != Qt.MoveAction:
+        result = drag.exec(Qt.CopyAction | Qt.MoveAction)
+        if result != Qt.MoveAction and result != Qt.CopyAction:
             self.show()
+        self.setCursor(Qt.OpenHandCursor)
 
 
 class DropBox(QLabel):
@@ -170,7 +182,7 @@ class DragDropRed(QWidget):
         )
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Aralin: Pula")
+        pagsasanay = QLabel("Pagsasanay: Pula")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -208,9 +220,10 @@ class DragDropRed(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
-        # Restart button setup
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        # Action Buttons Layout (Restart + Next Button)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -234,8 +247,29 @@ class DragDropRed(QWidget):
         self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        # Next Page Button
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         self.item_images = [
             "apple.png",
@@ -272,8 +306,6 @@ class DragDropRed(QWidget):
 
     def handle_item_drop(self, source_widget: DraggableIcon, filename: str):
         """Evaluates correctness when an item is dropped into the box."""
-        self.restart_btn.show()
-
         if filename in self.correct_items:
             self.current_correct_count += 1
             if source_widget in self.active_icons:
@@ -283,15 +315,15 @@ class DragDropRed(QWidget):
             if self.current_correct_count >= self.REQUIRED_CORRECT_COUNT:
                 self.feedback_label.setText("✅ MAGALING! TAMA LAHAT!")
                 self.feedback_label.setStyleSheet(
-                    f"font-size: 26px; color: green; font-family: {BODY_FONT};"
-                    " font-weight: bold;"
+                    f"font-size: 26px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
                 )
                 self.play_sound("correct.wav")
+                self.restart_btn.show()
+                self.next_btn.show()
             else:
                 self.feedback_label.setText("Tama! Isa pa!")
                 self.feedback_label.setStyleSheet(
-                    f"font-size: 24px; color: green; font-family: {BODY_FONT};"
-                    " font-weight: bold;"
+                    f"font-size: 24px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
                 )
                 self.play_sound("correct.wav")
         else:
@@ -300,15 +332,15 @@ class DragDropRed(QWidget):
                 "❌ SUBUKAN ULIT! Maling kulay! Na-reset ang laro."
             )
             self.feedback_label.setStyleSheet(
-                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
             self.reset_game()
 
     def reset_game(self):
-        """Resets target score, hides restart button, clears feedback text, and restores items."""
+        """Resets target score, hides action buttons, clears feedback text, and restores items."""
         self.current_correct_count = 0
         self.restart_btn.hide()
+        self.next_btn.hide()
         self.setup_items()
 
     def showEvent(self, event):
@@ -321,3 +353,8 @@ class DragDropRed(QWidget):
         """Handles back button click safely."""
         self.reset_game()
         self.router.navigate("pula")
+
+    def handle_next(self):
+        """Advances safely to the next color screen in the Kulay LS sequence (kahel)."""
+        self.reset_game()
+        self.router.navigate("kahel")
