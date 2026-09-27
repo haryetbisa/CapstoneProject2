@@ -138,8 +138,9 @@ class MatchingNga(QWidget):
 
             rows_layout.addLayout(row)
 
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -163,8 +164,28 @@ class MatchingNga(QWidget):
         self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         main_layout.addStretch()
 
@@ -173,6 +194,7 @@ class MatchingNga(QWidget):
         self.dragging_from = None
         self.temp_end_point = None
         self.restart_btn.hide()
+        self.next_btn.hide()
         self.update()
 
     def showEvent(self, event):
@@ -182,6 +204,10 @@ class MatchingNga(QWidget):
     def handle_back(self):
         self.reset_game()
         self.router.navigate("nga")
+
+    def handle_next(self):
+        self.reset_game()
+        self.router.navigate("orasan")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"
@@ -215,6 +241,10 @@ class MatchingNga(QWidget):
         self.dragging_from = None
         self.temp_end_point = None
         self.restart_btn.show()
+
+        if len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
+            self.next_btn.show()
+
         self.update()
 
     def dot_center(self, dot: Dot) -> QPoint:

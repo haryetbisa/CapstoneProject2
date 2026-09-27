@@ -23,7 +23,6 @@ SOUNDS_DIR = os.path.join(
 
 
 class DraggableIcon(QLabel):
-
     def __init__(self, image_path: str, item_id: str, size: int = 140):
         super().__init__()
         self.image_path = image_path
@@ -60,7 +59,6 @@ class DraggableIcon(QLabel):
 
 
 class DropBox(QLabel):
-
     def __init__(
         self,
         image_path: str,
@@ -135,7 +133,6 @@ class DropBox(QLabel):
 
 
 class TatsulokGame(QWidget):
-
     def __init__(self, router):
         super().__init__()
         self.router = router
@@ -293,16 +290,14 @@ class TatsulokGame(QWidget):
                     "✅ MAGALING! NAKUHA MO ANG LAHAT NG BAGAY NA TATSULOK!"
                 )
                 self.feedback_label.setStyleSheet(
-                    f"font-size: 26px; color: green; font-family: {BODY_FONT};"
-                    " font-weight: bold;"
+                    f"font-size: 26px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
                 )
                 self.restart_btn.show()
                 self.next_btn.show()
             else:
                 self.feedback_label.setText("✅ TAMA! TATSULOK ANG BAGAY NA ITO!")
                 self.feedback_label.setStyleSheet(
-                    f"font-size: 24px; color: green; font-family: {BODY_FONT};"
-                    " font-weight: bold;"
+                    f"font-size: 24px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
                 )
         else:
             self.play_sound("wrong.wav")
@@ -310,8 +305,7 @@ class TatsulokGame(QWidget):
                 "❌ SUBUKAN ULIT! Hindi tatsulok ang bagay na ito."
             )
             self.feedback_label.setStyleSheet(
-                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
             self.reset_game()
 
