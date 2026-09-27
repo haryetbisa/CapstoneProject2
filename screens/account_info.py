@@ -1,6 +1,6 @@
 import os
 import re
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -8,8 +8,9 @@ from PySide6.QtWidgets import (
     QLabel,
     QPushButton,
     QLineEdit,
+    QToolButton
 )
-from PySide6.QtGui import QPixmap, QColor, QPalette
+from PySide6.QtGui import QPixmap, QColor, QPalette, QIcon
 
 from components.btn_dropshadow import add_drop_shadow
 from themes.colors import *
@@ -17,6 +18,15 @@ from themes.fonts import BODY_FONT
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
+ICON_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+
+
+def make_eye_icon(filename, size=36):
+    """Load an icon from ICON_DIR and scale it to the given pixel size."""
+    pixmap = QPixmap(os.path.join(ICON_DIR, filename)).scaled(
+        size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation
+    )
+    return QIcon(pixmap)
 
 
 class AccountInfo(QWidget):
@@ -36,7 +46,7 @@ class AccountInfo(QWidget):
         logo.setPixmap(
             QPixmap(
                 QPixmap(os.path.join(IMAGE_DIR, "logoo.png")).scaled(
-                    400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                    350, 350, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
         )
@@ -104,7 +114,7 @@ class AccountInfo(QWidget):
         self.password.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
-        self.password.setPlaceholderText("********")
+        self.password.setPlaceholderText("eg. 123abcd")
         self.password.setEchoMode(QLineEdit.Password)
 
         palette = self.password.palette()
@@ -126,7 +136,20 @@ class AccountInfo(QWidget):
         self.password_error.hide()
         input_layout.addWidget(self.password_error)
 
-        input_layout.addSpacing(10)
+        self.ICON_PIXEL_SIZE = 36
+
+        self.eye_btn = QToolButton(self.password)
+        self.eye_btn.setCheckable(True)
+        self.eye_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.eye_btn.setStyleSheet("background: transparent; border: none;")
+        self.eye_btn.setIcon(make_eye_icon("close_eye.png", self.ICON_PIXEL_SIZE))
+        self.eye_btn.setIconSize(QSize(self.ICON_PIXEL_SIZE, self.ICON_PIXEL_SIZE))
+        self.eye_btn.toggled.connect(self.toggle_password_visibility)
+        
+        pass_layout = QHBoxLayout(self.password)
+        pass_layout.setContentsMargins(0, 0, 10, 0)
+        pass_layout.addStretch()
+        pass_layout.addWidget(self.eye_btn)
 
         # Set initial style
         self.reset_styles()
@@ -149,7 +172,7 @@ class AccountInfo(QWidget):
                 background-color: #d94338;
             }}
         """)
-        
+
         # Connect click event BEFORE drop shadow
         self.create_btn.clicked.connect(self.validate_and_create_account)
 
@@ -230,7 +253,7 @@ class AccountInfo(QWidget):
                 border: 2px solid {CORAL_RED};        
                 border-radius: 6px;
                 background-color: {LIGHT}; 
-                padding: 10px 16px;        
+                padding: 10px 50px 10px 16px;        
             }}
         """)
 
@@ -243,7 +266,7 @@ class AccountInfo(QWidget):
                 border: 2px solid #d93025;        
                 border-radius: 6px;
                 background-color: {LIGHT}; 
-                padding: 10px 16px;        
+                padding: 10px 50px 10px 16px;        
             }}
         """)
 
@@ -258,6 +281,15 @@ class AccountInfo(QWidget):
     def clear_password_error(self):
         self.password_error.hide()
         self.set_normal_style(self.password)
+
+    def toggle_password_visibility(self, checked):
+    
+        if checked:
+            self.password.setEchoMode(QLineEdit.Normal)
+            self.eye_btn.setIcon(make_eye_icon("eye_open.png", self.ICON_PIXEL_SIZE))
+        else:
+            self.password.setEchoMode(QLineEdit.Password)
+            self.eye_btn.setIcon(make_eye_icon("close_eye.png", self.ICON_PIXEL_SIZE))
 
     def validate_and_create_account(self):
         print("--> BUTTON CLICKED! Validating inputs...")  # Debug print in terminal

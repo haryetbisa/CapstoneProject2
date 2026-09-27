@@ -6,6 +6,13 @@ from themes.colors import *
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget
 from PySide6.QtGui import QFontDatabase, QIcon
+from PySide6.QtCore import Qt
+
+# Enable high-DPI rounding and automatic screen scaling factor policy
+os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+QApplication.setHighDpiScaleFactorRoundingPolicy(
+    Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+)
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +50,7 @@ from screens.hayop_screen import HayopScreen
 from screens.kuwento_screen import KuwentoScreen
 from screens.bilang_screen_g1 import BilangScreenG1
 from screens.salita_screen import SalitaScreen
+from screens.settings import Settings
 
 #Voice Screen Pantig
 from features.pantig_screen_vr.Aso import PantigAso
@@ -398,6 +406,7 @@ class MainWindow(QMainWindow):
         self.router.register("bilang_g1", BilangScreenG1(self.router))
         self.router.register("salita", SalitaScreen(self.router))
         self.router.register("lesson", LessonScreen(self.router))
+        self.router.register("settings", Settings(self.router))
 
 #VR Pantig
         self.router.register("aso", PantigAso(self.router))
@@ -707,7 +716,6 @@ class MainWindow(QMainWindow):
 #starting screen
         self.router.navigate("loading_screen")
 
-       
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
