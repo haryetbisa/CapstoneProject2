@@ -32,7 +32,7 @@ class OblongVS(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "oblong"
+        self.target_word = "bilohaba"
         self.worker = None
 
         # Feedback Audio Player Setup
@@ -98,7 +98,7 @@ class OblongVS(QWidget):
         self.audio.setCursor(Qt.PointingHandCursor)
         word.addWidget(self.audio)
 
-        salita = QLabel("Ob-long", self)
+        salita = QLabel("Bi-lo-ha-ba", self)
         salita.setStyleSheet(f"""
             font-size: 96px;
             font-family: {BODY_FONT};

@@ -2,9 +2,9 @@
 import os
 
 from assets.icon import icon_label
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtGui import QPixmap, QColor
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy
+from PySide6.QtGui import QIcon
 from themes.colors import *
 from themes.fonts import HEADING_FONT, BODY_FONT
 
@@ -37,30 +37,38 @@ class HomeScreen(QWidget):
         text_layout.setSpacing(2)
 
 
-        hello_text = QLabel("Hello, Teacher!")
-        hello_text.setStyleSheet(f"""
+        self.hello_text = QLabel("Hello, Teacher!")
+        self.hello_text.setStyleSheet(f"""
             font-size: 26px;
             font-family: {BODY_FONT};
             font-weight: 800;
             color: #3A2E1F;
         """)
 
-        welcome_text = QLabel("Welcome to BasaMatika")
-        welcome_text.setStyleSheet(f"""
+        self.welcome_text = QLabel("Welcome to BasaMatika")
+        self.welcome_text.setStyleSheet(f"""
             font-size: 12px;
             font-family: {BODY_FONT};
             font-weight: 500;
             color: #6B5A3A;
         """)
 
-        text_layout.addWidget(hello_text)
-        text_layout.addWidget(welcome_text)
+        text_layout.addWidget(self.hello_text)
+        text_layout.addWidget(self.welcome_text)
         inner_layout.addLayout(text_layout)
         inner_layout.addStretch()
 
-
-        g_icon = icon_label("giraffe.png", 48)
-        inner_layout.addWidget(g_icon)
+        self.g_icon = QPushButton()
+        audio_icon_path = os.path.join(ASSETS_DIR, "giraffe.png")
+        if os.path.exists(audio_icon_path):
+            self.g_icon.setIcon(QIcon(audio_icon_path))
+        self.g_icon.setIconSize(QSize(40, 40))
+        self.g_icon.setCursor(Qt.PointingHandCursor)
+        self.g_icon.setStyleSheet(
+                    "border: none; background-color: transparent;"
+                )
+        self.g_icon.clicked.connect(lambda: self.router.navigate("settings"))
+        inner_layout.addWidget(self.g_icon)
 
         main_layout.addWidget(container)
 
@@ -103,34 +111,35 @@ class HomeScreen(QWidget):
         button_group.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignCenter)
 
         #kinder button
-        kinder = QPushButton("KINDERGARTEN")
-        kinder.setCursor(Qt.PointingHandCursor)
-        kinder.setStyleSheet(f"""
+        self.kinder = QPushButton("KINDERGARTEN")
+        self.kinder.setCursor(Qt.PointingHandCursor)
+        self.kinder.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.kinder.setMinimumSize(492, 86)
+        self.kinder.setStyleSheet(f"""
             background-color: {YELLOW};
             font-size: 46px;
             font-family: {HEADING_FONT};
             font-weight: 800;
             color: {CORAL_RED};
-            padding: 10px 10px;
-            min-width: 492px;
-            min-height: 86px;      
+            padding: 10px 10px;     
         """)
-        kinder.clicked.connect(lambda: self.router.navigate("kindergarten"))
+        self.kinder.clicked.connect(lambda: self.router.navigate("kindergarten"))
 
         #grade1 button
-        grade1 = QPushButton("GRADE 1")
-        grade1.setCursor(Qt.PointingHandCursor)
-        grade1.setStyleSheet(f"""
+        self.grade1 = QPushButton("GRADE 1")
+        self.grade1.setCursor(Qt.PointingHandCursor)
+        self.grade1.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.grade1.setMinimumSize(492, 86)
+        self.grade1.setStyleSheet(f"""
             background-color: {ROSE_PINK};
             font-size: 46px;
             font-weight: 800;
             font-family: {HEADING_FONT};
             color: {YELLOW};
             padding: 10px 10px;
-            min-width: 492px;
-            min-height: 86px; 
+    
         """)
-        grade1.clicked.connect(lambda: self.router.navigate("grade1_dash"))
+        self.grade1.clicked.connect(lambda: self.router.navigate("grade1_dash"))
 
 
         redb = icon_label("red_b.png", 340)
@@ -138,8 +147,8 @@ class HomeScreen(QWidget):
         redb.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom)
 
         lower_part.addWidget(pinkg) 
-        button_group.addWidget(kinder)
-        button_group.addWidget(grade1)
+        button_group.addWidget(self.kinder)
+        button_group.addWidget(self.grade1)
         lower_part.addLayout(button_group)
         lower_part.addWidget(redb)
         main_layout.addLayout(lower_part)
