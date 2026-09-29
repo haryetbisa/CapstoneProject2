@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
+# Resolve project root directory
 BASE_DIR = os.path.dirname(
     os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,6 +26,7 @@ ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
+VOICE_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "pnk")
 
 
 class LabiVS(QWidget):
@@ -35,16 +37,16 @@ class LabiVS(QWidget):
         self.target_word = "bibig"
         self.worker = None
 
-        # Feedback Audio Player Setup
-        self.feedback_audio_output = QAudioOutput(self)
-        self.feedback_player = QMediaPlayer(self)
-        self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
+        # Feedback & Word Audio Setup
+        self.audio_output = QAudioOutput(self)
+        self.player = QMediaPlayer(self)
+        self.player.setAudioOutput(self.audio_output)
+        self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
 
-        # Top Navigation Bar
+        # Top Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
@@ -73,30 +75,32 @@ class LabiVS(QWidget):
         top_bar.setSpacing(20)
         main_layout.addLayout(top_bar)
 
-        # Main Graphic Image Label
-        image = QLabel(self)
+        # Image Label
+        self.image = QLabel(self)
         image_path = os.path.join(IMAGE_DIR, "bibig.png")
         if os.path.exists(image_path):
-            image.setPixmap(
+            self.image.setPixmap(
                 QPixmap(image_path).scaled(
                     250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
-        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(image)
+        self.image.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(self.image)
 
-        # Word Display Layout
+        # Word Display & Audio Playback
         word = QHBoxLayout()
         word.setAlignment(Qt.AlignmentFlag.AlignCenter)
         word.setSpacing(20)
 
-        self.audio = QPushButton(self)
+        self.audio_btn = QPushButton(self)
         audio_icon_path = os.path.join(ICONS_DIR, "audio_icon.png")
         if os.path.exists(audio_icon_path):
-            self.audio.setIcon(QIcon(audio_icon_path))
-        self.audio.setIconSize(QSize(40, 40))
-        self.audio.setCursor(Qt.PointingHandCursor)
-        word.addWidget(self.audio)
+            self.audio_btn.setIcon(QIcon(audio_icon_path))
+        self.audio_btn.setIconSize(QSize(40, 40))
+        self.audio_btn.setCursor(Qt.PointingHandCursor)
+        self.audio_btn.setStyleSheet("border: none; background: transparent;")
+        self.audio_btn.clicked.connect(self.play_word_audio)
+        word.addWidget(self.audio_btn)
 
         salita = QLabel("Bi-big", self)
         salita.setStyleSheet(f"""
@@ -108,7 +112,7 @@ class LabiVS(QWidget):
         word.addWidget(salita)
         main_layout.addLayout(word)
 
-        # Microphone Action Button
+        # Mic Button
         self.speak_btn = QPushButton("I-TAP KAPAG MAG-SASALITA", self)
         mic_icon_path = os.path.join(ICONS_DIR, "mic_icon.png")
         if os.path.exists(mic_icon_path):
@@ -135,7 +139,7 @@ class LabiVS(QWidget):
             self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter
         )
 
-        # Result / Feedback Label
+        # Feedback Label
         self.feedback_label = QLabel("", self)
         self.feedback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.feedback_label.setStyleSheet(f"""
@@ -146,20 +150,49 @@ class LabiVS(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
+        # Action Buttons
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+
+        self.next_btn = QPushButton("Susunod ➔", self)
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
+
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
+    def play_word_audio(self):
+        sound_path = os.path.join(VOICE_SOUNDS_DIR, "bibig.wav")
+        if os.path.exists(sound_path):
+            self.player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+            self.player.play()
+
     def play_feedback_sound(self, filename: str):
-        """Plays the correct/wrong feedback audio sound."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
-            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
-            self.feedback_player.play()
+            self.player.setSource(QUrl.fromLocalFile(abs_path))
+            self.player.play()
 
     @Slot()
     def start_listening(self):
-        """Starts background voice recognition."""
         self.stop_worker()
 
         self.speak_btn.setEnabled(False)
@@ -178,7 +211,6 @@ class LabiVS(QWidget):
 
     @Slot(str)
     def update_status(self, text):
-        """Updates live status feedback while listening."""
         if (
             "MAGALING" not in self.feedback_label.text()
             and "SUBUKAN" not in self.feedback_label.text()
@@ -188,26 +220,24 @@ class LabiVS(QWidget):
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
-        """Evaluates recognized text using strict exact word matching."""
         spoken_clean = spoken_text.lower().replace("-", " ").strip()
         target_clean = self.target_word.lower().strip()
 
         spoken_words = spoken_clean.split()
 
-        if target_clean in spoken_words:
+        if target_clean in spoken_words or "bibig" in spoken_clean:
             self.feedback_label.setText("✅ MAGALING! TAMA!")
             self.feedback_label.setStyleSheet(
-                f"font-size: 28px; color: green; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 28px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
             )
             self.play_feedback_sound("correct.wav")
+            self.next_btn.show()
         else:
             self.feedback_label.setText(
                 f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
-                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
             self.play_feedback_sound("wrong.wav")
 
@@ -216,7 +246,6 @@ class LabiVS(QWidget):
         self.speak_btn.setEnabled(True)
 
     def stop_worker(self):
-        """Cleanly stops the thread if running."""
         if self.worker and self.worker.isRunning():
             try:
                 self.worker.status_changed.disconnect()
@@ -228,11 +257,13 @@ class LabiVS(QWidget):
             self.worker = None
 
     def handle_back(self):
-        """Safely stops recording before navigating back."""
         self.stop_worker()
         self.router.navigate("labi")
 
+    def handle_next(self):
+        self.stop_worker()
+        self.router.navigate("ilong")
+
     def closeEvent(self, event):
-        """Ensures thread cleanup when widget is closed."""
         self.stop_worker()
         event.accept()

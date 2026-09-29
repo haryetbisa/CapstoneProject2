@@ -1,8 +1,9 @@
 import os
-from PySide6.QtCore import QMimeData, QSize, Qt, QUrl
+from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import (
+    QApplication,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -23,12 +24,11 @@ SOUNDS_DIR = os.path.join(
 
 
 class DraggableAnimal(QLabel):
-    """The horse widget that can be dragged into habitat targets."""
-
     def __init__(self, image_path: str, animal_id: str, size: int = 200):
         super().__init__()
         self.image_path = image_path
         self.animal_id = animal_id
+        self.drag_start_position = QPoint()
 
         pixmap = QPixmap(image_path)
         if not pixmap.isNull():
@@ -42,7 +42,15 @@ class DraggableAnimal(QLabel):
         self.setCursor(Qt.OpenHandCursor)
 
     def mousePressEvent(self, event):
-        if event.button() != Qt.LeftButton or not self.isVisible():
+        if event.button() == Qt.LeftButton:
+            self.drag_start_position = event.pos()
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if not (event.buttons() & Qt.LeftButton) or not self.isVisible():
+            return
+
+        if (event.pos() - self.drag_start_position).manhattanLength() < QApplication.startDragDistance():
             return
 
         drag = QDrag(self)
@@ -54,15 +62,15 @@ class DraggableAnimal(QLabel):
             drag.setPixmap(self.pixmap())
             drag.setHotSpot(event.pos())
 
+        self.setCursor(Qt.ClosedHandCursor)
         self.hide()
-        result = drag.exec(Qt.MoveAction)
-        if result != Qt.MoveAction:
+        result = drag.exec(Qt.CopyAction | Qt.MoveAction)
+        if result != Qt.MoveAction and result != Qt.CopyAction:
             self.show()
+        self.setCursor(Qt.OpenHandCursor)
 
 
 class HabitatTarget(QLabel):
-    """Drop destination container that provides drag hover feedback and handles drop evaluation."""
-
     def __init__(
         self,
         image_path: str,
@@ -140,16 +148,13 @@ class HabitatTarget(QLabel):
 
 
 class KabayoGame(QWidget):
-
     def __init__(self, router):
         super().__init__()
         self.router = router
 
-        # Target animal setup
         self.animal_id = "kabayo"
         self.target_habitat_id = ("horse_barn", "kambing_field")
 
-        # Audio setup
         self.audio_output = QAudioOutput(self)
         self.audio_player = QMediaPlayer(self)
         self.audio_player.setAudioOutput(self.audio_output)
@@ -159,7 +164,6 @@ class KabayoGame(QWidget):
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        # Header Navigation Bar
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(60, 50, 0, 20)
         top_layout.setAlignment(
@@ -191,7 +195,6 @@ class KabayoGame(QWidget):
         top_layout.setSpacing(20)
         main_layout.addLayout(top_layout)
 
-        # Habitats Row Setup
         habitats_row = QHBoxLayout()
         habitats_row.setSpacing(80)
         habitats_row.setContentsMargins(0, 20, 0, 20)
@@ -218,13 +221,11 @@ class KabayoGame(QWidget):
         habitats_row.addWidget(self.mud_hole)
         main_layout.addLayout(habitats_row)
 
-        # Animal Row Setup
         self.animal_row = QHBoxLayout()
         self.animal_row.setAlignment(Qt.AlignCenter)
         self.animal_row.setContentsMargins(0, 20, 0, 10)
         main_layout.addLayout(self.animal_row)
 
-        # Feedback Label
         self.feedback_label = QLabel("", self)
         self.feedback_label.setAlignment(Qt.AlignCenter)
         self.feedback_label.setStyleSheet(f"""
@@ -236,9 +237,9 @@ class KabayoGame(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
-        # Restart Button Setup
-        restart_layout = QHBoxLayout()
-        restart_layout.setAlignment(Qt.AlignCenter)
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+        action_layout.setSpacing(20)
 
         self.restart_btn = QPushButton(" Restart")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
@@ -262,8 +263,28 @@ class KabayoGame(QWidget):
         self.restart_btn.hide()
         self.restart_btn.clicked.connect(self.reset_game)
 
-        restart_layout.addWidget(self.restart_btn)
-        main_layout.addLayout(restart_layout)
+        self.next_btn = QPushButton("Susunod ➔")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addWidget(self.restart_btn)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
 
         self.active_animal = None
         self.setup_items()
@@ -271,7 +292,6 @@ class KabayoGame(QWidget):
         main_layout.addStretch()
 
     def setup_items(self):
-        """Instantiates or resets the draggable animal component."""
         if self.active_animal:
             self.active_animal.setParent(None)
             self.active_animal.deleteLater()
@@ -283,7 +303,6 @@ class KabayoGame(QWidget):
         self.animal_row.addWidget(self.active_animal)
 
     def play_sound(self, filename: str):
-        """Plays audio feedback clips dynamically."""
         sound_path = os.path.join(SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
@@ -296,9 +315,6 @@ class KabayoGame(QWidget):
         animal_id: str,
         target_habitat_id: str,
     ):
-        """Evaluates whether the horse was placed in its proper home habitat."""
-        self.restart_btn.show()
-
         if target_habitat_id in self.target_habitat_id:
             if source_widget:
                 source_widget.deleteLater()
@@ -306,33 +322,35 @@ class KabayoGame(QWidget):
 
             self.feedback_label.setText("✅ MAGALING! TAMA ANG TAHANAN NG KABAYO!")
             self.feedback_label.setStyleSheet(
-                f"font-size: 26px; color: green; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 26px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
             )
             self.play_sound("correct.wav")
+            self.restart_btn.show()
+            self.next_btn.show()
         else:
             self.play_sound("wrong.wav")
             self.feedback_label.setText(
                 "❌ SUBUKAN ULIT! Hindi 'yan ang bahay ng kabayo."
             )
             self.feedback_label.setStyleSheet(
-                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
             self.reset_game()
 
     def reset_game(self):
-        """Resets animal position, hides reset controls, and cleans feedback text."""
         self.restart_btn.hide()
+        self.next_btn.hide()
         self.setup_items()
 
     def showEvent(self, event):
-        """Resets activity state upon navigating into this screen."""
         self.reset_game()
         self.feedback_label.setText("")
         super().showEvent(event)
 
     def handle_back(self):
-        """Resets state safely before invoking route navigation."""
         self.reset_game()
-        self.router.navigate("kabayovs")
+        self.router.navigate("kabayo_lesson")
+
+    def handle_next(self):
+        self.reset_game()
+        self.router.navigate("kalabaw_lesson")
