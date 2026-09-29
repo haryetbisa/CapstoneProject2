@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
-# Path to reach project root from feature subdirectory
+# Resolve project root directory safely (4 levels up)
 BASE_DIR = os.path.dirname(
     os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +26,7 @@ ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
+VOICE_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "pnk")
 
 
 class LeegVS(QWidget):
@@ -36,16 +37,16 @@ class LeegVS(QWidget):
         self.target_word = "leeg"
         self.worker = None
 
-        # Feedback Audio Player Setup
-        self.feedback_audio_output = QAudioOutput(self)
-        self.feedback_player = QMediaPlayer(self)
-        self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
+        # Feedback & Word Audio Setup
+        self.audio_output = QAudioOutput(self)
+        self.player = QMediaPlayer(self)
+        self.player.setAudioOutput(self.audio_output)
+        self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
 
-        # Top Navigation Bar
+        # Top Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
@@ -74,30 +75,32 @@ class LeegVS(QWidget):
         top_bar.setSpacing(20)
         main_layout.addLayout(top_bar)
 
-        # Main Graphic Image Label
-        image = QLabel(self)
+        # Graphic Image Label
+        self.image = QLabel(self)
         image_path = os.path.join(IMAGE_DIR, "leeg.png")
         if os.path.exists(image_path):
-            image.setPixmap(
+            self.image.setPixmap(
                 QPixmap(image_path).scaled(
                     250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
-        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(image)
+        self.image.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(self.image)
 
-        # Word Display Layout
+        # Word Display & Audio Playback Button
         word = QHBoxLayout()
         word.setAlignment(Qt.AlignmentFlag.AlignCenter)
         word.setSpacing(20)
 
-        self.audio = QPushButton(self)
+        self.audio_btn = QPushButton(self)
         audio_icon_path = os.path.join(ICONS_DIR, "audio_icon.png")
         if os.path.exists(audio_icon_path):
-            self.audio.setIcon(QIcon(audio_icon_path))
-        self.audio.setIconSize(QSize(40, 40))
-        self.audio.setCursor(Qt.PointingHandCursor)
-        word.addWidget(self.audio)
+            self.audio_btn.setIcon(QIcon(audio_icon_path))
+        self.audio_btn.setIconSize(QSize(40, 40))
+        self.audio_btn.setCursor(Qt.PointingHandCursor)
+        self.audio_btn.setStyleSheet("border: none; background: transparent;")
+        self.audio_btn.clicked.connect(self.play_word_audio)
+        word.addWidget(self.audio_btn)
 
         salita = QLabel("Le-eg", self)
         salita.setStyleSheet(f"""
@@ -136,7 +139,7 @@ class LeegVS(QWidget):
             self.speak_btn, alignment=Qt.AlignmentFlag.AlignCenter
         )
 
-        # Result / Feedback Label
+        # Feedback Label
         self.feedback_label = QLabel("", self)
         self.feedback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.feedback_label.setStyleSheet(f"""
@@ -147,23 +150,52 @@ class LeegVS(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
+        # Susunod Action Button
+        action_layout = QHBoxLayout()
+        action_layout.setAlignment(Qt.AlignCenter)
+
+        self.next_btn = QPushButton("Susunod ➔", self)
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2E7D32;
+                color: white;
+                font-family: {BODY_FONT};
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 10px 24px;
+            }}
+            QPushButton:hover {{
+                background-color: #1B5E20;
+            }}
+        """)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
+
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
+    def play_word_audio(self):
+        sound_path = os.path.join(VOICE_SOUNDS_DIR, "leeg.wav")
+        if os.path.exists(sound_path):
+            self.player.setSource(
+                QUrl.fromLocalFile(os.path.abspath(sound_path))
+            )
+            self.player.play()
+
     def play_feedback_sound(self, filename: str):
-        """Plays the correct/wrong feedback audio sound."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
-            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
-            self.feedback_player.play()
+            self.player.setSource(QUrl.fromLocalFile(abs_path))
+            self.player.play()
 
     @Slot()
     def start_listening(self):
-        """Starts background voice recognition."""
-        if self.worker and self.worker.isRunning():
-            self.worker.stop()
-            self.worker.wait()
+        self.stop_worker()
 
         self.speak_btn.setEnabled(False)
 
@@ -181,7 +213,6 @@ class LeegVS(QWidget):
 
     @Slot(str)
     def update_status(self, text):
-        """Updates live status feedback while listening."""
         if (
             "MAGALING" not in self.feedback_label.text()
             and "SUBUKAN" not in self.feedback_label.text()
@@ -191,36 +222,24 @@ class LeegVS(QWidget):
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
-        """Evaluates recognized text against target word with phonetic fallbacks."""
-        spoken_clean = spoken_text.lower().replace("-", "").strip()
+        spoken_clean = spoken_text.lower().replace("-", " ").strip()
         target_clean = self.target_word.lower().strip()
 
-        # Phonetic & common speech model misinterpretations for "mata"
-        accepted_variants = [
-            target_clean,
-            "ma ta",
-            "ma-ta",
-            "mata",
-        ]
+        spoken_words = spoken_clean.split()
 
-        # Check direct match against variants
-        is_correct = any(
-            variant in spoken_clean for variant in accepted_variants
-        )
-
-        # Phonetic fallback check ("ma" + "ta")
-        if not is_correct:
-            has_prefix = any(p in spoken_clean for p in ["ma", "mat"])
-            has_suffix = any(s in spoken_clean for s in ["ta", "tha"])
-            is_correct = has_prefix and has_suffix
-
-        if is_correct:
+        if (
+            target_clean in spoken_words
+            or "leeg" in spoken_clean
+            or "le eg" in spoken_clean
+            or "leg" in spoken_words
+        ):
             self.feedback_label.setText("✅ MAGALING! TAMA!")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
             self.play_feedback_sound("correct.wav")
+            self.next_btn.show()
         else:
             self.feedback_label.setText(
                 f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
@@ -235,16 +254,25 @@ class LeegVS(QWidget):
     def on_speech_finished(self):
         self.speak_btn.setEnabled(True)
 
-    def handle_back(self):
-        """Safely stops recording before navigating back."""
+    def stop_worker(self):
         if self.worker and self.worker.isRunning():
-            self.worker.stop()
-            self.worker.wait()
-        self.router.navigate("leeg")
+            try:
+                self.worker.status_changed.disconnect()
+                self.worker.text_recognized.disconnect()
+                self.worker.finished.disconnect()
+            except RuntimeError:
+                pass
+            self.worker.terminate()
+            self.worker = None
+
+    def handle_back(self):
+        self.stop_worker()
+        self.router.navigate("mukha_game")
+
+    def handle_next(self):
+        self.stop_worker()
+        self.router.navigate("balikat")
 
     def closeEvent(self, event):
-        """Ensures thread cleanup when widget is closed."""
-        if self.worker and self.worker.isRunning():
-            self.worker.stop()
-            self.worker.wait()
+        self.stop_worker()
         event.accept()
