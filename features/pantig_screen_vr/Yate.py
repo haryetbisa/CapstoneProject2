@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-AUDIO_DIR = os.path.join(BASE_DIR, "assets", "audio_content", "pantig")
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
@@ -101,7 +101,7 @@ class PantigYate(QWidget):
             self.audio.setIcon(QIcon(audio_icon_path))
         self.audio.setIconSize(QSize(40, 40))
         self.audio.setCursor(Qt.PointingHandCursor)
-        self.audio.clicked.connect(self.play_word_audio)
+        self.audio.clicked.connect(self.play_word_sound)
         word.addWidget(self.audio)
 
         salita = QLabel("Ya-te")
@@ -178,11 +178,19 @@ class PantigYate(QWidget):
         lower_layout.addWidget(self.next_btn)
         main_layout.addLayout(lower_layout)
 
-    def play_word_audio(self):
+    def play_word_sound(self):
         """Plays the target word pronunciation sound."""
-        audio_path = os.path.join(AUDIO_DIR, "yate.wav")
-        if os.path.exists(audio_path):
-            self.word_player.setSource(QUrl.fromLocalFile(os.path.abspath(audio_path)))
+        sound_path = os.path.join(
+            PRONUNCIATION_SOUNDS_DIR, f"Yate.mp3"
+        )
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(
+                PRONUNCIATION_SOUNDS_DIR, f"Yate.wav"
+            )
+
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
             self.word_player.play()
 
     def play_feedback_sound(self, filename: str):

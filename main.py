@@ -97,7 +97,9 @@ from features.pantig_screen_vr.Nanay import PantigNanay
 from features.pantig_screen_vr.Nara import PantigNara
 from features.pantig_screen_vr.Nata import PantigNata
 
-from features.pantig_screen_vr.Nga import PantigNga
+from features.pantig_screen_vr.Nganga import PantigNganga
+from features.pantig_screen_vr.Ngalan import PantigNgalan
+from features.pantig_screen_vr.Ngalangala import PantigNgalaNgala
 
 from features.pantig_screen_vr.Orasan import PantigOrasan
 from features.pantig_screen_vr.Oso import PantigOso
@@ -442,7 +444,9 @@ class MainWindow(QMainWindow):
         self.router.register("nanay", PantigNanay(self.router))
         self.router.register("nara", PantigNara(self.router))
         self.router.register("nata", PantigNata(self.router))
-        self.router.register("nga", PantigNga(self.router))
+        self.router.register("ngalangala", PantigNgalaNgala(self.router))
+        self.router.register("ngalan", PantigNgalan(self.router))
+        self.router.register("nganga", PantigNganga(self.router))
         self.router.register("orasan", PantigOrasan(self.router))
         self.router.register("oso", PantigOso(self.router))
         self.router.register("ospital", PantigOspital(self.router))
