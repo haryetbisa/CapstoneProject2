@@ -26,7 +26,7 @@ ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
-VOICE_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "pnk")
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS PNK")
 
 
 class TengaVS(QWidget):
@@ -42,6 +42,11 @@ class TengaVS(QWidget):
         self.player = QMediaPlayer(self)
         self.player.setAudioOutput(self.audio_output)
         self.audio_output.setVolume(1.0)
+
+        self.word_audio_output = QAudioOutput(self)
+        self.word_player = QMediaPlayer(self)
+        self.word_player.setAudioOutput(self.word_audio_output)
+        self.word_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -179,7 +184,7 @@ class TengaVS(QWidget):
         main_layout.addStretch(3)
 
     def play_word_audio(self):
-        sound_path = os.path.join(VOICE_SOUNDS_DIR, "tainga.wav")
+        sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Tainga.mp3")
         if os.path.exists(sound_path):
             self.player.setSource(
                 QUrl.fromLocalFile(os.path.abspath(sound_path))
