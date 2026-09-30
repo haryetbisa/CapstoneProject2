@@ -10,6 +10,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "VS Pantig")
+INSTRUCTION_SOUND_FILE = "Game Instruction Pantig.mp3" 
+
+
 
 class Dot(QLabel):
     def __init__(self, dot_id: str, is_source: bool, parent_game):
@@ -60,14 +64,19 @@ class MatchingNga(QWidget):
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
         self.feedback_audio_output.setVolume(0.8)
 
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
+
         self.connections = []
         self.dragging_from = None
         self.temp_end_point = None
 
         self.correct_pairs = {
-            "mother": "nanay",
-            "nata": "nata",
-            "narra": "nara"
+            "opened-mouth": "nga-nga",
+            "palate": "ngala-ngala",
+            "name": "ngalan"
         }
 
         main_layout = QVBoxLayout(self)
@@ -106,9 +115,9 @@ class MatchingNga(QWidget):
         main_layout.addLayout(rows_layout)
 
         items = [
-            ("mother", "nanay.png", "nanay", "Na-nay"),
-            ("nata", "nata.png", "nara", "Na-ra"),
-            ("narra", "narra.png", "nata", "Na-ta"),
+            ("opened-mouth", "nga nga.png", "ngalan", "Nga-lan"),
+            ("name", "ngalan.png", "nga-nga", "Nga-nga"),
+            ("palate", "ngala-ngala.png", "ngala-ngala", "Ngala-ngala"),
         ]
 
         for image_id, image_file, word_id, word_display in items:
@@ -199,7 +208,12 @@ class MatchingNga(QWidget):
 
     def showEvent(self, event):
         self.reset_game()
+        self.play_instruction_sound()
         super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
 
     def handle_back(self):
         self.reset_game()
@@ -267,3 +281,15 @@ class MatchingNga(QWidget):
             pen = QPen(QColor("#FFD24C"), 8)
             painter.setPen(pen)
             painter.drawLine(self.dot_center(self.dragging_from), self.temp_end_point)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()
