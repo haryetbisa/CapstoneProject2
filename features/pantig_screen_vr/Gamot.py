@@ -109,7 +109,7 @@ class PantigGamot(QWidget):
         self.audio.clicked.connect(self.play_word_sound)
         word_layout.addWidget(self.audio)
 
-        salita = QLabel("Ga -tas")
+        salita = QLabel("Ga-mot")
         salita.setStyleSheet(f"""
             font-size: 96px;
             font-family: {BODY_FONT};
@@ -188,11 +188,11 @@ class PantigGamot(QWidget):
     def play_word_sound(self):
         """Plays the target word pronunciation sound."""
         sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"{self.target_word}.mp3"
+            PRONUNCIATION_SOUNDS_DIR, f"Gamot.mp3"
         )
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"{self.target_word}.wav"
+                PRONUNCIATION_SOUNDS_DIR, f"Gamot.wav"
             )
 
         if os.path.exists(sound_path):

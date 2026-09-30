@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-AUDIO_DIR = os.path.join(BASE_DIR, "assets", "audio_content", "pantig")
+AUDIO_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
@@ -180,7 +180,7 @@ class PantigWatawat(QWidget):
 
     def play_word_audio(self):
         """Plays the target word pronunciation sound."""
-        audio_path = os.path.join(AUDIO_DIR, "watawat.wav")
+        audio_path = os.path.join(AUDIO_DIR, "Watawat.mp3")
         if os.path.exists(audio_path):
             self.word_player.setSource(QUrl.fromLocalFile(os.path.abspath(audio_path)))
             self.word_player.play()
