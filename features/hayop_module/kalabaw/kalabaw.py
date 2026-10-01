@@ -1,6 +1,7 @@
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 
 from components.cardsbutton import CardsButton
@@ -13,11 +14,19 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
+SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
+
 
 class LessonScreenKalabaw(QWidget):
   def __init__(self, router):
         super().__init__()
         self.router = router
+
+        # Initialize Audio Player
+        self.audio_output = QAudioOutput(self)
+        self.player = QMediaPlayer(self)
+        self.player.setAudioOutput(self.audio_output)
+        self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0,0,0,0)
@@ -49,8 +58,6 @@ class LessonScreenKalabaw(QWidget):
         top_layout.addWidget(pagsasanay)
         top_layout.setSpacing(50)
         main_layout.addLayout(top_layout)
-
-
 
         content_layout = QHBoxLayout()
         content_layout.setContentsMargins(70, 20, 70, 30)

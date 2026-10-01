@@ -21,7 +21,7 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 SOUNDS_DIR = os.path.join(
     BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong"
 )
-INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "VS Kulay")
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "VS Kulay")
 INSTRUCTION_SOUND_FILE = "Kulay Instruction.mp3" 
 
 
