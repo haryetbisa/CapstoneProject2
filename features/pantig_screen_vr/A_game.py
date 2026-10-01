@@ -257,7 +257,7 @@ class MatchingGame(QWidget):
         self.temp_end_point = None
         self.restart_btn.show()
 
-        # Reveal Susunod button when all pairs are matched correctly
+       
         if len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
             self.next_btn.show()
 
