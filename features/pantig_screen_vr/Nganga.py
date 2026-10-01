@@ -79,7 +79,7 @@ class PantigNganga(QWidget):
 
         # Main Graphic (kahoy.png)
         image = QLabel()
-        image_path = os.path.join(IMAGE_DIR, "nga nga.png")
+        image_path = os.path.join(IMAGE_DIR, "nga-nga.png")
         if os.path.exists(image_path):
             image.setPixmap(
                 QPixmap(image_path).scaled(
@@ -185,11 +185,11 @@ class PantigNganga(QWidget):
     def play_word_sound(self):
         """Plays the target word pronunciation sound."""
         sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"Nganga.mp3"
+            PRONUNCIATION_SOUNDS_DIR, f"NGA-NGA.mp3"
         )
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"Nganga.wav"
+                PRONUNCIATION_SOUNDS_DIR, f"NGA-NGA.wav"
             )
 
         if os.path.exists(sound_path):
