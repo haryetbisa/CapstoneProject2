@@ -26,7 +26,7 @@ ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
-VOICE_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "pnk")
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "Vs Hugis")
 
 
 class OblongVS(QWidget):
@@ -34,7 +34,7 @@ class OblongVS(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "oblong"
+        self.target_word = "bilohaba"
         self.worker = None
 
         # Audio Output & Player Setup
@@ -42,6 +42,11 @@ class OblongVS(QWidget):
         self.player = QMediaPlayer(self)
         self.player.setAudioOutput(self.audio_output)
         self.audio_output.setVolume(1.0)
+
+        self.word_audio_output = QAudioOutput(self)
+        self.word_player = QMediaPlayer(self)
+        self.word_player.setAudioOutput(self.word_audio_output)
+        self.word_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -102,7 +107,7 @@ class OblongVS(QWidget):
         self.audio_btn.clicked.connect(self.play_word_audio)
         word.addWidget(self.audio_btn)
 
-        salita = QLabel("OB-LONG", self)
+        salita = QLabel("Bi-lo-ha-ba", self)
         salita.setStyleSheet(f"""
             font-size: 96px;
             font-family: {BODY_FONT};
@@ -179,9 +184,9 @@ class OblongVS(QWidget):
         main_layout.addStretch(3)
 
     def play_word_audio(self):
-        sound_path = os.path.join(VOICE_SOUNDS_DIR, "oblong.wav")
+        sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Bilohaba.mp3")
         if not os.path.exists(sound_path):
-            sound_path = os.path.join(VOICE_SOUNDS_DIR, "bilohaba.wav")
+            sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Bilohaba.wav")
 
         if os.path.exists(sound_path):
             self.player.setSource(
