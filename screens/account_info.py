@@ -1,5 +1,14 @@
+# screens/account_info.py
+
 import os
 import re
+import sys
+
+# Ensure root folder (CapstoneProject2) is in the Python path
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
     QWidget,
@@ -16,9 +25,12 @@ from components.btn_dropshadow import add_drop_shadow
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
-ICON_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+# DATABASE & SESSION IMPORTS 
+from Database.queries import create_teacher_account
+from session import AppSession
+
+IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
+ICON_DIR = os.path.join(BASE_DIR, "assets", "icons")
 
 
 def make_eye_icon(filename, size=36):
@@ -58,20 +70,52 @@ class AccountInfo(QWidget):
         input_layout.setSpacing(4)
         main_layout.addLayout(input_layout)
 
-        create = QLabel("Create an account")
-        create.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        create.setStyleSheet(
-            f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 18px;"
+        # Switch prompt header (Go back to Create Account splash)
+        header_row = QHBoxLayout()
+        header_row.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        
+        create_label = QLabel("Nais mo bang bumalik?")
+        create_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 16px;"
         )
-        input_layout.addWidget(create)
+        header_row.addWidget(create_label)
 
-        # --- Email Field ---
+        switch_btn = QPushButton("Bumalik")
+        switch_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        switch_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: transparent;
+                border: none;
+                font-family: {BODY_FONT};
+                color: {CORAL_RED};
+                font-weight: 700;
+                font-size: 16px;
+                text-align: left;
+            }}
+            QPushButton:hover {{
+                color: #d94338;
+                text-decoration: underline;
+            }}
+        """)
+        # Route back to create account splash screen
+        switch_btn.clicked.connect(lambda: self.router.navigate("createacc"))
+        header_row.addWidget(switch_btn)
+        header_row.addStretch()
+        
+        header_container = QWidget()
+        header_container.setFixedWidth(888)
+        header_container.setLayout(header_row)
+        input_layout.addWidget(header_container, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        input_layout.addSpacing(6)
+
+        # Email Field
         email_label = QLabel("Email")
         email_label.setStyleSheet(
             f"font-family: {BODY_FONT}; font-size: 16px; color: {CORAL_RED}; font-weight: 500;"
         )
         email_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        input_layout.addWidget(email_label)
+        input_layout.addWidget(email_label, alignment=Qt.AlignmentFlag.AlignLeft)
 
         self.email = QLineEdit()
         self.email.setFixedSize(888, 56)
@@ -83,8 +127,7 @@ class AccountInfo(QWidget):
         palette = self.email.palette()
         palette.setColor(QPalette.PlaceholderText, QColor(CHOCO_BROWN))
         self.email.setPalette(palette)
-
-        input_layout.addWidget(self.email)
+        input_layout.addWidget(self.email, alignment=Qt.AlignmentFlag.AlignLeft)
 
         # Email Inline Error Label
         self.email_error = QLabel("")
@@ -97,17 +140,17 @@ class AccountInfo(QWidget):
             padding-top: 2px;
         """)
         self.email_error.hide()
-        input_layout.addWidget(self.email_error)
+        input_layout.addWidget(self.email_error, alignment=Qt.AlignmentFlag.AlignLeft)
 
         input_layout.addSpacing(6)
 
-        # --- Password Field ---
+        # Password Field 
         pass_label = QLabel("Password")
         pass_label.setStyleSheet(
             f"font-family: {BODY_FONT}; font-size: 16px; color: {CORAL_RED}; font-weight: 500;"
         )
         pass_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        input_layout.addWidget(pass_label)
+        input_layout.addWidget(pass_label, alignment=Qt.AlignmentFlag.AlignLeft)
 
         self.password = QLineEdit()
         self.password.setFixedSize(888, 56)
@@ -120,8 +163,7 @@ class AccountInfo(QWidget):
         palette = self.password.palette()
         palette.setColor(QPalette.PlaceholderText, QColor(CHOCO_BROWN))
         self.password.setPalette(palette)
-
-        input_layout.addWidget(self.password)
+        input_layout.addWidget(self.password, alignment=Qt.AlignmentFlag.AlignLeft)
 
         # Password Inline Error Label
         self.password_error = QLabel("")
@@ -134,7 +176,7 @@ class AccountInfo(QWidget):
             padding-top: 2px;
         """)
         self.password_error.hide()
-        input_layout.addWidget(self.password_error)
+        input_layout.addWidget(self.password_error, alignment=Qt.AlignmentFlag.AlignLeft)
 
         self.ICON_PIXEL_SIZE = 36
 
@@ -183,7 +225,8 @@ class AccountInfo(QWidget):
         self.email.textChanged.connect(self.clear_email_error)
         self.password.textChanged.connect(self.clear_password_error)
 
-        main_layout.addWidget(
+        input_layout.addSpacing(10)
+        input_layout.addWidget(
             self.create_btn, alignment=Qt.AlignmentFlag.AlignCenter
         )
 
@@ -193,54 +236,18 @@ class AccountInfo(QWidget):
         image_bottom.setAlignment(Qt.AlignCenter)
         image_bottom.setContentsMargins(0, 5, 0, 0)
 
-        #horizontal image of kids
-        kids1 = QLabel()
-        kids1.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-        kids1.setPixmap(
-            QPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, "kids2.png")).scaled(
-                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        for img_name in ["kids2.png", "kids1.png", "kids2.png", "kids1.png"]:
+            kid = QLabel()
+            kid.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+            kid.setPixmap(
+                QPixmap(
+                    QPixmap(os.path.join(IMAGE_DIR, img_name)).scaled(
+                        320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                    )
                 )
             )
-        )
-        kids1.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        image_bottom.addWidget(kids1)
-
-        kids2 = QLabel()
-        kids2.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-        kids2.setPixmap(
-            QPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, "kids1.png")).scaled(
-                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
-                )
-            )
-        )
-        kids2.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        image_bottom.addWidget(kids2)
-
-        kids3 = QLabel()
-        kids3.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-        kids3.setPixmap(
-            QPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, "kids2.png")).scaled(
-                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
-                )
-            )
-        )
-        kids3.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        image_bottom.addWidget(kids3)
-
-        kids4 = QLabel()
-        kids4.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-        kids4.setPixmap(
-            QPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, "kids1.png")).scaled(
-                    320, 320, Qt.KeepAspectRatio, Qt.SmoothTransformation
-                )
-            )
-        )
-        kids4.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        image_bottom.addWidget(kids4)
+            kid.setAlignment(Qt.AlignmentFlag.AlignLeft)
+            image_bottom.addWidget(kid)
 
         main_layout.addLayout(image_bottom)
 
@@ -283,7 +290,6 @@ class AccountInfo(QWidget):
         self.set_normal_style(self.password)
 
     def toggle_password_visibility(self, checked):
-    
         if checked:
             self.password.setEchoMode(QLineEdit.Normal)
             self.eye_btn.setIcon(make_eye_icon("eye_open.png", self.ICON_PIXEL_SIZE))
@@ -292,7 +298,7 @@ class AccountInfo(QWidget):
             self.eye_btn.setIcon(make_eye_icon("close_eye.png", self.ICON_PIXEL_SIZE))
 
     def validate_and_create_account(self):
-        print("--> BUTTON CLICKED! Validating inputs...")  # Debug print in terminal
+        print("--> BUTTON CLICKED! Validating inputs...")
 
         email_text = self.email.text().strip()
         password_text = self.password.text().strip()
@@ -332,5 +338,23 @@ class AccountInfo(QWidget):
             print("--> Validation failed! Showing inline errors.")
             return
 
-        print("--> Validation passed! Navigating to home...")
-        self.router.navigate("home")
+        print("--> Validation passed! Saving account to local database...")
+
+        # LOCAL DATABASE & SESSION INTEGRATION 
+        try:
+            teacher_id = create_teacher_account(
+                full_name="Guro",  
+                email=email_text,
+                raw_password=password_text,
+                section_name="Kindergarten - Paharang"
+            )
+
+            AppSession.set_teacher(teacher_id, email_text)
+            print(f"--> Account created! Teacher ID: {teacher_id}")
+            self.router.navigate("home")
+
+        except Exception as e:
+            print(f"--> Failed to create account in database: {e}")
+            self.email_error.setText("✖  This email is already registered.")
+            self.email_error.setVisible(True)
+            self.set_error_style(self.email)
