@@ -3,17 +3,20 @@ import sys
 import os
 from themes.colors import *
 
-
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget
 from PySide6.QtGui import QFontDatabase, QIcon
 from PySide6.QtCore import Qt
+
+# Database, Session, & Sync Worker Imports
+from Database.connection import init_local_database, get_db_connection
+from Database.sync_worker import CloudSyncWorker
+from session import AppSession
 
 # Enable high-DPI rounding and automatic screen scaling factor policy
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 QApplication.setHighDpiScaleFactorRoundingPolicy(
     Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
 )
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FONTS_DIR = os.path.join(BASE_DIR, "assets", "fonts")
@@ -29,6 +32,27 @@ def load_fonts():
                 else:
                     families = QFontDatabase.applicationFontFamilies(font_id)
                     print(f"Loaded '{filename}' as family: {families}")
+
+
+def print_registered_teachers():
+    """Developer helper that queries and prints all registered accounts to the terminal."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT teacher_id, name, email, password FROM teachers")
+            teachers = cursor.fetchall()
+            
+            print("\n========================================")
+            print("      MGA REHISTRADONG GURO (ACCOUNTS)   ")
+            print("========================================")
+            if not teachers:
+                print("Walang pang rehistradong guro sa database.")
+            else:
+                for t in teachers:
+                    print(f"ID: {t['teacher_id']} | Pangalan: {t['name']} | Email: {t['email']} | Password: {t['password']}")
+            print("========================================\n")
+    except Exception as e:
+        print(f"--> Error fetching registered teachers: {e}")
                 
 
 #wag kalimutan mag-import, mag-eerror talaga :)))
@@ -38,6 +62,7 @@ from screens.account_info import AccountInfo
 from features.voice_recog import OfflineVoiceWorker
 from features.lesson_screen import LessonScreen
 from screens.create_account import CreateAccount
+from screens.login import Login
 from screens.main_dashboard import HomeScreen
 from screens.kinder_dashboard import KinderDashboard
 from screens.grade1_dashboard import GradeOneDashboard
@@ -394,6 +419,7 @@ class MainWindow(QMainWindow):
         self.router = Router(self.stack)
         self.router.register("loading_screen", LoadingScreen(self.router))
         self.router.register("createacc", CreateAccount(self.router))
+        self.router.register("login", Login(self.router))
         self.router.register("credentials", AccountInfo(self.router))
         self.router.register("home", HomeScreen(self.router))
         self.router.register("kindergarten", KinderDashboard(self.router))
@@ -716,14 +742,28 @@ class MainWindow(QMainWindow):
         self.router.register("pagdaragdag_q2", BilangLvl10(self.router))
         self.router.register("pagdaragdag_q3", BilangLvl11(self.router))
         self.router.register("pagdaragdag_q4", BilangLvl12(self.router))
-        
-#starting screen
-        self.router.navigate("loading_screen")
 
 
 if __name__ == "__main__":
+    init_local_database()
+
+    # Print all registered accounts and passwords to the terminal on startup
+    print_registered_teachers()
+
     app = QApplication(sys.argv)
     load_fonts()
+
+    sync_worker = CloudSyncWorker(check_interval_seconds=15)
+    sync_worker.start()
+
+    app.aboutToQuit.connect(sync_worker.stop)
+
     window = MainWindow()
+
+    if AppSession.load_saved_session():
+        window.router.navigate("home")
+    else:
+        window.router.navigate("loading_screen")
+
     window.showMaximized()
     sys.exit(app.exec())
