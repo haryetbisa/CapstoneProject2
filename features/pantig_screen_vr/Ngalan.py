@@ -175,7 +175,7 @@ class PantigNgalan(QWidget):
         """)
         self.next_btn.setFixedSize(240, 60)
         self.next_btn.clicked.connect(
-            lambda: self.router.navigate("nganga")
+            lambda: self.router.navigate("ngalangala")
         )
 
         lower_layout.addStretch()
@@ -185,11 +185,11 @@ class PantigNgalan(QWidget):
     def play_word_sound(self):
         """Plays the target word pronunciation sound."""
         sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"Nganga.mp3"
+            PRONUNCIATION_SOUNDS_DIR, f"NGALAN.mp3"
         )
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"Nganga.wav"
+                PRONUNCIATION_SOUNDS_DIR, f"NGALAN.wav"
             )
 
         if os.path.exists(sound_path):

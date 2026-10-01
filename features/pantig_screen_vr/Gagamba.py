@@ -24,7 +24,7 @@ ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
-PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "pantig")
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
 
 
 class PantigGagamba(QWidget):
