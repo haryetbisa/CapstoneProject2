@@ -51,7 +51,7 @@ class LessonMath5(QWidget):
         # Title
         title = QLabel("Pagbilang ng Dalawahan")
         title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
+        title.setStyleSheet(f"font-size: 30px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
 
         # Text row
@@ -66,7 +66,7 @@ class LessonMath5(QWidget):
         lesson_text.setAlignment(Qt.AlignLeft)
         lesson_text.setWordWrap(True)   
         lesson_text.setStyleSheet(f"""
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 400;
             font-family: {BODY_FONT};
             color: {CHOCO_BROWN};

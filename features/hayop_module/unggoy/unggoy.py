@@ -1,6 +1,7 @@
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 
 from components.cardsbutton import CardsButton
@@ -13,12 +14,19 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
+SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
 
 
 class LessonScreenUnggoy(QWidget):
   def __init__(self, router):
         super().__init__()
         self.router = router
+
+        # Initialize Audio Player
+        self.audio_output = QAudioOutput(self)
+        self.player = QMediaPlayer(self)
+        self.player.setAudioOutput(self.audio_output)
+        self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0,0,0,0)
@@ -37,7 +45,7 @@ class LessonScreenUnggoy(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("hayop"))
 
    
-        pagsasanay = QLabel("Aralin: Ungoy")
+        pagsasanay = QLabel("Aralin: Unggoy")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -50,8 +58,6 @@ class LessonScreenUnggoy(QWidget):
         top_layout.addWidget(pagsasanay)
         top_layout.setSpacing(50)
         main_layout.addLayout(top_layout)
-
-
 
         content_layout = QHBoxLayout()
         content_layout.setContentsMargins(70, 20, 70, 30)
@@ -79,13 +85,20 @@ class LessonScreenUnggoy(QWidget):
         main_layout.addLayout(lower_layout)
         
 
-        audio_btn = QLabel()
-        audio_btn.setPixmap(QPixmap(os.path.join(ICONS_DIR, "play.png")).scaled(
-                80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        audio_btn.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
+        self.audio_btn = QPushButton(self)
+        self.audio_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "play.png")))
+        self.audio_btn.setIconSize(QSize(80, 80))
+        self.audio_btn.setFlat(True)
+        self.audio_btn.setCursor(Qt.PointingHandCursor)
+        self.audio_btn.setStyleSheet(
+            "border: none; background-color: transparent;"
+        )
+        self.audio_btn.clicked.connect(play_animal_sound)
+        lower_layout.addWidget(
+            self.audio_btn, alignment=Qt.AlignmentFlag.AlignCenter
+        )
 
-        lower_layout.addWidget(audio_btn)
+        content_layout.addLayout(lower_layout)
 
         self.speak_btn = QPushButton("Sunod")
         self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
@@ -108,5 +121,18 @@ class LessonScreenUnggoy(QWidget):
 
         main_layout.addLayout(content_layout)
         main_layout.addStretch()
+
+def play_animal_sound(self):
+        """Plays animal sound if available."""
+        sound_path = os.path.join(SOUNDS_DIR, "unggoy.mp3")
+
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(SOUNDS_DIR, "unggoy.wav")
+
+        if os.path.exists(sound_path):
+            self.player.setSource(QUrl.fromLocalFile(sound_path))
+            self.player.play()
+        else:
+            print(f"Animal sound file missing: {sound_path}")
 
 
