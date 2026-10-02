@@ -1,3 +1,4 @@
+# screens/settings.py
 import json
 import os
 import sys
@@ -110,7 +111,6 @@ class Settings(QWidget):
         )
         main_layout.addWidget(self.make_field_row("Resolution", self.resolution))
 
-        # Lock/unlock resolution dropdown depending on display mode
         self.display_mode.currentTextChanged.connect(self.on_display_mode_changed)
 
         main_layout.addSpacing(15)
@@ -168,7 +168,6 @@ class Settings(QWidget):
         self.load_saved_preferences()
 
     def on_display_mode_changed(self, mode_text):
-        """Locks resolution dropdown when not in Windowed mode."""
         is_windowed = (mode_text == "Windowed")
         self.resolution.setEnabled(is_windowed)
 
@@ -183,10 +182,13 @@ class Settings(QWidget):
             try:
                 with get_db_connection() as conn:
                     cursor = conn.cursor()
-                    cursor.execute("SELECT email FROM teachers WHERE teacher_id = ?", (teacher_id,))
+                    cursor.execute("SELECT email, full_name FROM teachers WHERE teacher_id = ?", (teacher_id,))
                     row = cursor.fetchone()
-                    if row and row['email']:
-                        self.email.setText(row['email'])
+                    if row:
+                        if row['email']:
+                            self.email.setText(row['email'])
+                        if row['full_name']:
+                            self.username.setText(row['full_name'])
             except Exception as e:
                 print(f"--> Error loading teacher details: {e}")
 
@@ -321,15 +323,12 @@ class Settings(QWidget):
     # ---------------- Logic ----------------
 
     def apply_window_settings(self, display_mode_str, res_str):
-        """Resets window flags and applies display modes smoothly."""
         main_win = self.window()
         if not main_win:
             return
 
-        # 1. Reset frameless/fullscreen flags back to standard Window type first
         main_win.setWindowFlags(Qt.WindowType.Window)
 
-        # 2. Apply chosen mode
         if display_mode_str == "Fullscreen":
             main_win.showFullScreen()
         elif display_mode_str == "Borderless":
@@ -341,7 +340,6 @@ class Settings(QWidget):
                 try:
                     w, h = map(int, res_str.split("x"))
                     main_win.resize(w, h)
-                    # Center on active monitor screen
                     screen_geo = main_win.screen().geometry()
                     x = (screen_geo.width() - w) // 2
                     y = (screen_geo.height() - h) // 2
@@ -349,12 +347,26 @@ class Settings(QWidget):
                 except ValueError:
                     pass
 
-        # 3. Force window update to immediately render titlebars/frames
         main_win.show()
 
     def save_settings(self):
         mode = self.display_mode.currentText()
         res = self.resolution.currentText()
+        new_name = self.username.text().strip()
+
+        # Update teacher name in the database and session
+        teacher_id = AppSession.get_teacher_id()
+        if teacher_id and new_name:
+            try:
+                with get_db_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute("UPDATE teachers SET full_name = ? WHERE teacher_id = ?", (new_name, teacher_id))
+                    conn.commit()
+                if hasattr(AppSession, 'set_teacher_name'):
+                    AppSession.set_teacher_name(new_name)
+                print(f"--> Teacher name updated to: {new_name}")
+            except Exception as e:
+                print(f"--> Failed to update teacher name in database: {e}")
 
         settings_data = {
             "music_volume": self.music_slider.value(),
@@ -363,7 +375,6 @@ class Settings(QWidget):
             "resolution": res,
         }
 
-        # Apply window mode / resolution live
         self.apply_window_settings(mode, res)
 
         try:
@@ -372,7 +383,7 @@ class Settings(QWidget):
                 json.dump(settings_data, f, indent=4)
             print("--> User settings saved to JSON file successfully.")
 
-            self.show_info_dialog("Tagumpay", "Na-i-save nang matagumpay ang iyong mga setting!")
+            self.show_info_dialog("Tagumpay", "Na-i-save nang matagumpay ang iyong mga setting at pangalan!")
         except Exception as e:
             print(f"--> Failed to save settings file: {e}")
 
@@ -390,7 +401,6 @@ class Settings(QWidget):
                     if "resolution" in data:
                         self.resolution.setCurrentText(data["resolution"])
 
-                    # Lock resolution if not Windowed
                     self.on_display_mode_changed(self.display_mode.currentText())
             except Exception as e:
                 print(f"--> Failed to load user preferences: {e}")
