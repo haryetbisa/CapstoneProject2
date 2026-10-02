@@ -1,8 +1,15 @@
-from PySide6.QtCore import Qt, QSize
+import sys
+import os
+
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(CURRENT_DIR)))
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
 
 from components.cardsbutton import CardsButton
 from themes.colors import *
@@ -10,15 +17,15 @@ from assets.icon import icon_label
 from themes.fonts import  BODY_FONT
 from components.lesson_card import LessonCard
 
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
+
+
+IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
+ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
 
 
 class LessonScreenKalabaw(QWidget):
-  def __init__(self, router):
+    def __init__(self, router):
         super().__init__()
         self.router = router
 
@@ -64,34 +71,45 @@ class LessonScreenKalabaw(QWidget):
         content_layout.setSpacing(280)
         main_layout.addLayout(content_layout)
 
-        #yung image
+        # --- LEFT COLUMN (Image + Centered Play Button Below It) ---
+        left_column = QVBoxLayout()
+        left_column.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        left_column.setSpacing(30)
+
         content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "kalabaw.png")).scaled(
-                450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
+        content_image.setPixmap(
+            QPixmap(os.path.join(IMAGE_DIR, "kalabaw.png")).scaled(
+                380, 380, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(content_image)
+        left_column.addWidget(content_image)
+        
+        self.audio_btn = QPushButton(self)
+        self.audio_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "play.png")))
+        self.audio_btn.setIconSize(QSize(80, 80))
+        self.audio_btn.setFlat(True)
+        self.audio_btn.setCursor(Qt.PointingHandCursor)
+        self.audio_btn.setStyleSheet(
+            "border: none; background-color: transparent;"
+        )
+        self.audio_btn.clicked.connect(self.play_animal_sound)
+        left_column.addWidget(
+            self.audio_btn, alignment=Qt.AlignmentFlag.AlignCenter
+        )
+
+        content_layout.addLayout(left_column)
+
+        # --- RIGHT COLUMN (Lesson Card + Sunod Button) ---
+        right_column = QVBoxLayout()
+        right_column.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        right_column.setSpacing(30)
 
         #lesson explanation
         card = LessonCard(
         title="Aralin 6 : KALABAW",
         body_text="Ang kalabaw ay isang uri ng malaking alagang hayop sa bukid na itinuturing na pambansang hayop ng Pilipinas at kilala bilang manggagawang kaibigan ng magsasaka. Mayroon silang malaking katawan, matitigas na kuko, at dalawang malalaking sungay.")
-        content_layout.addWidget(card)
-
-
-        lower_layout = QHBoxLayout()
-        lower_layout.setSpacing(200)
-        lower_layout.setContentsMargins(70, 20, 70, 30)
-        main_layout.addLayout(lower_layout)
-        
-
-        audio_btn = QLabel()
-        audio_btn.setPixmap(QPixmap(os.path.join(ICONS_DIR, "play.png")).scaled(
-                80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        audio_btn.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
-
-        lower_layout.addWidget(audio_btn)
+        right_column.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")
         self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
@@ -107,12 +125,21 @@ class LessonScreenKalabaw(QWidget):
             font-family: {BODY_FONT};
         """)
         self.speak_btn.setFixedSize(240, 70)
-        lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        right_column.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("kalabawvs"))
+        content_layout.addLayout(right_column)
 
+    def play_animal_sound(self):
+        """Plays animal sound if available."""
+        sound_path = os.path.join(SOUNDS_DIR, "kalabaw.wav")
 
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(SOUNDS_DIR, "kalabaw.mp3")
 
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
+        if os.path.exists(sound_path):
+            self.player.setSource(QUrl.fromLocalFile(sound_path))
+            self.player.play()
+        else:
+            print(f"Animal sound file missing: {sound_path}")
 
 

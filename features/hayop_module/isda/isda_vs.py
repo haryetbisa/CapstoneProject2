@@ -1,8 +1,9 @@
 import os
 
-from PySide6.QtCore import Qt, QSize, Slot
+from PySide6.QtCore import Qt, QSize, Slot, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
 from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
@@ -13,7 +14,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.pa
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "correct_&_wrong")
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "Vs Hayop")
 
 class IsdaVS(QWidget):
     def __init__(self, router):
@@ -21,6 +24,18 @@ class IsdaVS(QWidget):
         self.router = router
         self.target_word = "isda"
         self.worker = None
+
+        # Player for Voice Recognition Feedback SFX (Correct / Wrong)
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(0.8)
+
+        # Player for Word Pronunciation
+        self.word_audio_output = QAudioOutput(self)
+        self.word_player = QMediaPlayer(self)
+        self.word_player.setAudioOutput(self.word_audio_output)
+        self.word_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -73,6 +88,10 @@ class IsdaVS(QWidget):
             self.audio.setIcon(QIcon(audio_icon_path))
         self.audio.setIconSize(QSize(40, 40))
         self.audio.setCursor(Qt.PointingHandCursor)
+        self.audio.setStyleSheet(
+            "border: none; background-color: transparent;"
+        )
+        self.audio.clicked.connect(self.play_word_sound)
         word.addWidget(self.audio)
 
         salita = QLabel("Is-da", self)
@@ -145,6 +164,29 @@ class IsdaVS(QWidget):
         self.speak_btn.setFixedSize(240, 70)
         lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("isda_game"))
+
+    def play_word_sound(self):
+        """Plays the target word pronunciation sound."""
+        sound_path = os.path.join(
+            PRONUNCIATION_SOUNDS_DIR, f"Isda.mp3"
+        )
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(
+                PRONUNCIATION_SOUNDS_DIR, f"Isda.wav"
+            )
+
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.word_player.play()
+
+    def play_feedback_sound(self, filename: str):
+        """Plays correct/wrong voice evaluation feedback audio."""
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
 
     @Slot()
     def start_listening(self):

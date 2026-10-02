@@ -25,9 +25,8 @@ if BASE_DIR not in sys.path:
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "hayop")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(
-    BASE_DIR, "assets", "sounds", "correct_&_wrong"
-)
-PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
+    BASE_DIR, "assets", "sounds", "correct_&_wrong")
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "Vs Hayop")
 
 
 class AsoVS(QWidget):
@@ -190,11 +189,11 @@ class AsoVS(QWidget):
     def play_word_sound(self):
         """Plays the target word pronunciation sound."""
         sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"{self.target_word}.mp3"
+            PRONUNCIATION_SOUNDS_DIR, f"Aso.mp3"
         )
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"{self.target_word}.wav"
+                PRONUNCIATION_SOUNDS_DIR, f"Aso.wav"
             )
 
         if os.path.exists(sound_path):
