@@ -1,7 +1,7 @@
 import os
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 
@@ -17,7 +17,8 @@ class Kuwento2(QWidget):
         super().__init__()
         self.router = router
 
-        main_layout = QVBoxLayout(self)
+        content = QWidget()
+        main_layout = QVBoxLayout(content)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
@@ -116,4 +117,14 @@ class Kuwento2(QWidget):
         self.next_btn.clicked.connect(lambda: self.router.navigate("quest2"))
         
         main_layout.addStretch()
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.NoFrame)
+        scroll.setStyleSheet("background: transparent;")
+        scroll.setWidget(content)
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.addWidget(scroll)
 

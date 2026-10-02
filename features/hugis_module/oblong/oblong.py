@@ -37,7 +37,7 @@ class LessonScreenOblong(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("hugis"))
 
    
-        pagsasanay = QLabel("Aralin: Oblong")
+        pagsasanay = QLabel("Aralin: Bilohaba")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -68,8 +68,8 @@ class LessonScreenOblong(QWidget):
 
         #lesson explanation
         card = LessonCard(
-        title="Aralin 5 : OBLONG",
-        body_text="Ang hugis oblong ay tinatawag na bilohaba. Ito ay tumutukoy sa isang pinahabang hugis. Halimbawa ng hugis na ito ay itlog at pakwan.")
+        title="Aralin 5 : BILOHABA",
+        body_text="Ang hugis bilohaba ay tinatawag na oblong. Ito ay tumutukoy sa isang pinahabang hugis. Halimbawa ng hugis na ito ay itlog at pakwan.")
         content_layout.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

@@ -36,7 +36,7 @@ class Salita2(QWidget):
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
         back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
 
-        pagsasanay = QLabel("Aralin 1")
+        pagsasanay = QLabel("Aralin 2")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -69,13 +69,12 @@ class Salita2(QWidget):
         # Speaker icon + text row
         text_row = QHBoxLayout()
         text_row.setSpacing(15)
-        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
 
         lesson_text = QLabel(
-            "Ang Salitang Magkatugma ay tumutukoy sa magkatugma o magkahawig ang tunog\n"
-            "sa hulihan ng mga salita. Halimbawa: mata - bata, ilaw - araw, at itlog - bilog.\n"
+            "Ang <b>Salitang Magkatugma</b> ay tumutukoy sa magkatugma o magkahawig ang tunog "
+            "sa hulihan ng mga salita. Halimbawa: mata - bata, ilaw - araw, at itlog - bilog."
         )
-        lesson_text.setAlignment(Qt.AlignLeft)
+        lesson_text.setAlignment(Qt.AlignCenter)
         lesson_text.setWordWrap(True)   
         lesson_text.setStyleSheet(f"""
             font-size: 28px;

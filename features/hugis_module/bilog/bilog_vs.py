@@ -85,7 +85,7 @@ class BilogVS(QWidget):
         if os.path.exists(image_path):
             image.setPixmap(
                 QPixmap(image_path).scaled(
-                    250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                    235, 235, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
