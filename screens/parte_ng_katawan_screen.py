@@ -1,13 +1,17 @@
 import os
-from PySide6.QtCore import Qt,QSize
+from PySide6.QtCore import Qt,QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QLabel, QPushButton, QHBoxLayout, QScrollArea
 from PySide6.QtGui import QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.fonts import BODY_FONT
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "assets", "icons")
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "assets", "sounds", "bgm")
+INSTRUCTION_SOUND_FILE = "Up-on-a-Housetop.mp3"
+
 
 from components.cardspng import CardsPicButton
 from themes.colors import *
@@ -17,6 +21,11 @@ class ParteNgKatawanScreen(QWidget):
     def __init__(self,router):
         super().__init__()
         self.router = router
+
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
 
         outer_layout = QVBoxLayout(self)
         outer_layout.setContentsMargins(0, 0, 0, 0)
@@ -139,3 +148,23 @@ class ParteNgKatawanScreen(QWidget):
         main_layout.addStretch()
 
         scroll.setWidget(content)
+
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()

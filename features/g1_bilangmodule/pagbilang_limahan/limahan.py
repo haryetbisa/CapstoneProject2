@@ -57,13 +57,12 @@ class LessonMath6(QWidget):
         # Text row
         text_row = QHBoxLayout()
         text_row.setSpacing(5)
-        text_row.setAlignment(Qt.AlignCenter | Qt.AlignJustify)
 
         lesson_text = QLabel(
-            "Sa Pagbilang ng Limahan, magdadagdag tayo ng limang bilang upang\n"
-            "makuha ang kasunod na bilang. \n"
+            "Sa Pagbilang ng Limahan, magdadagdag tayo ng limang bilang upang"
+            "makuha ang kasunod na bilang."
         )
-        lesson_text.setAlignment(Qt.AlignLeft)
+        lesson_text.setAlignment(Qt.AlignCenter)
         lesson_text.setWordWrap(True)   
         lesson_text.setStyleSheet(f"""
             font-size: 28px;

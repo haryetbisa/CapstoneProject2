@@ -1,7 +1,7 @@
 import os
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 
@@ -17,7 +17,8 @@ class Kuwento8(QWidget):
         super().__init__()
         self.router = router
 
-        main_layout = QVBoxLayout(self)
+        content = QWidget()
+        main_layout = QVBoxLayout(content)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
@@ -67,14 +68,14 @@ class Kuwento8(QWidget):
         # Speaker icon + text row
         text_row = QHBoxLayout()
         text_row.setSpacing(15)
-        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
+        text_row.setAlignment(Qt.AlignCenter)
 
         self.speaker_btn = QPushButton()
         self.speaker_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "audio_icon.png")))
         self.speaker_btn.setIconSize(QSize(24, 24))
         self.speaker_btn.setFlat(True)
         self.speaker_btn.setCursor(Qt.PointingHandCursor)
-        text_row.addWidget(self.speaker_btn)
+        text_row.addWidget(self.speaker_btn, alignment=Qt.AlignmentFlag.AlignTop)
 
         
         story_text = QLabel(
@@ -91,7 +92,7 @@ class Kuwento8(QWidget):
             font-family: {BODY_FONT};
             color: {CHOCO_BROWN};
         """)
-        text_row.addWidget(story_text)
+        text_row.addWidget(story_text, 1)
 
         main_layout.addLayout(text_row)
         main_layout.addStretch()
@@ -116,4 +117,14 @@ class Kuwento8(QWidget):
         self.next_btn.clicked.connect(lambda: self.router.navigate("quest8"))
         
         main_layout.addStretch()
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.NoFrame)
+        scroll.setStyleSheet("background: transparent;")
+        scroll.setWidget(content)
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.addWidget(scroll)
 
