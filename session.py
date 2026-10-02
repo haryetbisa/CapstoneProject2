@@ -1,5 +1,4 @@
 # session.py
-
 import json
 import os
 
@@ -37,7 +36,7 @@ class AppSession:
 
     # --- STUDENT SESSION ---
     @classmethod
-    def set_student(cls, student_id: str, full_name: str):
+    def set_student(cls, student_id: str, full_name: str = ""):
         cls._active_student_id = student_id
         cls._active_student_name = full_name
 
@@ -52,6 +51,15 @@ class AppSession:
     @classmethod
     def has_active_student(cls) -> bool:
         return cls._active_student_id is not None
+
+    # Aliases to support dashboard dropdown calls safely
+    @classmethod
+    def set_active_student_id(cls, student_id):
+        cls._active_student_id = student_id
+
+    @classmethod
+    def get_active_student_id(cls):
+        return cls._active_student_id
 
     # --- FILE PERSISTENCE HELPERS ---
     @classmethod
@@ -93,7 +101,6 @@ class AppSession:
         cls._active_teacher_name = "Walang Guro"
         cls.clear_student()
 
-        # Delete persistent session file on logout
         if os.path.exists(SESSION_FILE):
             try:
                 os.remove(SESSION_FILE)
