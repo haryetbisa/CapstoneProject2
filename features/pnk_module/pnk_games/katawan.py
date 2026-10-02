@@ -1,5 +1,5 @@
 import os
-from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, Signal
+from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, Signal, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
@@ -21,6 +22,8 @@ BASE_DIR = os.path.dirname(
 )
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pnk")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Vs PNK")
+INSTRUCTION_SOUND_FILE = "PNK Instruction.mp3"
 
 
 class DraggableWord(QLabel):
@@ -167,6 +170,11 @@ class KatawanGame(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)     
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 20, 40, 20)
@@ -332,3 +340,24 @@ class KatawanGame(QWidget):
 
     def handle_next(self):
         self.router.navigate("binti")
+
+    def showEvent(self, event):
+        self.reset_game()
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()
