@@ -86,6 +86,18 @@ def log_activity(student_id: str, module_name: str, score: float, target_word=No
         conn.commit()
     return log_id
 
+def get_student_activity_logs(student_id: str):
+    """Retrieves all activity and score logs for a specific student."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT module_name, target_word, score, speech_accuracy, attempts, timestamp 
+            FROM activity_logs 
+            WHERE student_id = ? 
+            ORDER BY timestamp DESC
+        """, (student_id,))
+        return [dict(row) for row in cursor.fetchall()]
+
 # --- LOCAL CLEANUP UTILITY ---
 
 def clear_local_teachers():
