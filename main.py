@@ -66,6 +66,8 @@ from screens.login import Login
 from screens.main_dashboard import HomeScreen
 from screens.kinder_dashboard import KinderDashboard
 from screens.grade1_dashboard import GradeOneDashboard
+from screens.student_list import StudentListScreen 
+from screens.student_progress import StudentProgressScreen  
 from screens.pantig_screen import PantigScreen
 from screens.bilang_screen import BilangScreen
 from screens.hugis_screen import HugisScreen
@@ -92,7 +94,7 @@ from features.pantig_screen_vr.Kama import PantigKama
 
 from features.pantig_screen_vr.Dahon import PantigDahon
 from features.pantig_screen_vr.Damit import PantigDamit
-from features.pantig_screen_vr.Dasal import PantigDasal
+from features.pantig_screen_vr.Dasal import PantigDasal   
 
 from features.pantig_screen_vr.Elepante import PantigElepante
 from features.pantig_screen_vr.Elisi import PantigElisi
@@ -422,8 +424,18 @@ class MainWindow(QMainWindow):
         self.router.register("login", Login(self.router))
         self.router.register("credentials", AccountInfo(self.router))
         self.router.register("home", HomeScreen(self.router))
+        
+        # Original Dashboard Routes
         self.router.register("kindergarten", KinderDashboard(self.router))
         self.router.register("grade1_dash", GradeOneDashboard(self.router))
+        
+        # Dedicated Student Roster Routes
+        self.router.register("kindergarten_roster", StudentListScreen(self.router, section_name="Kindergarten - Paharang"))
+        self.router.register("grade1_roster", StudentListScreen(self.router, section_name="Grade 1 - Paharang"))
+        
+        # Student Progress Report Route
+        self.router.register("student_progress", StudentProgressScreen(self.router))
+        
         self.router.register("pantig", PantigScreen(self.router))
         self.router.register("bilang", BilangScreen(self.router))
         self.router.register("hugis", HugisScreen(self.router))
@@ -747,7 +759,7 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     init_local_database()
 
-    # Print all registered accounts and passwords to the terminal on startup
+   
     print_registered_teachers()
 
     app = QApplication(sys.argv)
