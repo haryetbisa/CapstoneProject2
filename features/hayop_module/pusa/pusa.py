@@ -14,12 +14,12 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
+SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "hayop")
 
 
 
 class LessonScreenPusa(QWidget):
-  def __init__(self, router):
+    def __init__(self, router):
         super().__init__()
         self.router = router
 
@@ -65,26 +65,19 @@ class LessonScreenPusa(QWidget):
         content_layout.setSpacing(280)
         main_layout.addLayout(content_layout)
 
+        # --- LEFT COLUMN (Image + Centered Play Button Below It) ---
+        left_column = QVBoxLayout()
+        left_column.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        left_column.setSpacing(30)
+
         #yung image
         content_image = QLabel()
         content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "pusa.png")).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(content_image)
+        left_column.addWidget(content_image)
 
-        #lesson explanation
-        card = LessonCard(
-        title="Aralin 12 : PUSA",
-        body_text="Ang pusa ay isang uri ng maliit na alagang hayop na may apat na paa, balahibo, at mahabang buntot.")
-        content_layout.addWidget(card)
-
-
-        lower_layout = QHBoxLayout()
-        lower_layout.setSpacing(200)
-        lower_layout.setContentsMargins(70, 20, 70, 30)
-        main_layout.addLayout(lower_layout)
-        
         self.audio_btn = QPushButton(self)
         self.audio_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "play.png")))
         self.audio_btn.setIconSize(QSize(80, 80))
@@ -93,12 +86,24 @@ class LessonScreenPusa(QWidget):
         self.audio_btn.setStyleSheet(
             "border: none; background-color: transparent;"
         )
-        self.audio_btn.clicked.connect(play_animal_sound)
-        lower_layout.addWidget(
+        self.audio_btn.clicked.connect(self.play_animal_sound)
+        left_column.addWidget(
             self.audio_btn, alignment=Qt.AlignmentFlag.AlignCenter
         )
 
-        content_layout.addLayout(lower_layout)
+        content_layout.addLayout(left_column)
+
+        # --- RIGHT COLUMN (Lesson Card + Sunod Button) ---
+        right_column = QVBoxLayout()
+        right_column.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        right_column.setSpacing(30)
+
+        #lesson explanation
+        card = LessonCard(
+        title="Aralin 12 : PUSA",
+        body_text="Ang pusa ay isang uri ng maliit na alagang hayop na may apat na paa, balahibo, at mahabang buntot.")
+        right_column.addWidget(card)
+
 
         self.speak_btn = QPushButton("Sunod")
         self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
@@ -114,14 +119,12 @@ class LessonScreenPusa(QWidget):
             font-family: {BODY_FONT};
         """)
         self.speak_btn.setFixedSize(240, 70)
-        lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        right_column.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("pusavs"))
 
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
+        content_layout.addLayout(right_column)
 
-
-def play_animal_sound(self):
+    def play_animal_sound(self):
         """Plays animal sound if available."""
         sound_path = os.path.join(SOUNDS_DIR, "pusa.mp3")
 
