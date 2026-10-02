@@ -18,11 +18,9 @@ from features.voice_recog import OfflineVoiceWorker
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-
-
 FEEDBACK_SOUNDS_DIR = os.path.join(
-    BASE_DIR, "assets", "sounds", "correct_&_wrong"
-)
+    BASE_DIR, "assets", "sounds", "correct_&_wrong")
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "Vs Hayop")
 
 
 class BaboyVS(QWidget):
@@ -38,6 +36,11 @@ class BaboyVS(QWidget):
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
         self.feedback_audio_output.setVolume(0.8)
+
+        self.word_audio_output = QAudioOutput(self)
+        self.word_player = QMediaPlayer(self)
+        self.word_player.setAudioOutput(self.word_audio_output)
+        self.word_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -94,6 +97,10 @@ class BaboyVS(QWidget):
             self.audio.setIcon(QIcon(audio_icon_path))
         self.audio.setIconSize(QSize(40, 40))
         self.audio.setCursor(Qt.PointingHandCursor)
+        self.audio.setStyleSheet(
+            "border: none; background-color: transparent;"
+        )
+        self.audio.clicked.connect(self.play_word_sound)
 
         word.addWidget(self.audio)
 
@@ -169,6 +176,22 @@ class BaboyVS(QWidget):
         self.speak_btn.setFixedSize(240, 70)
         lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("baboy_game"))
+
+
+    def play_word_sound(self):
+        """Plays the target word pronunciation sound."""
+        sound_path = os.path.join(
+            PRONUNCIATION_SOUNDS_DIR, f"Baboy.mp3"
+        )
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(
+                PRONUNCIATION_SOUNDS_DIR, f"Baboy.wav"
+            )
+
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.word_player.play()
 
     def play_feedback_sound(self, filename: str):
         """Plays correct/wrong voice evaluation feedback audio."""

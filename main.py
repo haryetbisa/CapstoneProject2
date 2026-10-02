@@ -21,6 +21,8 @@ QApplication.setHighDpiScaleFactorRoundingPolicy(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FONTS_DIR = os.path.join(BASE_DIR, "assets", "fonts")
 
+
+
 def load_fonts():
     for root, dirs, files in os.walk(FONTS_DIR):
         for filename in files:
