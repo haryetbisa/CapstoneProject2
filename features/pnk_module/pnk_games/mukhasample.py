@@ -251,7 +251,7 @@ class MukhaGameSample(QWidget):
             target_word="buhok", border_color=SKY_BLUE
         )
         self.bibig_db = LabelDropBox(
-            target_word="bibig", border_color=ELECTRIC_VIOLET
+            target_word="bibig", border_color=BLUE_VIOLET
         )
         self.ilong_db = LabelDropBox(target_word="ilong", border_color=GREEN)
 

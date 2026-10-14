@@ -33,7 +33,7 @@ class GradeOneDashboard(QWidget):
         main_layout.setContentsMargins(60, 60, 60, 0)
         
         top_layout = QHBoxLayout()
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        top_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addLayout(top_layout)
 
         back_btn = QPushButton()
