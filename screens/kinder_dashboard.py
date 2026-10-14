@@ -145,10 +145,9 @@ class KinderDashboard(QWidget):
         main_layout.addLayout(grid_layout)
         main_layout.addStretch()
 
-
-
     def showEvent(self, event):
         self.play_instruction_sound()
+        self.load_dropdown_students()
         super().showEvent(event)
 
     def hideEvent(self, event):
@@ -166,10 +165,7 @@ class KinderDashboard(QWidget):
 
     def stop_instruction_sound(self):
         self.instruction_player.stop()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        self.load_dropdown_students()
+        
 
     def load_dropdown_students(self):
         """Populates the dropdown with students belonging to the active teacher."""
