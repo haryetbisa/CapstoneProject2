@@ -55,33 +55,11 @@ class CardsPicButton(QPushButton):
         self.image_label.setStyleSheet("background: transparent;")
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image_label.setPixmap(QPixmap(os.path.join(ASSETS_DIR, icon_path)).scaled(
-                100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                140, 140, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
         
-        self.prog_bar = QProgressBar()
-        self.prog_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.prog_bar.setRange(0, 100)
-        self.prog_bar.setValue(30)
-        self.prog_bar.setFixedHeight(18)
-        self.prog_bar.setTextVisible(True) 
-        self.prog_bar.setStyleSheet(f"""
-            QProgressBar {{
-                height: 14px;
-                width: 12px;
-                border-radius: 9px;
-                font-size: 12px;
-                font-weight: 600;
-                font-family: {BODY_FONT};
-                text-align: center;
-                color: {HONEY_YELLOW};
-            }}
-            QProgressBar::chunk {{
-                background-color: {YELLOW};
-                border-radius: 9px;
-            }}
-        """)
 
         card_layout.addWidget(self.aralin)
         card_layout.addWidget(self.image_label)
-        card_layout.addWidget(self.prog_bar)
+     
         
