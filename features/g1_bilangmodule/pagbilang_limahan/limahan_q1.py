@@ -339,7 +339,7 @@ class BilangLvl7(QWidget):
 
     def handle_next(self):
         self.reset_game()
-        self.router.navigate("limahan_q2")
+        self.router.navigate("limahan_quest2")
 
     def showEvent(self, event):
         self.reset_game()

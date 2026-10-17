@@ -59,7 +59,7 @@ class LessonMath5(QWidget):
         text_row.setSpacing(5)
 
         lesson_text = QLabel(
-            "Sa Pagbilang ng Dalawahan, magdadagdag tayo ng dalawang bilang upang"
+            "Sa Pagbilang ng Dalawahan, magdadagdag tayo ng dalawang bilang upang "
             "makuha ang kasunod na bilang."
         )
         lesson_text.setAlignment(Qt.AlignCenter)

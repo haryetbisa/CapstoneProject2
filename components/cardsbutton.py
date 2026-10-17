@@ -1,6 +1,4 @@
 # para sa dashboard buttons na may png at words
-
-
 import os
 
 from PySide6.QtCore import Qt

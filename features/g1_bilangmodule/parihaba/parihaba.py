@@ -73,8 +73,6 @@ class LessonMath3(QWidget):
         content_layout.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
         self.speak_btn.setFixedHeight(40)
         self.speak_btn.setCursor(Qt.PointingHandCursor)
         self.speak_btn.setStyleSheet(f"""
