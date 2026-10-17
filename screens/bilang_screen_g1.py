@@ -50,7 +50,7 @@ class BilangScreenG1(QWidget):
         back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
 
    
-        pagsasanay = QLabel("Pagsasanay")
+        pagsasanay = QLabel("Aralin")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};

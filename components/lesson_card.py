@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QScrollArea, QFrame
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
@@ -46,22 +46,26 @@ class LessonCard(QWidget):
         """)
         outer_layout.addWidget(header)
 
-        # ---- Body (white, wraps text, centered) ----
+# ---- Body (scrollable) ----
         body = QLabel(body_text)
         body.setWordWrap(True)
         body.setAlignment(Qt.AlignCenter)
         body.setStyleSheet(f"""
-            background-color: {WHITE};
+            background: transparent;
             color: {BLACK};
             font-family: {BODY_FONT};
             font-size: 22px;
-
-            border-left: 2px solid #000000;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
-            
             padding: 40px 40px;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
         """)
-        outer_layout.addWidget(body)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setStyleSheet("""
+        QScrollArea { background: transparent; border: none; }
+        QScrollArea > QWidget > QWidget { background: transparent; }
+    """)
+        scroll.setWidget(body)
+        outer_layout.addWidget(scroll)
+

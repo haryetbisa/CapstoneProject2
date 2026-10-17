@@ -163,8 +163,6 @@ class PantigBahay(QWidget):
         main_layout.addLayout(lower_layout)
 
         self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
         self.speak_btn.setFixedHeight(40)
         self.speak_btn.setCursor(Qt.PointingHandCursor)
         self.speak_btn.setStyleSheet(f"""

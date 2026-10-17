@@ -32,7 +32,7 @@ class ParihabaVS(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "parisukat"
+        self.target_word = "parihaba"
         self.worker = None
 
         # Feedback Audio Player Setup

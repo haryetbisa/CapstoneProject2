@@ -115,7 +115,7 @@ class MatchingNga(QWidget):
         main_layout.addLayout(rows_layout)
 
         items = [
-            ("opened-mouth", "nga nga.png", "ngalan", "Nga-lan"),
+            ("opened-mouth", "nga-nga.png", "ngalan", "Nga-lan"),
             ("name", "ngalan.png", "nga-nga", "Nga-nga"),
             ("palate", "ngala-ngala.png", "ngala-ngala", "Ngala-ngala"),
         ]
@@ -217,7 +217,7 @@ class MatchingNga(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("nga")
+        self.router.navigate("nganga")
 
     def handle_next(self):
         self.reset_game()

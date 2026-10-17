@@ -33,7 +33,7 @@ class RombusVS(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "rhombus"
+        self.target_word = "rombus"
         self.worker = None
 
         

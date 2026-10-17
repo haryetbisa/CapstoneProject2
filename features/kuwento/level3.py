@@ -1,21 +1,26 @@
 import os
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea
 from themes.colors import * 
 from themes.fonts import BODY_FONT
-
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
-
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "VO Kuwento")
 
 
 class Kuwento3(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.word_audio_output = QAudioOutput(self)
+        self.word_player = QMediaPlayer(self)
+        self.word_player.setAudioOutput(self.word_audio_output)
+        self.word_audio_output.setVolume(1.0)
 
         content = QWidget()
         main_layout = QVBoxLayout(content)
@@ -75,6 +80,7 @@ class Kuwento3(QWidget):
         self.speaker_btn.setIconSize(QSize(24, 24))
         self.speaker_btn.setFlat(True)
         self.speaker_btn.setCursor(Qt.PointingHandCursor)
+        self.speaker_btn.clicked.connect(self.play_word_sound)
         text_row.addWidget(self.speaker_btn)
 
         
@@ -127,4 +133,20 @@ class Kuwento3(QWidget):
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         outer.addWidget(scroll)
+
+
+    def play_word_sound(self):
+        """Plays the target word pronunciation sound."""
+        sound_path = os.path.join(
+            PRONUNCIATION_SOUNDS_DIR, f"Bandila.mp3"
+        )
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(
+                PRONUNCIATION_SOUNDS_DIR, f"Bandila.wav"
+            )
+
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.word_player.play()
 
