@@ -12,6 +12,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(
@@ -156,6 +158,7 @@ class BaboyGame(QWidget):
 
         self.animal_id = "baboy"
         self.target_habitat_id = "pig_pen"
+        self.score_logged = False  # Prevent duplicate logging per run
 
         self.audio_output = QAudioOutput(self)
         self.audio_player = QMediaPlayer(self)
@@ -334,6 +337,20 @@ class BaboyGame(QWidget):
             self.play_sound("correct.wav")
             self.restart_btn.show()
             self.next_btn.show()
+
+            # --- AUTOMATIC SCORE LOGGING ---
+            if not self.score_logged:
+                student_id = AppSession.get_active_student_id()
+                if student_id:
+                    score_percentage = 100.0
+                    log_activity(
+                        student_id=student_id,
+                        module_name="Hayop",
+                        target_word="Baboy",
+                        score=score_percentage
+                    )
+                    print("--> Baboy game score successfully logged for active student!")
+                    self.score_logged = True
         else:
             self.play_sound("wrong.wav")
             self.feedback_label.setText(
@@ -345,6 +362,7 @@ class BaboyGame(QWidget):
             self.reset_game()
 
     def reset_game(self):
+        self.score_logged = False
         self.restart_btn.hide()
         self.next_btn.hide()
         self.setup_items()
@@ -352,7 +370,12 @@ class BaboyGame(QWidget):
     def showEvent(self, event):
         self.reset_game()
         self.feedback_label.setText("")
+        self.play_instruction_sound()
         super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
 
     def handle_back(self):
         self.reset_game()
@@ -361,15 +384,6 @@ class BaboyGame(QWidget):
     def handle_next(self):
         self.reset_game()
         self.router.navigate("bibe_lesson")
-
-    def showEvent(self, event):
-        self.reset_game()
-        self.play_instruction_sound()
-        super().showEvent(event)
-
-    def hideEvent(self, event):
-        self.stop_instruction_sound()
-        super().hideEvent(event)
 
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))

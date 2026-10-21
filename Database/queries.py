@@ -66,6 +66,17 @@ def get_students_by_teacher(teacher_id: str):
         """, (teacher_id,))
         return [dict(row) for row in cursor.fetchall()]
 
+def get_students_by_teacher_and_section(teacher_id: str, section: str):
+    """Retrieves all students associated with the logged-in teacher filtered by grade/section."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM students 
+            WHERE teacher_id = ? AND grade_section = ?
+            ORDER BY last_name ASC, first_name ASC
+        """, (teacher_id, section))
+        return [dict(row) for row in cursor.fetchall()]
+
 # --- ACTIVITY SCORE LOGGING ---
 
 def log_activity(student_id: str, module_name: str, score: float, target_word=None, speech_accuracy=None, attempts=1):
@@ -98,7 +109,29 @@ def get_student_activity_logs(student_id: str):
         """, (student_id,))
         return [dict(row) for row in cursor.fetchall()]
 
-# --- LOCAL CLEANUP UTILITY ---
+def get_module_progress_percentage(student_id: str, module_name: str, total_module_items: int = 10):
+    """Calculates the completion percentage for a specific module based on unique completed targets."""
+    if not student_id:
+        return 0
+        
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT COUNT(DISTINCT target_word) as completed_count
+            FROM activity_logs 
+            WHERE student_id = ? AND module_name = ? AND target_word IS NOT NULL
+        """, (student_id, module_name))
+        result = cursor.fetchone()
+        
+        completed = result['completed_count'] if result else 0
+        
+        if total_module_items <= 0:
+            return 0
+            
+        percentage = int(min(100, (completed / total_module_items) * 100))
+        return percentage
+
+
 
 def clear_local_teachers():
     """Deletes all local teacher accounts and clears the sync queue for fresh testing."""

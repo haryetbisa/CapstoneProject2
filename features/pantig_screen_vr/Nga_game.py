@@ -5,6 +5,8 @@ from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "pantig")
@@ -72,6 +74,7 @@ class MatchingNga(QWidget):
         self.connections = []
         self.dragging_from = None
         self.temp_end_point = None
+        self.score_logged = False  # Prevent duplicate logs in a single run
 
         self.correct_pairs = {
             "opened-mouth": "nga-nga",
@@ -202,6 +205,7 @@ class MatchingNga(QWidget):
         self.connections.clear()
         self.dragging_from = None
         self.temp_end_point = None
+        self.score_logged = False
         self.restart_btn.hide()
         self.next_btn.hide()
         self.update()
@@ -258,6 +262,23 @@ class MatchingNga(QWidget):
 
         if len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
             self.next_btn.show()
+
+            # --- AUTOMATIC SCORE LOGGING ---
+            if not self.score_logged:
+                student_id = AppSession.get_active_student_id()
+                if student_id:
+                    correct_count = sum(1 for c in self.connections if c[2])
+                    total_items = len(self.correct_pairs)
+                    score_percentage = (correct_count / total_items) * 100
+                    
+                    log_activity(
+                        student_id=student_id,
+                        module_name="Pantig",
+                        target_word="Nga",
+                        score=score_percentage
+                    )
+                    print("--> Matching Nga game score successfully logged for active student!")
+                    self.score_logged = True
 
         self.update()
 

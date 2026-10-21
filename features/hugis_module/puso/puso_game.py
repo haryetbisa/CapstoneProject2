@@ -11,6 +11,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(
@@ -149,6 +151,7 @@ class PusoGame(QWidget):
         ]
         self.remaining_targets = set(self.target_items)
         self.active_item_widgets = []
+        self.score_logged = False  # Prevent duplicate logging per run
 
         self.audio_output = QAudioOutput(self)
         self.audio_player = QMediaPlayer(self)
@@ -307,6 +310,20 @@ class PusoGame(QWidget):
                 )
                 self.restart_btn.show()
                 self.next_btn.show()
+
+                # --- AUTOMATIC SCORE LOGGING ---
+                if not self.score_logged:
+                    student_id = AppSession.get_active_student_id()
+                    if student_id:
+                        score_percentage = 100.0
+                        log_activity(
+                            student_id=student_id,
+                            module_name="Hugis",
+                            target_word="Puso",
+                            score=score_percentage
+                        )
+                        print("--> Puso game score successfully logged for active student!")
+                        self.score_logged = True
             else:
                 self.feedback_label.setText("✅ TAMA! HUGIS PUSO ANG BAGAY NA ITO!")
                 self.feedback_label.setStyleSheet(
@@ -324,6 +341,7 @@ class PusoGame(QWidget):
 
     def reset_game(self):
         self.remaining_targets = set(self.target_items)
+        self.score_logged = False
         self.restart_btn.hide()
         self.next_btn.hide()
         self.setup_items()

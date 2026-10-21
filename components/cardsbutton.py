@@ -68,7 +68,7 @@ class CardsButton(QPushButton):
         self.prog_bar.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self.prog_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.prog_bar.setRange(0, 100)
-        self.prog_bar.setValue(30)
+        self.prog_bar.setValue(0)  # Default start at 0%
         self.prog_bar.setFixedHeight(18)
         self.prog_bar.setTextVisible(True)  
 
@@ -90,4 +90,8 @@ class CardsButton(QPushButton):
         """)
         
         card_layout.addWidget(self.prog_bar)
-        
+
+    def set_progress(self, percent: int):
+        """Dynamically updates the progress bar value and text label (0% - 100%)."""
+        clamped_val = max(0, min(100, percent))
+        self.prog_bar.setValue(clamped_val)

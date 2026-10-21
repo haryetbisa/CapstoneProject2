@@ -13,6 +13,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 # Resolve project root directory safely
 BASE_DIR = os.path.dirname(
@@ -170,6 +172,7 @@ class PaaGame(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+        self.score_logged = False  # Prevent duplicate logging per run
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -311,14 +314,28 @@ class PaaGame(QWidget):
         )
         self.next_btn.setEnabled(all_correct)
 
+        if all_correct and not self.score_logged:
+            student_id = AppSession.get_active_student_id()
+            if student_id:
+                log_activity(
+                    student_id=student_id,
+                    module_name="Parte ng Katawan",
+                    target_word="Paa",
+                    score=100.0
+                )
+                print("--> Paa game score successfully logged for active student!")
+                self.score_logged = True
+
     def handle_back(self):
+        self.score_logged = False
         self.router.navigate("paa")
 
     def handle_next(self):
+        self.score_logged = False
         self.router.navigate("katawan")
 
     def showEvent(self, event):
-        self.reset_game()
+        self.score_logged = False
         self.play_instruction_sound()
         super().showEvent(event)
 
