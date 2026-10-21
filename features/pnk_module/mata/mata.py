@@ -52,7 +52,6 @@ class LessonScreenMata(QWidget):
         main_layout.addLayout(top_layout)
 
 
-
         content_layout = QHBoxLayout()
         content_layout.setContentsMargins(70, 20, 70, 30)
         content_layout.setSpacing(280)
@@ -106,7 +105,5 @@ class LessonScreenMata(QWidget):
 
 
 
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
-
+ 
 

@@ -1,15 +1,16 @@
 import os
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea
 from themes.colors import * 
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.fonts import BODY_FONT
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
-
+PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "VO Kuwento")
 
 
 class Kuwento7(QWidget):
@@ -17,7 +18,13 @@ class Kuwento7(QWidget):
         super().__init__()
         self.router = router
 
-        main_layout = QVBoxLayout(self)
+        self.word_audio_output = QAudioOutput(self)
+        self.word_player = QMediaPlayer(self)
+        self.word_player.setAudioOutput(self.word_audio_output)
+        self.word_audio_output.setVolume(1.0)
+
+        content = QWidget()
+        main_layout = QVBoxLayout(content)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
@@ -74,6 +81,7 @@ class Kuwento7(QWidget):
         self.speaker_btn.setIconSize(QSize(24, 24))
         self.speaker_btn.setFlat(True)
         self.speaker_btn.setCursor(Qt.PointingHandCursor)
+        self.speaker_btn.clicked.connect(self.play_word_sound)
         text_row.addWidget(self.speaker_btn)
 
         
@@ -81,7 +89,7 @@ class Kuwento7(QWidget):
             "Ang bilin ng aking guro huwag kalimutan ang mga turo.\n"
             "Buksan at basahin ang libro\n"
             "sapagkat magandang aral ang dulot nito\n"
-            "at gawi sa uwina itatak sa isipan\n"
+            "at gawi sa tuwina itatak sa isipan\n"
             "sapagkat ang buhay ay di biro."
         )
         story_text.setAlignment(Qt.AlignLeft)
@@ -117,4 +125,29 @@ class Kuwento7(QWidget):
         self.next_btn.clicked.connect(lambda: self.router.navigate("quest7"))
         
         main_layout.addStretch()
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.NoFrame)
+        scroll.setStyleSheet("background: transparent;")
+        scroll.setWidget(content)
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.addWidget(scroll)
+
+    def play_word_sound(self):
+        """Plays the target word pronunciation sound."""
+        sound_path = os.path.join(
+            PRONUNCIATION_SOUNDS_DIR, f"Libro.mp3"
+        )
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(
+                PRONUNCIATION_SOUNDS_DIR, f"Libro.wav"
+            )
+
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.word_player.play()
 

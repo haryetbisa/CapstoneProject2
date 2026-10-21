@@ -351,7 +351,7 @@ class BilangLvl5(QWidget):
 
     def handle_next(self):
         self.reset_game()
-        self.router.navigate("dalawahan_q2")
+        self.router.navigate("dalawahan_quest2")
 
 
     def showEvent(self, event):
