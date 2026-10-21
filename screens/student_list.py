@@ -25,7 +25,7 @@ from PySide6.QtGui import QIcon
 from themes.colors import *
 from themes.fonts import BODY_FONT, HEADING_FONT
 from session import AppSession
-from Database.queries import get_students_by_teacher, add_student
+from Database.queries import get_students_by_teacher_and_section, add_student
 
 ICONS_DIR = os.path.join(ROOT_DIR, "assets", "icons")
 
@@ -53,7 +53,7 @@ class StudentListScreen(QWidget):
         back_btn.clicked.connect(self.go_back)
         top_layout.addWidget(back_btn)
 
-        title = QLabel(f"Student Roster - {self.section_name}")
+        title = QLabel(f"Student list - {self.section_name}")
         title.setStyleSheet(f"font-family: {HEADING_FONT}; color: {CHOCO_BROWN}; font-size: 24px;")
         top_layout.addWidget(title)
 
@@ -140,14 +140,15 @@ class StudentListScreen(QWidget):
         """
 
     def load_students(self):
-        """Loads student data from local SQLite database for the active teacher."""
+        """Loads section-specific student data from local SQLite database for the active teacher."""
         self.table.setRowCount(0)
         teacher_id = AppSession.get_teacher_id()
         
         if not teacher_id:
             return
 
-        students = get_students_by_teacher(teacher_id)
+        # Fetch only students belonging to this specific section
+        students = get_students_by_teacher_and_section(teacher_id, self.section_name)
         for row_idx, student in enumerate(students):
             self.table.insertRow(row_idx)
             self.table.setItem(row_idx, 0, QTableWidgetItem(student['first_name']))
@@ -168,6 +169,7 @@ class StudentListScreen(QWidget):
             return
 
         try:
+            # Adds the student specifically tagged with this screen's section name
             add_student(teacher_id=teacher_id, first_name=first_name, last_name=last_name, section=self.section_name)
             self.first_name_input.clear()
             self.last_name_input.clear()

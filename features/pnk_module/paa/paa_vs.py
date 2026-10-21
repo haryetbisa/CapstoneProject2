@@ -13,6 +13,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 # Resolve project root directory safely (4 levels up)
 BASE_DIR = os.path.dirname(
@@ -36,6 +38,7 @@ class PaaVS(QWidget):
         self.router = router
         self.target_word = "paa"
         self.worker = None
+        self.score_logged = False  # Prevent duplicate logging per run
 
         # Feedback & Word Audio Setup
         self.audio_output = QAudioOutput(self)
@@ -247,6 +250,19 @@ class PaaVS(QWidget):
             )
             self.play_feedback_sound("correct.wav")
             self.next_btn.show()
+
+            # --- AUTOMATIC SCORE LOGGING ---
+            if not self.score_logged:
+                student_id = AppSession.get_active_student_id()
+                if student_id:
+                    log_activity(
+                        student_id=student_id,
+                        module_name="Parte ng Katawan",
+                        target_word="Paa",
+                        score=100.0
+                    )
+                    print("--> Paa pronunciation score successfully logged!")
+                    self.score_logged = True
         else:
             self.feedback_label.setText(
                 f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
@@ -274,10 +290,12 @@ class PaaVS(QWidget):
 
     def handle_back(self):
         self.stop_worker()
+        self.score_logged = False
         self.router.navigate("binti")
 
     def handle_next(self):
         self.stop_worker()
+        self.score_logged = False
         self.router.navigate("paa_game")
 
     def closeEvent(self, event):
