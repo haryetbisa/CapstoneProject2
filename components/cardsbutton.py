@@ -1,13 +1,12 @@
 # para sa dashboard buttons na may png at words
-
-
 import os
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QPushButton, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QPushButton, QVBoxLayout, QLabel, QProgressBar
 from PySide6.QtGui import QPixmap, QColor
 from themes.colors import *
 from assets.image import *
+from themes.fonts import BODY_FONT
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSETS_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "assets", "image"))
@@ -21,7 +20,7 @@ class CardsButton(QPushButton):
         pressed_color = base.darker(115).name()
 
 
-        self.setFixedSize(240, 240)
+        self.setFixedSize(260, 260)
         self.setStyleSheet(f"""
             QPushButton {{
                 background-color: {color};           
@@ -64,4 +63,31 @@ class CardsButton(QPushButton):
      
         card_layout.addWidget(self.image_label)
         card_layout.addWidget(self.title_label)
+
+        self.prog_bar = QProgressBar()
+        self.prog_bar.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        self.prog_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.prog_bar.setRange(0, 100)
+        self.prog_bar.setValue(30)
+        self.prog_bar.setFixedHeight(18)
+        self.prog_bar.setTextVisible(True)  
+
+        self.prog_bar.setStyleSheet(f"""
+            QProgressBar {{
+                height: 18px;
+                width: 14px;
+                border-radius: 9px;
+                font-size: 12px;
+                font-weight: 600;
+                font-family: {BODY_FONT};
+                text-align: center;
+                color: {HONEY_YELLOW};
+            }}
+            QProgressBar::chunk {{
+                background-color: {YELLOW};
+                border-radius: 9px;
+            }}
+        """)
+        
+        card_layout.addWidget(self.prog_bar)
         

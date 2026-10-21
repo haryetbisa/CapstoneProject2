@@ -106,7 +106,7 @@ class Bilang3(QWidget):
         self.audio.clicked.connect(self.play_word_sound)
         word.addWidget(self.audio)
 
-        salita = QLabel("Ta-tlo")
+        salita = QLabel("Tat-lo")
         salita.setStyleSheet(f"""
             font-size: 96px;
             font-family: {BODY_FONT};

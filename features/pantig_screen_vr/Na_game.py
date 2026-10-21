@@ -220,7 +220,7 @@ class MatchingNa(QWidget):
 
     def handle_next(self):
         self.reset_game()
-        self.router.navigate("nga")
+        self.router.navigate("ngalan")
 
     def play_feedback_sound(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"

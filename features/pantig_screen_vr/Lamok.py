@@ -267,4 +267,4 @@ class PantigLamok(QWidget):
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
-        self.router.navigate("labi")
+        self.router.navigate("labi1")

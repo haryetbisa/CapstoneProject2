@@ -33,7 +33,7 @@ class RombusVS(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "rhombus"
+        self.target_word = "rombus"
         self.worker = None
 
         
@@ -85,7 +85,7 @@ class RombusVS(QWidget):
         if os.path.exists(image_path):
             image.setPixmap(
                 QPixmap(image_path).scaled(
-                    250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                    240, 240, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
