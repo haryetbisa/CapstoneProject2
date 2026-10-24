@@ -15,6 +15,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -131,6 +133,7 @@ class SiyamGame(QWidget):
         self.router = router
         self.current_number = 9
         self.target_word = "Siyam"
+        self.score_logged = False  # Prevent duplicate logs in a single run
 
         # Feedback Audio Player Setup
         self.feedback_audio_output = QAudioOutput(self)
@@ -320,6 +323,20 @@ class SiyamGame(QWidget):
                 }}
             """)
             self.next_btn.show()
+
+            # --- AUTOMATIC SCORE LOGGING ---
+            if not self.score_logged:
+                student_id = AppSession.get_active_student_id()
+                if student_id:
+                    score_percentage = 100.0  # Single-item game completion = 100%
+                    log_activity(
+                        student_id=student_id,
+                        module_name="Bilang",
+                        target_word=self.target_word,
+                        score=score_percentage
+                    )
+                    print("--> Siyam game score successfully logged for active student!")
+                    self.score_logged = True
         else:
             self.drop_box.setStyleSheet(f"""
                 AnswerDropBox {{
@@ -339,6 +356,7 @@ class SiyamGame(QWidget):
     def reset_game(self):
         self.drop_box.answer_label.setText("")
         self.drop_box.reset_style()
+        self.score_logged = False
         self.check_btn.hide()
         self.restart_btn.hide()
         self.next_btn.hide()

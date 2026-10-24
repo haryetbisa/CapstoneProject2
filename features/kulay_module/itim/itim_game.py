@@ -12,6 +12,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(
@@ -149,6 +151,7 @@ class DragDropBlack(QWidget):
         self.correct_items = ["spider.png", "bat.png", "tv.png"]
         self.REQUIRED_CORRECT_COUNT = 3
         self.current_correct_count = 0
+        self.score_logged = False  # Prevent duplicate logging per run
 
         self.audio_output = QAudioOutput(self)
         self.audio_player = QMediaPlayer(self)
@@ -307,6 +310,19 @@ class DragDropBlack(QWidget):
                 self.play_sound("correct.wav")
                 self.restart_btn.show()
                 self.next_btn.show()
+
+                # --- AUTOMATIC SCORE LOGGING ---
+                if not self.score_logged:
+                    student_id = AppSession.get_active_student_id()
+                    if student_id:
+                        log_activity(
+                            student_id=student_id,
+                            module_name="Kulay",
+                            target_word="Itim",
+                            score=100.0
+                        )
+                        print("--> Itim game score successfully logged for active student!")
+                        self.score_logged = True
             else:
                 self.feedback_label.setText("Tama! Isa pa!")
                 self.feedback_label.setStyleSheet(
@@ -325,6 +341,7 @@ class DragDropBlack(QWidget):
 
     def reset_game(self):
         self.current_correct_count = 0
+        self.score_logged = False
         self.restart_btn.hide()
         self.next_btn.hide()
         self.setup_items()
@@ -332,6 +349,7 @@ class DragDropBlack(QWidget):
     def showEvent(self, event):
         self.reset_game()
         self.feedback_label.setText("")
+        self.play_instruction_sound()
         super().showEvent(event)
 
     def handle_back(self):
@@ -341,11 +359,6 @@ class DragDropBlack(QWidget):
     def handle_next(self):
         self.reset_game()
         self.router.navigate("kulay")
-
-    def showEvent(self, event):
-        self.reset_game()
-        self.play_instruction_sound()
-        super().showEvent(event)
 
     def hideEvent(self, event):
         self.stop_instruction_sound()

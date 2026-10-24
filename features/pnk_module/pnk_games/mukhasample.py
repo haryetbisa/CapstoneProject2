@@ -1,5 +1,5 @@
 import os
-from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, Signal
+from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, Signal, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
@@ -13,6 +13,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 # Resolve project root safely
 BASE_DIR = os.path.dirname(
@@ -172,6 +174,7 @@ class MukhaGameSample(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+        self.score_logged = False  # Prevent duplicate logging per run
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -333,21 +336,34 @@ class MukhaGameSample(QWidget):
         self.check_completion()
 
     def check_completion(self):
-       
         all_correct = all(
             db.current_word.lower() == db.target_word.lower()
             for db in self.drop_boxes
         )
         self.next_btn.setEnabled(all_correct)
 
+        if all_correct and not self.score_logged:
+            student_id = AppSession.get_active_student_id()
+            if student_id:
+                log_activity(
+                    student_id=student_id,
+                    module_name="Parte ng Katawan",
+                    target_word="Mukha",
+                    score=100.0
+                )
+                print("--> Mukha game score successfully logged for active student!")
+                self.score_logged = True
+
     def handle_back(self):
+        self.score_logged = False
         self.router.navigate("buhok")
 
     def handle_next(self):
+        self.score_logged = False
         self.router.navigate("leeg")
 
     def showEvent(self, event):
-        self.reset_game()
+        self.score_logged = False
         self.play_instruction_sound()
         super().showEvent(event)
 
