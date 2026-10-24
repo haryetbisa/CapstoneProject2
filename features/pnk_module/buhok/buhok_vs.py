@@ -13,6 +13,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 # Resolve project root directory
 BASE_DIR = os.path.dirname(
@@ -36,6 +38,7 @@ class BuhokVS(QWidget):
         self.router = router
         self.target_word = "buhok"
         self.worker = None
+        self.score_logged = False  # Prevent duplicate logging per run
 
         # Audio Output & Player Setup
         self.audio_output = QAudioOutput(self)
@@ -247,6 +250,19 @@ class BuhokVS(QWidget):
             )
             self.play_feedback_sound("correct.wav")
             self.next_btn.show()
+
+            # --- AUTOMATIC SCORE LOGGING ---
+            if not self.score_logged:
+                student_id = AppSession.get_active_student_id()
+                if student_id:
+                    log_activity(
+                        student_id=student_id,
+                        module_name="Parte ng Katawan",
+                        target_word="Buhok",
+                        score=100.0
+                    )
+                    print("--> Buhok pronunciation score successfully logged!")
+                    self.score_logged = True
         else:
             self.feedback_label.setText(
                 f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
@@ -274,10 +290,12 @@ class BuhokVS(QWidget):
 
     def handle_back(self):
         self.stop_worker()
+        self.score_logged = False
         self.router.navigate("tenga")
 
     def handle_next(self):
         self.stop_worker()
+        self.score_logged = False
         self.router.navigate("mukha_game")
 
     def closeEvent(self, event):

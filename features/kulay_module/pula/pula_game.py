@@ -12,6 +12,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(
@@ -156,6 +158,7 @@ class DragDropRed(QWidget):
         self.correct_items = ["apple.png", "strawberry.png"]
         self.REQUIRED_CORRECT_COUNT = 2
         self.current_correct_count = 0
+        self.score_logged = False  # Prevent duplicate logging per run
 
         # Audio setup
         self.audio_output = QAudioOutput(self)
@@ -328,6 +331,19 @@ class DragDropRed(QWidget):
                 self.play_sound("correct.wav")
                 self.restart_btn.show()
                 self.next_btn.show()
+
+                # --- AUTOMATIC SCORE LOGGING ---
+                if not self.score_logged:
+                    student_id = AppSession.get_active_student_id()
+                    if student_id:
+                        log_activity(
+                            student_id=student_id,
+                            module_name="Kulay",
+                            target_word="Pula",
+                            score=100.0
+                        )
+                        print("--> Pula game score successfully logged for active student!")
+                        self.score_logged = True
             else:
                 self.feedback_label.setText("Tama! Isa pa!")
                 self.feedback_label.setStyleSheet(
@@ -347,18 +363,14 @@ class DragDropRed(QWidget):
     def reset_game(self):
         """Resets target score, hides action buttons, clears feedback text, and restores items."""
         self.current_correct_count = 0
+        self.score_logged = False
         self.restart_btn.hide()
         self.next_btn.hide()
         self.setup_items()
 
     def showEvent(self, event):
-        """Resets state on scene navigation."""
         self.reset_game()
         self.feedback_label.setText("")
-        super().showEvent(event)
-
-    def showEvent(self, event):
-        self.reset_game()
         self.play_instruction_sound()
         super().showEvent(event)
 
@@ -375,7 +387,6 @@ class DragDropRed(QWidget):
         """Advances safely to the next color screen in the Kulay LS sequence (kahel)."""
         self.reset_game()
         self.router.navigate("kahel")
-
 
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
