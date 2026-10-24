@@ -83,6 +83,8 @@ class LabelDropBox(QFrame):
     """An interactive box that validates dropped words."""
 
     word_changed = Signal()
+    word_dropped = Signal(str)    
+    word_removed = Signal(str)
 
     def __init__(
         self,
@@ -147,6 +149,10 @@ class LabelDropBox(QFrame):
 
     def dropEvent(self, event):
         dropped_text = event.mimeData().text()
+
+        if self.current_word:
+            self.word_removed.emit(self.current_word)
+
         self.current_word = dropped_text
         self.answer_label.setText(dropped_text)
 
@@ -156,14 +162,17 @@ class LabelDropBox(QFrame):
             self.set_incorrect_style()
 
         event.acceptProposedAction()
+        self.word_dropped.emit(dropped_text)
         self.word_changed.emit()
 
     def mousePressEvent(self, event):
         """Clicking a filled box clears it."""
         if event.button() == Qt.LeftButton and self.current_word:
+            removed = self.current_word
             self.current_word = ""
             self.answer_label.setText("")
             self.reset_style()
+            self.word_removed.emit(removed)
             self.word_changed.emit()
 
 
@@ -228,8 +237,10 @@ class KatawanGame(QWidget):
         word_bank_row.setAlignment(Qt.AlignCenter)
 
         words = ["balikat", "leeg", "tiyan", "bibig", "braso", "kamay"]
+        self.word_widgets = {}
         for word_text in words:
             word_widget = DraggableWord(word_text)
+            self.word_widgets[word_text] = word_widget
             word_bank_row.addWidget(word_widget)
 
         main_layout.addWidget(word_bank)
@@ -298,6 +309,8 @@ class KatawanGame(QWidget):
 
         for db in self.drop_boxes:
             db.word_changed.connect(self.check_completion)
+            db.word_dropped.connect(self.hide_word)
+            db.word_removed.connect(self.show_word)
 
         # Bottom Action Bar
         action_layout = QHBoxLayout()
@@ -360,6 +373,7 @@ class KatawanGame(QWidget):
 
     def showEvent(self, event):
         self.score_logged = False
+        self.reset_game()
         self.play_instruction_sound()
         super().showEvent(event)
 
@@ -378,3 +392,22 @@ class KatawanGame(QWidget):
 
     def stop_instruction_sound(self):
         self.instruction_player.stop()
+
+    def hide_word(self, word_text):
+        widget = self.word_widgets.get(word_text)
+        if widget:
+            widget.hide()
+
+    def show_word(self, word_text):
+        widget = self.word_widgets.get(word_text)
+        if widget:
+            widget.show()
+
+    def reset_game(self):
+        for widget in self.word_widgets.values():
+            widget.show()
+        for db in self.drop_boxes:
+            db.current_word = ""
+            db.answer_label.setText("")
+            db.reset_style()
+        self.check_completion()

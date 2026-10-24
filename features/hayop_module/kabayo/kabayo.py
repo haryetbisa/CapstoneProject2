@@ -40,12 +40,11 @@ class LessonScreenKabayo(QWidget):
         self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setContentsMargins(60, 60, 60, 0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Top Bar Navigation
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 40)
         top_layout.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter
         )
@@ -116,7 +115,7 @@ class LessonScreenKabayo(QWidget):
             title="Aralin 5 : KABAYO",
             body_text=(
                 "Ang kabayo ay isang malaking hayop na inaalagaan ng mga tao na"
-                " may apat na paa at matitigas na kuko, kilala sila sa"
+                " may apat na paa at matitigas na kuko. Kilala sila sa"
                 " pagkakaroon ng mahabang buhok sa leeg , mahabang buntot, at"
                 " mabilis na pagtakbo."
             ),

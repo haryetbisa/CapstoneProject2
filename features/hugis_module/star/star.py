@@ -21,11 +21,10 @@ class LessonScreenStar(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -69,7 +68,7 @@ class LessonScreenStar(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 7 : STAR",
-        body_text="Ang hugis star o bituin ay may limang dulo. Ito ay isang simbolo na ginagamit sa bandila, parangal, at sining. Ito rin ay sumisimbolo ng liwanag at gabay.")
+        body_text="Ang hugis star o bituin ay may limang sulok. Ito ay isang simbolo na ginagamit sa bandila, parangal, at sining. Ito rin ay sumisimbolo ng liwanag at gabay.")
         content_layout.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

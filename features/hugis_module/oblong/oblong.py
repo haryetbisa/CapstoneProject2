@@ -21,11 +21,10 @@ class LessonScreenOblong(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -69,7 +68,7 @@ class LessonScreenOblong(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 5 : BILOHABA",
-        body_text="Ang hugis bilohaba ay tinatawag na oblong. Ito ay tumutukoy sa isang pinahabang hugis. Halimbawa ng hugis na ito ay itlog at pakwan.")
+        body_text="Ang hugis bilohaba ay tinatawag na oblong. Ito ay tumutukoy sa isang pinahabang hugis bilog. Halimbawa ng hugis na ito ay itlog at pakwan.")
         content_layout.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

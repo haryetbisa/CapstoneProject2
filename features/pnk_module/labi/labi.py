@@ -21,11 +21,10 @@ class LessonScreenLabi(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -69,7 +68,7 @@ class LessonScreenLabi(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 2 : LABI, NGIPIN, DILA",
-        body_text="Labi: Bahagi ng bibig para sa pagbigkas at pagkain. Ngipin: Matitigas na bahagi sa bibig para sa pagnguya ng pagkain. Dila: Kalamnan sa bibig para sa paglasa, pagnguya, at pagsasalita.")
+        body_text="Labi: Bahagi ng bibig para sa pagbigkas at pagkain. Ngipin: Matitigas na bahagi sa bibig para sa pagnguya ng pagkain. Dila: Kalamnan sa bibig para sa paglasa at pagsasalita.")
         content_layout.addWidget(card)
 
 
