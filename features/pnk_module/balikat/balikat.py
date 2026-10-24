@@ -21,11 +21,10 @@ class LessonScreenBalikat(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -69,7 +68,7 @@ class LessonScreenBalikat(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 7 : BALIKAT",
-        body_text="Ang balikat ay ang bahagi ng katawan na nag-uugnay sa braso at sa itaas na bahagi ng katawan, na nagbibigay-daan sa paggalaw at pag-angat ng mga kamay.")
+        body_text="Ang balikat ay ang bahagi ng katawan na nag-uugnay sa braso at sa itaas na bahagi ng katawan. Ito ay nagbibigay-daan sa paggalaw at pag-angat ng mga kamay.")
         content_layout.addWidget(card)
 
 

@@ -40,12 +40,11 @@ class LessonScreenBibe(QWidget):
         self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setContentsMargins(60, 60, 60, 0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Top Bar Navigation
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 40)
         top_layout.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter
         )
@@ -116,7 +115,7 @@ class LessonScreenBibe(QWidget):
             title="Aralin 3 : BIBE",
             body_text=(
                 "Ang bibe ay isang uri ng alagang ibon na karaniwang nakikita"
-                " sa tubig o sa mga bukid. Mayroon silang malapad na tuka mga"
+                " sa tubig o sa mga bukid. Mayroon silang malapad na tuka, mga"
                 " paang may balat sa pagitan ng daliri na nakatutulong sa kanila"
                 " upang mabilis na lumangoy."
             ),

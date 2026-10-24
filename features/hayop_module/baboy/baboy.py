@@ -25,7 +25,7 @@ from themes.fonts import BODY_FONT
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
-
+LESSON_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "HayopLesson")
 
 class LessonScreenBaboy(QWidget):
 
@@ -40,12 +40,11 @@ class LessonScreenBaboy(QWidget):
         self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setContentsMargins(60, 60, 60, 0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Top Bar Navigation
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 40)
         top_layout.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter
         )
@@ -145,10 +144,10 @@ class LessonScreenBaboy(QWidget):
 
     def play_animal_sound(self):
         """Plays the animal sound clip from assets/sounds/hayop/."""
-        sound_path = os.path.join(SOUNDS_DIR, "baboy.mp3")
+        sound_path = os.path.join(SOUNDS_DIR, "Baboy.mp3")
 
         if not os.path.exists(sound_path):
-            sound_path = os.path.join(SOUNDS_DIR, "baboy.wav")
+            sound_path = os.path.join(SOUNDS_DIR, "Baboy.wav")
 
         if os.path.exists(sound_path):
             self.player.setSource(QUrl.fromLocalFile(sound_path))

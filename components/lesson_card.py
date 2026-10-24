@@ -8,7 +8,7 @@ class LessonCard(QWidget):
     def __init__(self, title: str, body_text: str):
         super().__init__()
 
-        self.setFixedSize(482, 494)
+        self.setFixedSize(486, 494)
         self.setAttribute(Qt.WA_StyledBackground, True)
 
         # Outer container — gives the whole card its border + overall rounding

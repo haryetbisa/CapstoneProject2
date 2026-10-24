@@ -1,7 +1,7 @@
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
-
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 from components.cardsbutton import CardsButton
 from themes.colors import *
@@ -13,7 +13,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-
+LESSON_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
 
 class LessonScreenBilog(QWidget):
   def __init__(self, router):
@@ -21,11 +21,10 @@ class LessonScreenBilog(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()

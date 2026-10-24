@@ -21,11 +21,10 @@ class LessonScreenBuhok(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -69,7 +68,7 @@ class LessonScreenBuhok(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 5 : BUHOK",
-        body_text="Ang buhok ay ang mga hibla na tumutubo sa balat ng tao (lalo na sa ulo) na nagsisilbing proteksyon laban sa init o lamig at nagbibigay ng ganda o anyo sa isang tao.")
+        body_text="Ang buhok ay ang mga hibla na matatagpuan sa ulo ng tao na nagsisilbing proteksyon laban sa init o lamig at nagbibigay ng ganda o anyo sa isang tao.")
         content_layout.addWidget(card)
 
 

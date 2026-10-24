@@ -21,11 +21,10 @@ class LessonScreenKamay(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -69,7 +68,7 @@ class LessonScreenKamay(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 10 : KAMAY",
-        body_text="Ang kamay ay ang dulo ng braso na may mga daliri, na ginagamit sa paghawak, pagdama, at paggawa ng mga bagay.")
+        body_text="Ang kamay ay ang dulo ng braso na may mga daliri at palad. Ginagamit itosa paghawak at tumutulong sa paggawa ng mga bagay.")
         content_layout.addWidget(card)
 
 
