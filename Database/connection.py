@@ -64,7 +64,7 @@ def init_local_database():
             )
         """)
 
-        # 4. Sync Queue Table
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS sync_queue (
                 queue_id INTEGER PRIMARY KEY AUTOINCREMENT,
