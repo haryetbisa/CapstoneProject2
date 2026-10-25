@@ -25,13 +25,19 @@ from themes.fonts import BODY_FONT
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "hayop")
-
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "HayopLesson")
+INSTRUCTION_SOUND_FILE = "Baboy.mp3"
 
 class LessonScreenBaboy(QWidget):
 
     def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
 
         # Initialize Audio Player for Animal Sound
         self.audio_output = QAudioOutput(self)
@@ -40,12 +46,11 @@ class LessonScreenBaboy(QWidget):
         self.audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setContentsMargins(60, 60, 60, 0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Top Bar Navigation
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 40)
         top_layout.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter
         )
@@ -75,8 +80,8 @@ class LessonScreenBaboy(QWidget):
 
         # Main Content Layout (Left Column: Image + Play Btn | Right Column: Card + Sunod Btn)
         content_layout = QHBoxLayout()
-        content_layout.setContentsMargins(70, 0, 70, 0)
-        content_layout.setSpacing(120)
+        content_layout.setContentsMargins(70, 20, 70, 30)
+        content_layout.setSpacing(280)
 
         # --- LEFT COLUMN (Image + Centered Play Button) ---
         left_column = QVBoxLayout()
@@ -86,7 +91,7 @@ class LessonScreenBaboy(QWidget):
         content_image = QLabel()
         content_image.setPixmap(
             QPixmap(os.path.join(IMAGE_DIR, "baboy.png")).scaled(
-                380, 380, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                400, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
         content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -145,13 +150,33 @@ class LessonScreenBaboy(QWidget):
 
     def play_animal_sound(self):
         """Plays the animal sound clip from assets/sounds/hayop/."""
-        sound_path = os.path.join(SOUNDS_DIR, "baboy.mp3")
+        sound_path = os.path.join(SOUNDS_DIR, "Baboy.mp3")
 
         if not os.path.exists(sound_path):
-            sound_path = os.path.join(SOUNDS_DIR, "baboy.wav")
+            sound_path = os.path.join(SOUNDS_DIR, "Baboy.wav")
 
         if os.path.exists(sound_path):
             self.player.setSource(QUrl.fromLocalFile(sound_path))
             self.player.play()
         else:
             print(f"Animal sound file missing: {sound_path}")
+
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()

@@ -516,7 +516,7 @@ class MainWindow(QMainWindow):
         
 
 #VR Bilang
-        self.router.register("1", Bilang1(self.router))
+        self.router.register("1", Bilang1(self.router)) 
         self.router.register("2", Bilang2(self.router))
         self.router.register("3", Bilang3(self.router))
         self.router.register("4", Bilang4(self.router))

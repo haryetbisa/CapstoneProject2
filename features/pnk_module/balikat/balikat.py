@@ -1,7 +1,7 @@
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
-
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 from components.cardsbutton import CardsButton
 from themes.colors import *
@@ -13,19 +13,24 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "PNK_Lesson")
+INSTRUCTION_SOUND_FILE = "Balikat.mp3"
 
 class LessonScreenBalikat(QWidget):
-  def __init__(self, router):
+    def __init__(self, router):
         super().__init__()
         self.router = router
 
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
+
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -69,7 +74,7 @@ class LessonScreenBalikat(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 7 : BALIKAT",
-        body_text="Ang balikat ay ang bahagi ng katawan na nag-uugnay sa braso at sa itaas na bahagi ng katawan, na nagbibigay-daan sa paggalaw at pag-angat ng mga kamay.")
+        body_text="Ang balikat ay ang bahagi ng katawan na nag-uugnay sa braso at sa itaas na bahagi ng katawan. Ito ay nagbibigay-daan sa paggalaw at pag-angat ng mga kamay.")
         content_layout.addWidget(card)
 
 
@@ -77,15 +82,6 @@ class LessonScreenBalikat(QWidget):
         lower_layout.setSpacing(200)
         lower_layout.setContentsMargins(70, 20, 70, 30)
         main_layout.addLayout(lower_layout)
-        
-
-        audio_btn = QLabel()
-        audio_btn.setPixmap(QPixmap(os.path.join(ICONS_DIR, "play.png")).scaled(
-                80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        audio_btn.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
-
-        lower_layout.addWidget(audio_btn)
 
         self.speak_btn = QPushButton("Sunod")
         self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
@@ -104,9 +100,24 @@ class LessonScreenBalikat(QWidget):
         lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("balikatvs"))
 
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
 
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
 
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()
 
 
