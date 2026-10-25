@@ -1,3 +1,5 @@
+# screens/login.py
+
 import os
 import re
 import sys
@@ -25,6 +27,7 @@ from components.btn_dropshadow import add_drop_shadow
 from themes.colors import *
 from themes.fonts import BODY_FONT
 from session import AppSession
+from Database.queries import verify_teacher_login
 from Database.connection import get_db_connection
 
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
@@ -80,43 +83,6 @@ class Login(QWidget):
         input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         input_layout.setSpacing(4)
         main_layout.addLayout(input_layout)
-
-        # Switch prompt header
-        header_row = QHBoxLayout()
-        header_row.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        
-        create_label = QLabel("Wala pang account?")
-        create_label.setStyleSheet(
-            f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 16px;"
-        )
-        header_row.addWidget(create_label)
-
-        switch_btn = QPushButton("Gumawa ng isa")
-        switch_btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        switch_btn.setStyleSheet(f"""
-            QPushButton {{
-                background: transparent;
-                border: none;
-                font-family: {BODY_FONT};
-                color: {CORAL_RED};
-                font-weight: 700;
-                font-size: 16px;
-                text-align: left;
-            }}
-            QPushButton:hover {{
-                color: #d94338;
-                text-decoration: underline;
-            }}
-        """)
-        switch_btn.clicked.connect(lambda: self.router.navigate("createacc"))
-        header_row.addWidget(switch_btn)
-        header_row.addStretch()
-        
-        # Wrap header row in a container with fixed width matching inputs
-        header_container = QWidget()
-        header_container.setFixedWidth(888)
-        header_container.setLayout(header_row)
-        input_layout.addWidget(header_container, alignment=Qt.AlignmentFlag.AlignLeft)
 
         input_layout.addSpacing(6)
 
@@ -206,6 +172,79 @@ class Login(QWidget):
 
         self.reset_styles()
 
+        input_layout.addSpacing(4)
+
+        # --- Forgot Password Button ---
+        forgot_row = QHBoxLayout()
+        forgot_row.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        forgot_row.setContentsMargins(0, 0, 0, 0)
+
+        forgot_btn = QPushButton("Forgot password?")
+        forgot_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        forgot_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: transparent;
+                border: none;
+                font-family: {BODY_FONT};
+                color: {CORAL_RED};
+                font-weight: 600;
+                font-size: 14px;
+                text-align: left;
+            }}
+            QPushButton:hover {{
+                color: #d94338;
+                text-decoration: underline;
+            }}
+        """)
+        forgot_btn.clicked.connect(lambda: self.router.navigate("forgot_password"))
+        forgot_row.addWidget(forgot_btn)
+        forgot_row.addStretch()
+
+        forgot_container = QWidget()
+        forgot_container.setFixedWidth(888)
+        forgot_container.setLayout(forgot_row)
+        input_layout.addWidget(forgot_container, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        input_layout.addSpacing(6)
+
+        header_row = QHBoxLayout()
+        header_row.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        header_row.setContentsMargins(0, 0, 0, 0)
+        
+        create_label = QLabel("Wala pang account?")
+        create_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 16px;"
+        )
+        header_row.addWidget(create_label)
+
+        switch_btn = QPushButton("Gumawa ng isa")
+        switch_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        switch_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: transparent;
+                border: none;
+                font-family: {BODY_FONT};
+                color: {CORAL_RED};
+                font-weight: 700;
+                font-size: 16px;
+                text-align: left;
+            }}
+            QPushButton:hover {{
+                color: #d94338;
+                text-decoration: underline;
+            }}
+        """)
+        switch_btn.clicked.connect(lambda: self.router.navigate("createacc"))
+        header_row.addWidget(switch_btn)
+        header_row.addStretch()
+        
+        header_container = QWidget()
+        header_container.setFixedWidth(888)
+        header_container.setLayout(header_row)
+        input_layout.addWidget(header_container, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        input_layout.addSpacing(14)
+
         # Log-in Button
         self.login_btn = QPushButton("Log-in")
         self.login_btn.setFixedSize(340, 56)
@@ -227,14 +266,12 @@ class Login(QWidget):
         self.login_btn.clicked.connect(self.handle_login_action)
         add_drop_shadow(self.login_btn)
 
-        # Clear errors when typing
-        self.email.textChanged.connect(self.clear_email_error)
-        self.password.textChanged.connect(self.clear_password_error)
-
-        input_layout.addSpacing(10)
         input_layout.addWidget(
             self.login_btn, alignment=Qt.AlignmentFlag.AlignCenter
         )
+
+        self.email.textChanged.connect(self.clear_email_error)
+        self.password.textChanged.connect(self.clear_password_error)
 
         # Bottom Graphic Images
         image_bottom = QHBoxLayout()
@@ -256,6 +293,15 @@ class Login(QWidget):
             image_bottom.addWidget(kid_label)
 
         main_layout.addLayout(image_bottom)
+
+    def showEvent(self, event):
+        """Automatically clears input fields and errors whenever the login screen is shown."""
+        super().showEvent(event)
+        self.email.clear()
+        self.password.clear()
+        self.email_error.hide()
+        self.password_error.hide()
+        self.reset_styles()
 
     def set_normal_style(self, widget):
         widget.setStyleSheet(f"""
@@ -336,31 +382,33 @@ class Login(QWidget):
         if has_error:
             return
 
-        # Query Database for Authentication
+        # Authenticate using standard database query function
         try:
-            with get_db_connection() as conn:
-                cursor = conn.cursor()
-                # FIXED: Changed 'name' to 'full_name' to match the database column schema
-                cursor.execute(
-                    "SELECT teacher_id, full_name, email FROM teachers WHERE email = ?",
-                    (email_text,)
+            teacher = verify_teacher_login(email_text, password_text)
+
+            if teacher:
+                AppSession.set_teacher(
+                    teacher_id=teacher["teacher_id"], 
+                    full_name=teacher["full_name"], 
+                    remember=True
                 )
-                teacher = cursor.fetchone()
+                print(f"--> Successful login for: {teacher['full_name']}")
+                self.router.navigate("home")
+            else:
+                with get_db_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT * FROM teachers WHERE email = ?", (email_text.lower().strip(),))
+                    existing = cursor.fetchone()
 
-                if teacher:
-                    teacher_id = teacher["teacher_id"]
-                    teacher_name = teacher["full_name"]  # FIXED: Access 'full_name'
-
-                    # Save session persistently
-                    AppSession.set_teacher(teacher_id=teacher_id, full_name=teacher_name, remember=True)
-                    print(f"--> Successful login for: {teacher_name}")
-
-                    # Navigate to home
-                    self.router.navigate("home")
+                if existing:
+                    self.password_error.setText("✖  Incorrect password. Please try again.")
+                    self.password_error.setVisible(True)
+                    self.set_error_style(self.password)
                 else:
                     self.email_error.setText("✖  No registered account found for this email.")
                     self.email_error.setVisible(True)
                     self.set_error_style(self.email)
+
         except Exception as e:
             print(f"--> Database login error: {e}")
             self.show_error_dialog("Error", f"An issue occurred with the database: {e}")

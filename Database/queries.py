@@ -101,11 +101,12 @@ def get_student_activity_logs(student_id: str):
     """Retrieves all activity and score logs for a specific student."""
     with get_db_connection() as conn:
         cursor = conn.cursor()
+        # FIXED: Changed 'timestamp' to 'completed_at' to match connection.py schema
         cursor.execute("""
-            SELECT module_name, target_word, score, speech_accuracy, attempts, timestamp 
+            SELECT module_name, target_word, score, speech_accuracy, attempts, completed_at 
             FROM activity_logs 
             WHERE student_id = ? 
-            ORDER BY timestamp DESC
+            ORDER BY completed_at DESC
         """, (student_id,))
         return [dict(row) for row in cursor.fetchall()]
 
@@ -130,8 +131,6 @@ def get_module_progress_percentage(student_id: str, module_name: str, total_modu
             
         percentage = int(min(100, (completed / total_module_items) * 100))
         return percentage
-
-
 
 def clear_local_teachers():
     """Deletes all local teacher accounts and clears the sync queue for fresh testing."""
