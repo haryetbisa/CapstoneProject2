@@ -88,7 +88,7 @@ class ParteNgKatawanScreen(QWidget):
         ulo_card = CardsPicButton ("ulo.png", color = SKY_BLUE)
         ulo_card.clicked.connect(lambda: self.router.navigate("buhok")) 
 
-        mukha_game = CardsPicButton ("ulo.png", color = CHOCO_BROWN)
+        mukha_game = CardsPicButton ("parte.png", color = CHOCO_BROWN)
         mukha_game.clicked.connect(lambda: self.router.navigate("mukha_game")) 
 
 
@@ -108,7 +108,7 @@ class ParteNgKatawanScreen(QWidget):
         kamay_card = CardsPicButton ("kamay.png", color = MAGENTA)
         kamay_card.clicked.connect(lambda: self.router.navigate("kamay")) 
 
-        katawan_game = CardsPicButton ("ulo.png", color = CHOCO_BROWN)
+        katawan_game = CardsPicButton ("parte.png", color = CHOCO_BROWN)
         katawan_game.clicked.connect(lambda: self.router.navigate("katawan_game"))
 
 
@@ -119,7 +119,7 @@ class ParteNgKatawanScreen(QWidget):
         paa_card.clicked.connect(lambda: self.router.navigate("paa")) 
 
 
-        paa_game = CardsPicButton ("ulo.png", color = CHOCO_BROWN)
+        paa_game = CardsPicButton ("parte.png", color = CHOCO_BROWN)
         paa_game.clicked.connect(lambda: self.router.navigate("paa_game"))
         
         
