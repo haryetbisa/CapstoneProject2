@@ -41,7 +41,7 @@ def print_registered_teachers():
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT teacher_id, name, email, password FROM teachers")
+            cursor.execute("SELECT teacher_id, full_name, email, password_hash FROM teachers")
             teachers = cursor.fetchall()
             
             print("\n========================================")
@@ -51,7 +51,7 @@ def print_registered_teachers():
                 print("Walang pang rehistradong guro sa database.")
             else:
                 for t in teachers:
-                    print(f"ID: {t['teacher_id']} | Pangalan: {t['name']} | Email: {t['email']} | Password: {t['password']}")
+                    print(f"ID: {t['teacher_id']} | Pangalan: {t['full_name']} | Email: {t['email']}")
             print("========================================\n")
     except Exception as e:
         print(f"--> Error fetching registered teachers: {e}")
@@ -61,6 +61,7 @@ def print_registered_teachers():
 from router import Router
 from screens.loading_screen import LoadingScreen
 from screens.account_info import AccountInfo
+from screens.forgot_pass import ForgotPassword  # <-- Password Recovery Screen Import
 from features.voice_recog import OfflineVoiceWorker
 from features.lesson_screen import LessonScreen
 from screens.create_account import CreateAccount
@@ -424,6 +425,7 @@ class MainWindow(QMainWindow):
         self.router.register("loading_screen", LoadingScreen(self.router))
         self.router.register("createacc", CreateAccount(self.router))
         self.router.register("login", Login(self.router))
+        self.router.register("forgot_password", ForgotPassword(self.router))  # <-- Registered Password Recovery Route
         self.router.register("credentials", AccountInfo(self.router))
         self.router.register("home", HomeScreen(self.router))
         
