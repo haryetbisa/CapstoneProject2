@@ -74,7 +74,7 @@ class Kuwento8(QWidget):
         # Speaker icon + text row
         text_row = QHBoxLayout()
         text_row.setSpacing(15)
-        text_row.setAlignment(Qt.AlignCenter)
+        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
 
         self.speaker_btn = QPushButton()
         self.speaker_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "audio_icon.png")))
@@ -138,11 +138,11 @@ class Kuwento8(QWidget):
     def play_word_sound(self):
         """Plays the target word pronunciation sound."""
         sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"MangDada.mp3"
+            PRONUNCIATION_SOUNDS_DIR, f"Mang Dada.mp3"
         )
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"MangDada.wav"
+                PRONUNCIATION_SOUNDS_DIR, f"Mang Dada.wav"
             )
 
         if os.path.exists(sound_path):
