@@ -99,10 +99,9 @@ class Kuwento8(QWidget):
             font-family: {BODY_FONT};
             color: {CHOCO_BROWN};
         """)
-        text_row.addWidget(story_text, 1)
-
+        text_row.addWidget(story_text)
         main_layout.addLayout(text_row)
-        main_layout.addStretch()
+  
 
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)

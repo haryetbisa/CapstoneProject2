@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QSize, QUrl
+from PySide6.QtCore import Qt, QSize, QUrl, QTimer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
@@ -142,6 +142,11 @@ class LessonScreenUnggoy(QWidget):
             self.player.play()
         else:
             print(f"Animal sound file missing: {sound_path}")
+
+        if os.path.exists(sound_path):
+            self.player.setSource(QUrl.fromLocalFile(sound_path))
+            self.player.play()
+            QTimer.singleShot(3000, self.player.stop)
 
 
     def showEvent(self, event):
