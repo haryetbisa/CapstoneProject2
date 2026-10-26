@@ -1,11 +1,8 @@
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
-
-
-from components.cardsbutton import CardsButton
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.colors import *
-from assets.icon import icon_label
 from themes.fonts import  BODY_FONT
 from components.lesson_card import LessonCard
 
@@ -13,12 +10,20 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "image_content", "kulay")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "KulayLesson")
+INSTRUCTION_SOUND_FILE = "Pula.mp3"
+
 
 
 class Pula(QWidget):
-  def __init__(self, router):
+    def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0,0,0,0)
@@ -51,8 +56,6 @@ class Pula(QWidget):
         top_layout.setSpacing(50)
         main_layout.addLayout(top_layout)
 
-
-
         content_layout = QHBoxLayout()
         content_layout.setContentsMargins(70, 30, 70, 30)
         content_layout.setSpacing(280)
@@ -77,13 +80,6 @@ class Pula(QWidget):
         lower_layout.setContentsMargins(70, 20, 70, 30)
         main_layout.addLayout(lower_layout)
 
-        audio_btn = QLabel()
-        audio_btn.setPixmap(QPixmap(os.path.join(ICONS_DIR, "play.png")).scaled(
-                80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        audio_btn.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
-        lower_layout.addWidget(audio_btn)
-
         self.speak_btn = QPushButton("Sunod")
         self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
         self.speak_btn.setIconSize(QSize(30, 30))
@@ -100,3 +96,23 @@ class Pula(QWidget):
         self.speak_btn.setFixedSize(240, 70)
         lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("pula_game"))
+
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()
