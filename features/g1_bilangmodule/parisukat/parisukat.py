@@ -21,11 +21,10 @@ class LessonMath2(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -54,7 +53,7 @@ class LessonMath2(QWidget):
 
 
         content_layout = QHBoxLayout()
-        content_layout.setContentsMargins(70, 30, 70, 30)
+        content_layout.setContentsMargins(70, 20, 70, 30)
         content_layout.setSpacing(280)
         main_layout.addLayout(content_layout)
 
@@ -83,13 +82,10 @@ class LessonMath2(QWidget):
             border-radius: 6px;
             font-family: {BODY_FONT};
         """)
-        self.speak_btn.setFixedSize(240, 70)
+        self.speak_btn.setFixedSize(240, 60)
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("parisukat_quest"))
 
 
-
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
 
 

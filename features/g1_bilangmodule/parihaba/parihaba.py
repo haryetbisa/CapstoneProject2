@@ -2,8 +2,6 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
 
-
-from components.cardsbutton import CardsButton
 from themes.colors import *
 from assets.icon import icon_label
 from themes.fonts import  BODY_FONT
@@ -21,11 +19,10 @@ class LessonMath3(QWidget):
         self.router = router
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(0, 50, 0, 60)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
@@ -52,9 +49,8 @@ class LessonMath3(QWidget):
         main_layout.addLayout(top_layout)
 
 
-
         content_layout = QHBoxLayout()
-        content_layout.setContentsMargins(70, 30, 70, 30)
+        content_layout.setContentsMargins(70, 20, 70, 30)
         content_layout.setSpacing(280)
         main_layout.addLayout(content_layout)
 
@@ -83,13 +79,9 @@ class LessonMath3(QWidget):
             border-radius: 6px;
             font-family: {BODY_FONT};
         """)
-        self.speak_btn.setFixedSize(240, 70)
+        self.speak_btn.setFixedSize(240, 60)
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("parihaba_quest"))
 
-
-
-        main_layout.addLayout(content_layout)
-        main_layout.addStretch()
 
 
