@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(
@@ -33,19 +34,17 @@ class RombusVS(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "rombus"
+        self.valid_targets = ["rombus", "rhombus"]
         self.worker = None
 
         
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
 
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
-        self.word_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -164,12 +163,12 @@ class RombusVS(QWidget):
         lower_layout.setContentsMargins(70, 20, 70, 30)
         main_layout.addLayout(lower_layout)
 
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
-        self.speak_btn.setFixedHeight(40)
-        self.speak_btn.setCursor(Qt.PointingHandCursor)
-        self.speak_btn.setStyleSheet(f"""
+        self.next_btn = QPushButton("Sunod")
+        self.next_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
+        self.next_btn.setIconSize(QSize(30, 30))
+        self.next_btn.setFixedHeight(40)
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
             background-color: {BRIGHT_YELLOW};
             color: {CHOCO_BROWN};
             font-size: 22px;
@@ -177,18 +176,25 @@ class RombusVS(QWidget):
             border-radius: 6px;
             font-family: {BODY_FONT};
         """)
-        self.speak_btn.setFixedSize(240, 70)
-        lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("diamond_game"))
+        self.next_btn.setFixedSize(240, 70)
+        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
+        self.next_btn.clicked.connect(lambda: self.router.navigate("diamond_game"))
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        music_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+        sfx_vol = AppSession.get_sfx_volume() if hasattr(AppSession, 'get_sfx_volume') else 0.7
+        self.word_audio_output.setVolume(music_vol)
+        self.feedback_audio_output.setVolume(sfx_vol)
 
     def play_word_sound(self):
         """Plays the target word pronunciation sound."""
         sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"Rombus.mp3"
+            PRONUNCIATION_SOUNDS_DIR, "Rombus.mp3"
         )
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"Rombus.wav"
+                PRONUNCIATION_SOUNDS_DIR, "Rombus.wav"
             )
 
         if os.path.exists(sound_path):
@@ -237,13 +243,13 @@ class RombusVS(QWidget):
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
-        """Evaluates recognized text against target word using exact word matching."""
+        """Evaluates recognized text against valid target spellings."""
         spoken_clean = spoken_text.lower().replace("-", " ").strip()
-        target_clean = self.target_word.lower().strip()
-
         spoken_words = spoken_clean.split()
 
-        if target_clean in spoken_words:
+        is_match = any(target in spoken_words or target in w for target in self.valid_targets for w in spoken_words)
+
+        if is_match:
             self.feedback_label.setText("✅ MAGALING! TAMA!")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"

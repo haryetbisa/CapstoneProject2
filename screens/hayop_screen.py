@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QLabel, QPushBu
 from PySide6.QtGui import QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.fonts import BODY_FONT
+from session import AppSession
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +25,7 @@ class HayopScreen(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
-        self.instruction_audio_output.setVolume(0.9)
+        self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
 
         outer_layout = QVBoxLayout(self)
         outer_layout.setContentsMargins(0, 0, 0, 0)
@@ -148,6 +149,9 @@ class HayopScreen(QWidget):
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
         if os.path.exists(sound_path):
+            current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+            self.instruction_audio_output.setVolume(current_vol)
+
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
@@ -155,4 +159,5 @@ class HayopScreen(QWidget):
             print(f"Instruction sound not found: {sound_path}")
 
     def stop_instruction_sound(self):
-        self.instruction_player.stop()
+        if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.instruction_player.stop()

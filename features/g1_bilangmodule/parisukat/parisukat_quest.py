@@ -1,3 +1,5 @@
+# features/g1_bilangmodule/parisukat/parisukat_quest.py
+
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
@@ -6,6 +8,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
+from Database.queries import log_activity
+from session import AppSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
@@ -13,7 +17,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "G1 Bilang")
 INSTRUCTION_SOUND_FILE = "TANONG 2.mp3" 
-
 
 
 class BilangLvl2(QWidget):
@@ -172,9 +175,14 @@ class BilangLvl2(QWidget):
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
 
     def showEvent(self, event):
-        """Resets state whenever screen becomes visible."""
+        """Resets state and plays instruction sound whenever screen becomes visible."""
         self.reset_game()
+        self.play_instruction_sound()
         super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
 
     def handle_back(self):
         """Resets game state and routes back."""
@@ -195,31 +203,6 @@ class BilangLvl2(QWidget):
             self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
             self.feedback_player.play()
 
-    def handle_choice(self, is_correct: bool, button: QPushButton):
-        """Handles choice interaction, plays SFX, and reveals navigation buttons."""
-        self.play_feedback_sound(is_correct)
-
-        self.opt_1.setEnabled(False)
-        self.opt_2.setEnabled(False)
-        self.opt_3.setEnabled(False)
-
-        if is_correct:
-            button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
-            self.restart_btn.show()
-            self.next_btn.show()
-        else:
-            button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
-            self.restart_btn.show()
-
-    def showEvent(self, event):
-        self.reset_game()
-        self.play_instruction_sound()
-        super().showEvent(event)
-
-    def hideEvent(self, event):
-        self.stop_instruction_sound()
-        super().hideEvent(event)
-
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
         if os.path.exists(sound_path):
@@ -231,3 +214,42 @@ class BilangLvl2(QWidget):
 
     def stop_instruction_sound(self):
         self.instruction_player.stop()
+
+    def handle_choice(self, is_correct: bool, button: QPushButton):
+        """Handles choice interaction, plays SFX, and logs activity if correct."""
+        self.play_feedback_sound(is_correct)
+
+        self.opt_1.setEnabled(False)
+        self.opt_2.setEnabled(False)
+        self.opt_3.setEnabled(False)
+
+        if is_correct:
+            button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+            self.next_btn.show()
+            
+            # Save progress directly to activity_logs using unique target word tracking for parisukat
+            self.save_activity_progress(module_name="Bilang (G1)", target_word="parisukat", score=1.0)
+        else:
+            button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+
+    def save_activity_progress(self, module_name, target_word, score):
+        """Logs correct answer performance locally via activity_logs and queues it for sync."""
+        try:
+            student_id = AppSession.get_active_student_id()
+            if not student_id:
+                print("--> No active student selected for activity logging.")
+                return
+
+            log_activity(
+                student_id=student_id,
+                module_name=module_name,
+                score=score,
+                target_word=target_word,
+                attempts=1
+            )
+            print("--> Parisukat activity successfully logged and queued for sync!")
+
+        except Exception as e:
+            print(f"--> Error logging activity progress: {e}")

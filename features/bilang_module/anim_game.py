@@ -324,7 +324,7 @@ class AnimGame(QWidget):
             """)
             self.next_btn.show()
 
-            # --- AUTOMATIC SCORE LOGGING ---
+           
             if not self.score_logged:
                 student_id = AppSession.get_active_student_id()
                 if student_id:

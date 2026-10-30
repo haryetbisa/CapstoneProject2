@@ -28,7 +28,7 @@ class KinderDashboard(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
-        self.instruction_audio_output.setVolume(0.9)
+        self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -128,12 +128,16 @@ class KinderDashboard(QWidget):
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(BGM_DIR, BGM_FILE))
         if os.path.exists(sound_path):
+            current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+            self.instruction_audio_output.setVolume(current_vol)
+
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
 
     def stop_instruction_sound(self):
-        self.instruction_player.stop()
+        if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.instruction_player.stop()
 
     def load_dropdown_students(self):
         """Populates the dropdown with only Kindergarten students."""
@@ -161,7 +165,6 @@ class KinderDashboard(QWidget):
         """Fetches and updates progress percentages for the active student across all modules."""
         student_id = AppSession.get_active_student_id()
         
-        # Calculate progress for each module (adjust total_module_items as needed based on your total sub-lessons)
         pantig_pct = get_module_progress_percentage(student_id, "Pantig", total_module_items=15)
         bilang_pct = get_module_progress_percentage(student_id, "Bilang", total_module_items=10)
         hugis_pct = get_module_progress_percentage(student_id, "Hugis", total_module_items=10)
@@ -169,7 +172,6 @@ class KinderDashboard(QWidget):
         kulay_pct = get_module_progress_percentage(student_id, "Kulay", total_module_items=10)
         hayop_pct = get_module_progress_percentage(student_id, "Hayop", total_module_items=10)
 
-        # Apply to cards
         self.pantig_card.set_progress(pantig_pct)
         self.bilang_card.set_progress(bilang_pct)
         self.hugis_card.set_progress(hugis_pct)
@@ -185,7 +187,6 @@ class KinderDashboard(QWidget):
             AppSession.set_active_student_id(student_id)
             print(f"--> Active Student Set to ID: {student_id} ({full_name})")
         
-        # Refresh progress bars immediately when a new student is picked
         self.refresh_progress_bars()
 
     def navigate_with_validation(self, route_name):

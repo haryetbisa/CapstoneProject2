@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,19 +32,18 @@ class PantigNara(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
-        self.target_word = "nara"
+        # Accept both correct spellings (single and double 'r')
+        self.valid_targets = ["nara", "narra"]
         self.worker = None
 
         # Feedback Audio Player Setup
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
-
+        
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
-        self.word_audio_output.setVolume(1.0)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -77,7 +77,7 @@ class PantigNara(QWidget):
         top_bar.addWidget(pagsasanay)
         top_bar.setSpacing(20)
 
-        # Main Graphic (kahoy.png)
+        # Main Graphic (narra.png)
         image = QLabel()
         image_path = os.path.join(IMAGE_DIR, "narra.png")
         if os.path.exists(image_path):
@@ -182,20 +182,25 @@ class PantigNara(QWidget):
         lower_layout.addWidget(self.next_btn)
         main_layout.addLayout(lower_layout)
 
+    def showEvent(self, event):
+        super().showEvent(event)
+        music_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+        sfx_vol = AppSession.get_sfx_volume() if hasattr(AppSession, 'get_sfx_volume') else 0.7
+        self.word_audio_output.setVolume(music_vol)
+        self.feedback_audio_output.setVolume(sfx_vol)
+
     def play_word_sound(self):
-        """Plays the target word pronunciation sound."""
-        sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"Nara.mp3"
-        )
+        """Plays the target word pronunciation sound safely."""
+        sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Nara.mp3")
         if not os.path.exists(sound_path):
-            sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"Nara.wav"
-            )
+            sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Nara.wav")
 
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))
             self.word_player.play()
+        else:
+            print(f"--> Pronunciation audio file not found at: {sound_path}")
 
     def play_feedback_sound(self, filename: str):
         """Plays the correct/wrong feedback audio sound."""
@@ -236,13 +241,14 @@ class PantigNara(QWidget):
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
-        """Evaluates recognized text against target word using exact word matching."""
+        """Evaluates recognized text against valid target spellings."""
         spoken_clean = spoken_text.lower().replace("-", " ").strip()
-        target_clean = self.target_word.lower().strip()
-
         spoken_words = spoken_clean.split()
 
-        if target_clean in spoken_words:
+        # Check if any spoken word matches either 'nara' or 'narra'
+        is_match = any(target in spoken_words or target in w for target in self.valid_targets for w in spoken_words)
+
+        if is_match:
             self.feedback_label.setText("✅ MAGALING! TAMA!")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"

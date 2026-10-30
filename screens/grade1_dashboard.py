@@ -26,7 +26,7 @@ class GradeOneDashboard(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
-        self.instruction_audio_output.setVolume(0.9)
+        self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
 
         main_layout = QVBoxLayout(self)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -110,7 +110,8 @@ class GradeOneDashboard(QWidget):
         super().showEvent(event)
 
     def stop_instruction_sound(self):
-        self.instruction_player.stop()
+        if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.instruction_player.stop()
 
     def hideEvent(self, event):
         self.stop_instruction_sound()
@@ -119,6 +120,9 @@ class GradeOneDashboard(QWidget):
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(BGM_DIR, BGM_FILE))
         if os.path.exists(sound_path):
+            current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+            self.instruction_audio_output.setVolume(current_vol)
+
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()

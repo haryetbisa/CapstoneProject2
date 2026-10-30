@@ -1,3 +1,5 @@
+# features/g1_kuwentomodule/level10_quest.py
+
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
@@ -6,6 +8,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
+from Database.queries import log_activity
+from session import AppSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
@@ -90,7 +94,6 @@ class Kuwento10Question(QWidget):
         self.opt_2 = ChoicesButton("maging\nmasipag", color=HOT_PINK)
         self.opt_3 = ChoicesButton("magandang\ngawi", color=LIGHT_GREEN)
 
-        
         button_style = f"""
             font-size: 20px !important;
             font-weight: 800;
@@ -102,7 +105,6 @@ class Kuwento10Question(QWidget):
         for btn in [self.opt_1, self.opt_2, self.opt_3]:
             btn.setFixedSize(300, 120)
             btn.setStyleSheet(btn.styleSheet() + button_style)
-            
             
             for child in btn.findChildren(QLabel):
                 child.setWordWrap(True)
@@ -217,9 +219,27 @@ class Kuwento10Question(QWidget):
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 12px; font-size: 20px; font-weight: bold;")
             self.restart_btn.show()
             self.next_btn.show()
+            self.save_activity_progress("Kuwento", "kuwento_q10", 1.0)
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 12px; font-size: 20px; font-weight: bold;")
             self.restart_btn.show()
+
+    def save_activity_progress(self, module_name, target_word, score):
+        try:
+            student_id = AppSession.get_active_student_id()
+            if not student_id:
+                print("--> No active student selected for activity logging.")
+                return
+            log_activity(
+                student_id=student_id,
+                module_name=module_name,
+                score=score,
+                target_word=target_word,
+                attempts=1
+            )
+            print("--> Kuwento Q10 activity successfully logged!")
+        except Exception as e:
+            print(f"--> Error logging activity progress: {e}")
 
     def showEvent(self, event):
         self.reset_game()

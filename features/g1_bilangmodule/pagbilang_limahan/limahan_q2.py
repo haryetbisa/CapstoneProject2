@@ -1,3 +1,5 @@
+
+
 import os
 from PySide6.QtCore import Qt, QMimeData, QSize, QUrl
 from PySide6.QtGui import QDrag, QIcon
@@ -5,13 +7,14 @@ from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QFrame
 from themes.fonts import BODY_FONT
 from themes.colors import *
+from Database.queries import log_activity
+from session import AppSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "G1 Bilang")
 INSTRUCTION_SOUND_FILE = "TANONG 6.mp3" 
-
 
 
 class DraggableWord(QLabel):
@@ -336,8 +339,27 @@ class BilangLvl8(QWidget):
 
             if all_correct:
                 self.next_btn.show()
+                # Log progress under Bilang (G1) matching dashboard
+                self.save_activity_progress("Bilang (G1)", "limahan_q2", 1.0)
             else:
                 self.next_btn.hide()
+
+    def save_activity_progress(self, module_name, target_word, score):
+        try:
+            student_id = AppSession.get_active_student_id()
+            if not student_id:
+                print("--> No active student selected for activity logging.")
+                return
+            log_activity(
+                student_id=student_id,
+                module_name=module_name,
+                score=score,
+                target_word=target_word,
+                attempts=1
+            )
+            print("--> Limahan Q2 activity successfully logged!")
+        except Exception as e:
+            print(f"--> Error logging activity progress: {e}")
 
     def reset_game(self):
         self.blank1.reset_style()
@@ -351,10 +373,6 @@ class BilangLvl8(QWidget):
 
         self.restart_btn.hide()
         self.next_btn.hide()
-
-    def showEvent(self, event):
-        self.reset_game()
-        super().showEvent(event)
 
     def handle_back(self):
         self.reset_game()

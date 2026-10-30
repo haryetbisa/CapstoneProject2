@@ -6,12 +6,33 @@ SESSION_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", 
 
 
 class AppSession:
-    """Global state manager for tracking active teacher and student sessions with file persistence."""
+    """Global state manager for tracking active teacher, student, and audio volume settings with file persistence."""
 
     _active_teacher_id = None
     _active_teacher_name = "Walang Guro"
     _active_student_id = None
     _active_student_name = "Walang Nakapili"
+
+    # Global Audio Volume Settings (stored as float 0.0 to 1.0)
+    _music_volume = 0.7
+    _sfx_volume = 0.7
+
+    # --- AUDIO VOLUME MANAGEMENT ---
+    @classmethod
+    def set_music_volume(cls, volume: float):
+        cls._music_volume = max(0.0, min(1.0, volume))
+
+    @classmethod
+    def get_music_volume(cls) -> float:
+        return cls._music_volume
+
+    @classmethod
+    def set_sfx_volume(cls, volume: float):
+        cls._sfx_volume = max(0.0, min(1.0, volume))
+
+    @classmethod
+    def get_sfx_volume(cls) -> float:
+        return cls._sfx_volume
 
     # --- TEACHER SESSION & PERSISTENCE ---
     @classmethod

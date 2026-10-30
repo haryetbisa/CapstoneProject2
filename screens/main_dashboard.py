@@ -2,9 +2,10 @@
 import os
 
 from assets.icon import icon_label
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy
 from PySide6.QtGui import QIcon
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.colors import *
 from themes.fonts import HEADING_FONT, BODY_FONT
 from Database.connection import get_db_connection
@@ -12,12 +13,19 @@ from session import AppSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSETS_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
+SOUNDS_DIR = os.path.join(BASE_DIR, "..", "assets", "sounds", "bgm")
 
 class HomeScreen(QWidget):
     def __init__(self, router, teacher_data=None):
         super().__init__()
         self.router = router
         self.teacher_data = teacher_data or self.get_latest_teacher()
+
+        # Background Music Setup
+        self.audio_output = QAudioOutput(self)
+        self.media_player = QMediaPlayer(self)
+        self.media_player.setAudioOutput(self.audio_output)
+        self.media_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -149,9 +157,33 @@ class HomeScreen(QWidget):
         main_layout.addLayout(lower_part)
 
     def showEvent(self, event):
-        """Refreshes the teacher greeting every time the home screen becomes active."""
+        """Refreshes greeting and starts dashboard background music when active."""
         super().showEvent(event)
         self.refresh_teacher_greeting()
+        self.play_dashboard_bgm()
+
+    def hideEvent(self, event):
+        """Stops background music when leaving the dashboard screen."""
+        self.stop_dashboard_bgm()
+        super().hideEvent(event)
+
+    def play_dashboard_bgm(self):
+        """Loads and plays main_dash_music.mp3 matching the current music volume setting."""
+        bgm_path = os.path.join(SOUNDS_DIR, "main_dash_music.mp3")
+        if os.path.exists(bgm_path):
+            # Fetch current volume from AppSession (defaults or user-adjusted)
+            current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+            self.audio_output.setVolume(current_vol)
+
+            self.media_player.setSource(QUrl.fromLocalFile(os.path.abspath(bgm_path)))
+            self.media_player.play()
+        else:
+            print(f"--> Warning: Dashboard BGM file not found at {bgm_path}")
+
+    def stop_dashboard_bgm(self):
+        """Stops the media player safely."""
+        if self.media_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.media_player.stop()
 
     def refresh_teacher_greeting(self):
         teacher_name = self.get_current_teacher_name()

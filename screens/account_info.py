@@ -21,7 +21,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QLineEdit,
     QToolButton,
-    QMessageBox
+    QMessageBox,
+    QScrollArea
 )
 from PySide6.QtGui import QPixmap, QColor, QPalette, QIcon
 
@@ -51,20 +52,31 @@ class AccountInfo(QWidget):
         self.router = router
         self.generated_code = None  # Stores the random verification code temporarily
 
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 10, 0, 10)
-        main_layout.setSpacing(8)
+        outer_layout = QVBoxLayout(self)
+        outer_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Wrap in ScrollArea to fully support 1366x768 and lower laptop resolutions without clipping
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
+
+        container = QWidget()
+        container.setStyleSheet(f"background-color: {LIGHT};")
+        main_layout = QVBoxLayout(container)
+        main_layout.setContentsMargins(40, 20, 40, 20)
+        main_layout.setSpacing(12)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        scroll.setWidget(container)
+        outer_layout.addWidget(scroll)
 
         # Logo
         logo = QLabel()
         logo.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         logo.setPixmap(
-            QPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, "logoo.png")).scaled(
-                    280, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation
-                )
+            QPixmap(os.path.join(IMAGE_DIR, "logoo.png")).scaled(
+                220, 220, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
         )
         main_layout.addWidget(logo)
@@ -72,43 +84,50 @@ class AccountInfo(QWidget):
         # Form Inputs Layout
         input_layout = QVBoxLayout()
         input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        input_layout.setSpacing(6)
+        input_layout.setSpacing(10)
         main_layout.addLayout(input_layout)
 
-        # --- Full Name Field ---
+        # --- Full Name Field Group ---
+        name_group = QVBoxLayout()
+        name_group.setSpacing(4)
+        name_group.setContentsMargins(0, 0, 0, 0)
+
         name_label = QLabel("Full Name")
         name_label.setStyleSheet(
-            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+            f"font-family: {BODY_FONT}; font-size: 14px; color: {CORAL_RED}; font-weight: 600;"
         )
-        input_layout.addWidget(name_label, alignment=Qt.AlignmentFlag.AlignLeft)
+        name_group.addWidget(name_label)
 
         self.full_name = QLineEdit()
-        self.full_name.setFixedSize(888, 48)
+        self.full_name.setFixedSize(888, 44)
         self.full_name.setPlaceholderText("e.g. Teacher Maria Santos")
         self.set_normal_style(self.full_name)
-        input_layout.addWidget(self.full_name, alignment=Qt.AlignmentFlag.AlignLeft)
+        name_group.addWidget(self.full_name)
 
-        # Full Name Inline Error Label
         self.name_error = QLabel("")
-        self.name_error.setFixedWidth(888)
-        self.name_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.name_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 12px; color: #d93025; font-weight: 600;")
         self.name_error.hide()
-        input_layout.addWidget(self.name_error, alignment=Qt.AlignmentFlag.AlignLeft)
+        name_group.addWidget(self.name_error)
 
-        # Email Field Label
+        input_layout.addLayout(name_group)
+
+        # --- Email Field Group ---
+        email_group = QVBoxLayout()
+        email_group.setSpacing(4)
+        email_group.setContentsMargins(0, 0, 0, 0)
+
         email_label = QLabel("Email")
         email_label.setStyleSheet(
-            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+            f"font-family: {BODY_FONT}; font-size: 14px; color: {CORAL_RED}; font-weight: 600;"
         )
-        input_layout.addWidget(email_label, alignment=Qt.AlignmentFlag.AlignLeft)
+        email_group.addWidget(email_label)
 
-        # Email & Send Code Row Layout
         email_row_layout = QHBoxLayout()
         email_row_layout.setSpacing(10)
         email_row_layout.setContentsMargins(0, 0, 0, 0)
 
         self.email = QLineEdit()
-        self.email.setFixedSize(720, 48)
+        self.email.setFixedSize(720, 44)
         self.email.setPlaceholderText("name@gmail.com")
         self.set_normal_style(self.email)
 
@@ -118,14 +137,14 @@ class AccountInfo(QWidget):
         email_row_layout.addWidget(self.email)
 
         self.send_code_btn = QPushButton("Send Code")
-        self.send_code_btn.setFixedSize(158, 48)
+        self.send_code_btn.setFixedSize(158, 44)
         self.send_code_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.send_code_btn.setStyleSheet(f"""
             QPushButton {{
                 background-color: {CORAL_RED};
                 color: {LIGHT};
                 font-family: {BODY_FONT};
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: 700;
                 border-radius: 6px;
             }}
@@ -139,44 +158,52 @@ class AccountInfo(QWidget):
         email_container = QWidget()
         email_container.setFixedWidth(888)
         email_container.setLayout(email_row_layout)
-        input_layout.addWidget(email_container, alignment=Qt.AlignmentFlag.AlignLeft)
+        email_group.addWidget(email_container)
 
-        # Email Inline Error Label
         self.email_error = QLabel("")
-        self.email_error.setFixedWidth(888)
-        self.email_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.email_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 12px; color: #d93025; font-weight: 600;")
         self.email_error.hide()
-        input_layout.addWidget(self.email_error, alignment=Qt.AlignmentFlag.AlignLeft)
+        email_group.addWidget(self.email_error)
 
-        # --- Verification Code Field ---
+        input_layout.addLayout(email_group)
+
+        # --- Verification Code Field Group ---
+        code_group = QVBoxLayout()
+        code_group.setSpacing(4)
+        code_group.setContentsMargins(0, 0, 0, 0)
+
         code_label = QLabel("Verification Code")
         code_label.setStyleSheet(
-            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+            f"font-family: {BODY_FONT}; font-size: 14px; color: {CORAL_RED}; font-weight: 600;"
         )
-        input_layout.addWidget(code_label, alignment=Qt.AlignmentFlag.AlignLeft)
+        code_group.addWidget(code_label)
 
         self.code_input = QLineEdit()
-        self.code_input.setFixedSize(888, 48)
+        self.code_input.setFixedSize(888, 44)
         self.code_input.setPlaceholderText("Enter 6-digit verification code")
         self.set_normal_style(self.code_input)
-        input_layout.addWidget(self.code_input, alignment=Qt.AlignmentFlag.AlignLeft)
+        code_group.addWidget(self.code_input)
 
-        # Verification Code Inline Error Label
         self.code_error = QLabel("")
-        self.code_error.setFixedWidth(888)
-        self.code_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.code_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 12px; color: #d93025; font-weight: 600;")
         self.code_error.hide()
-        input_layout.addWidget(self.code_error, alignment=Qt.AlignmentFlag.AlignLeft)
+        code_group.addWidget(self.code_error)
 
-        # Password Field 
+        input_layout.addLayout(code_group)
+
+        # --- Password Field Group ---
+        pass_group = QVBoxLayout()
+        pass_group.setSpacing(4)
+        pass_group.setContentsMargins(0, 0, 0, 0)
+
         pass_label = QLabel("Password")
         pass_label.setStyleSheet(
-            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+            f"font-family: {BODY_FONT}; font-size: 14px; color: {CORAL_RED}; font-weight: 600;"
         )
-        input_layout.addWidget(pass_label, alignment=Qt.AlignmentFlag.AlignLeft)
+        pass_group.addWidget(pass_label)
 
         self.password = QLineEdit()
-        self.password.setFixedSize(888, 48)
+        self.password.setFixedSize(888, 44)
         self.password.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
@@ -187,17 +214,16 @@ class AccountInfo(QWidget):
         palette = self.password.palette()
         palette.setColor(QPalette.PlaceholderText, QColor(CHOCO_BROWN))
         self.password.setPalette(palette)
-        input_layout.addWidget(self.password, alignment=Qt.AlignmentFlag.AlignLeft)
+        pass_group.addWidget(self.password)
 
-        # Password Inline Error Label
         self.password_error = QLabel("")
-        self.password_error.setFixedWidth(888)
-        self.password_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.password_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 12px; color: #d93025; font-weight: 600;")
         self.password_error.hide()
-        input_layout.addWidget(self.password_error, alignment=Qt.AlignmentFlag.AlignLeft)
+        pass_group.addWidget(self.password_error)
 
-        self.ICON_PIXEL_SIZE = 30
+        input_layout.addLayout(pass_group)
 
+        self.ICON_PIXEL_SIZE = 28
         self.eye_btn = QToolButton(self.password)
         self.eye_btn.setCheckable(True)
         self.eye_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -214,11 +240,11 @@ class AccountInfo(QWidget):
         # Return Navigation Row
         header_row = QHBoxLayout()
         header_row.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        header_row.setContentsMargins(0, 4, 0, 4)
+        header_row.setContentsMargins(0, 2, 0, 2)
         
         create_label = QLabel("Nais mo bang bumalik?")
         create_label.setStyleSheet(
-            f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 15px;"
+            f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 14px;"
         )
         header_row.addWidget(create_label)
 
@@ -231,7 +257,7 @@ class AccountInfo(QWidget):
                 font-family: {BODY_FONT};
                 color: {CORAL_RED};
                 font-weight: 700;
-                font-size: 15px;
+                font-size: 14px;
                 text-align: left;
             }}
             QPushButton:hover {{
@@ -250,14 +276,14 @@ class AccountInfo(QWidget):
 
         # Create Account Button
         self.create_btn = QPushButton("Create account")
-        self.create_btn.setFixedSize(340, 50)
+        self.create_btn.setFixedSize(300, 48)
         self.create_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.create_btn.setStyleSheet(f"""
             QPushButton {{
                 background-color: {CORAL_RED};
                 color: {LIGHT};
                 font-family: {BODY_FONT};
-                font-size: 20px;
+                font-size: 18px;
                 font-weight: 900;
                 border-radius: 6px;
             }}
@@ -283,16 +309,14 @@ class AccountInfo(QWidget):
         image_bottom = QHBoxLayout()
         image_bottom.setSpacing(0)
         image_bottom.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        image_bottom.setContentsMargins(0, 5, 0, 0)
+        image_bottom.setContentsMargins(0, 10, 0, 0)
 
         for img_name in ["kids2.png", "kids1.png", "kids2.png", "kids1.png"]:
             kid = QLabel()
             kid.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
             kid.setPixmap(
-                QPixmap(
-                    QPixmap(os.path.join(IMAGE_DIR, img_name)).scaled(
-                        220, 220, Qt.KeepAspectRatio, Qt.SmoothTransformation
-                    )
+                QPixmap(os.path.join(IMAGE_DIR, img_name)).scaled(
+                    160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
             kid.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -318,12 +342,12 @@ class AccountInfo(QWidget):
         widget.setStyleSheet(f"""
             QLineEdit {{
                 font-family: {BODY_FONT};
-                font-size: 16px;
+                font-size: 15px;
                 color: {CHOCO_BROWN};
                 border: 2px solid {CORAL_RED};        
                 border-radius: 6px;
                 background-color: {LIGHT}; 
-                padding: 6px 14px;        
+                padding: 4px 12px;        
             }}
         """)
 
@@ -331,12 +355,12 @@ class AccountInfo(QWidget):
         widget.setStyleSheet(f"""
             QLineEdit {{
                 font-family: {BODY_FONT};
-                font-size: 16px;
+                font-size: 15px;
                 color: {CHOCO_BROWN};
                 border: 2px solid #d93025;        
                 border-radius: 6px;
                 background-color: {LIGHT}; 
-                padding: 6px 14px;        
+                padding: 4px 12px;        
             }}
         """)
 

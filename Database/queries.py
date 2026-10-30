@@ -140,3 +140,21 @@ def clear_local_teachers():
         cursor.execute("DELETE FROM sync_queue WHERE table_name = 'teachers'")
         conn.commit()
         print("--> All local teacher accounts and sync queue entries have been cleared.")
+
+def clear_local_students():
+    """Deletes all local students and clears their sync queue entries."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM students")
+        cursor.execute("DELETE FROM sync_queue WHERE table_name = 'students'")
+        conn.commit()
+        print("--> All local students and sync queue entries have been cleared.")
+
+def clear_local_activity_logs():
+    """Deletes all activity logs and clears their sync queue entries."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM activity_logs")
+        cursor.execute("DELETE FROM sync_queue WHERE table_name = 'activity_logs'")
+        conn.commit()
+        print("--> All local activity logs and sync queue entries have been cleared.")

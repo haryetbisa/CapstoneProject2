@@ -1,3 +1,4 @@
+
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
@@ -6,6 +7,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
+from Database.queries import log_activity
+from session import AppSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "salita")
@@ -13,7 +16,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Salita")
 INSTRUCTION_SOUND_FILE = "xmastree.mp3" 
-
 
 
 class Salita2Game(QWidget):
@@ -182,11 +184,6 @@ class Salita2Game(QWidget):
             else:
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
 
-    def showEvent(self, event):
-        """Resets state whenever screen becomes visible."""
-        self.reset_game()
-        super().showEvent(event)
-
     def handle_back(self):
         """Resets game state and routes back."""
         self.reset_game()
@@ -217,9 +214,28 @@ class Salita2Game(QWidget):
             if len(self.correct_found) == self.total_correct_answers:
                 self.restart_btn.show()
                 self.next_btn.show()
+                # Log progress locally and queue for sync under "Salita"
+                self.save_activity_progress("Salita", "salita_q2", 1.0)
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
             self.restart_btn.show()
+
+    def save_activity_progress(self, module_name, target_word, score):
+        try:
+            student_id = AppSession.get_active_student_id()
+            if not student_id:
+                print("--> No active student selected for activity logging.")
+                return
+            log_activity(
+                student_id=student_id,
+                module_name=module_name,
+                score=score,
+                target_word=target_word,
+                attempts=1
+            )
+            print("--> Salita Q2 activity successfully logged!")
+        except Exception as e:
+            print(f"--> Error logging activity progress: {e}")
 
     def showEvent(self, event):
         self.reset_game()

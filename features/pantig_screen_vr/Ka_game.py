@@ -2,7 +2,7 @@ import os
 from PySide6.QtCore import Qt, QPoint, QSize, QUrl
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
-from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout, QApplication, QPushButton
 from themes.colors import *
 from themes.fonts import BODY_FONT
 from session import AppSession
@@ -73,7 +73,7 @@ class MatchingKa(QWidget):
         self.connections = []
         self.dragging_from = None
         self.temp_end_point = None
-        self.score_logged = False  # Prevent duplicate logs in a single run
+        self.score_logged = False
 
         self.correct_pairs = {
             "wood": "kahoy",
@@ -111,10 +111,12 @@ class MatchingKa(QWidget):
         top_bar.addWidget(pagsasanay)
         top_bar.setSpacing(20)
 
-        rows_layout = QVBoxLayout()
-        rows_layout.setSpacing(40)
-        rows_layout.setContentsMargins(80, 40, 80, 20)
-        main_layout.addLayout(rows_layout)
+        grid_layout = QGridLayout()
+        grid_layout.setContentsMargins(80, 20, 80, 20)
+        grid_layout.setVerticalSpacing(40)
+        grid_layout.setHorizontalSpacing(35)
+        grid_layout.setColumnStretch(2, 1)
+        main_layout.addLayout(grid_layout)
 
         items = [
             ("wood", "kahoy.png", "kahoy", "Ka-hoy"),
@@ -122,9 +124,7 @@ class MatchingKa(QWidget):
             ("shell", "kabibe.png", "kama", "Ka-ma"),
         ]
 
-        for image_id, image_file, word_id, word_display in items:
-            row = QHBoxLayout()
-
+        for i, (image_id, image_file, word_id, word_display) in enumerate(items):
             image_label = QLabel()
             img_path = os.path.join(IMAGE_DIR, image_file)
             if os.path.exists(img_path):
@@ -133,23 +133,18 @@ class MatchingKa(QWidget):
                         140, 140, Qt.KeepAspectRatio, Qt.SmoothTransformation
                     )
                 )
-            row.addWidget(image_label)
+            grid_layout.addWidget(image_label, i, 0, Qt.AlignCenter)
 
             source_dot = Dot(image_id, is_source=True, parent_game=self)
-            row.addWidget(source_dot)
-
-            row.addStretch()
+            grid_layout.addWidget(source_dot, i, 1, Qt.AlignCenter)
 
             target_dot = Dot(word_id, is_source=False, parent_game=self)
-            row.addWidget(target_dot)
+            grid_layout.addWidget(target_dot, i, 3, Qt.AlignCenter)
 
             word_label = QLabel(word_display)
             word_label.setStyleSheet(f"font-size: 46px; font-family:{BODY_FONT}; font-weight: 800; color: #3A2E1F;")
-            row.addWidget(word_label)
+            grid_layout.addWidget(word_label, i, 4, Qt.AlignLeft)
 
-            rows_layout.addLayout(row)
-
-        # Action Buttons Layout (Restart + Next)
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
@@ -260,11 +255,9 @@ class MatchingKa(QWidget):
         self.temp_end_point = None
         self.restart_btn.show()
 
-        # Reveal Susunod button when all pairs are matched correctly
         if len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
             self.next_btn.show()
 
-            # --- AUTOMATIC SCORE LOGGING ---
             if not self.score_logged:
                 student_id = AppSession.get_active_student_id()
                 if student_id:
@@ -274,11 +267,10 @@ class MatchingKa(QWidget):
                     
                     log_activity(
                         student_id=student_id,
-                        module_name="Pantig",       # Matches module name in kinder_dashboard.py
-                        target_word="Ka",           # Identifies sub-module item Ka
+                        module_name="Pantig",
+                        target_word="Ka",
                         score=score_percentage
                     )
-                    print("--> Matching Ka game score successfully logged for active student!")
                     self.score_logged = True
 
         self.update()
@@ -310,8 +302,6 @@ class MatchingKa(QWidget):
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
-        else:
-            print(f"Instruction sound not found: {sound_path}")
 
     def stop_instruction_sound(self):
         self.instruction_player.stop()

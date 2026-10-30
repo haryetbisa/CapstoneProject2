@@ -1,8 +1,6 @@
 {
-    "music_volume": 33,
-    "sfx_volume": 70,
-    "music_volume": 71,
-    "sfx_volume": 71,
-    "display_mode": "Windowed",
+    "music_volume": 84,
+    "sfx_volume": 84,
+    "display_mode": "Fullscreen",
     "resolution": "1920 x 1080"
 }
