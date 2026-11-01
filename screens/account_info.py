@@ -4,9 +4,14 @@ import os
 import re
 import sys
 import random
+import time
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+
+# Load environment variables from local .env file
+load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
@@ -51,6 +56,7 @@ class AccountInfo(QWidget):
         super().__init__()
         self.router = router
         self.generated_code = None  # Stores the random verification code temporarily
+        self.code_timestamp = 0     # Stores when the code was generated for expiration tracking
 
         outer_layout = QVBoxLayout(self)
         outer_layout.setContentsMargins(0, 0, 0, 0)
@@ -207,7 +213,7 @@ class AccountInfo(QWidget):
         self.password.setAlignment(
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
-        self.password.setPlaceholderText("eg. 123abcd")
+        self.password.setPlaceholderText("e.g. password123")
         self.password.setEchoMode(QLineEdit.Password)
         self.set_normal_style(self.password)
 
@@ -332,6 +338,7 @@ class AccountInfo(QWidget):
         self.code_input.clear()
         self.password.clear()
         self.generated_code = None
+        self.code_timestamp = 0
         self.name_error.hide()
         self.email_error.hide()
         self.code_error.hide()
@@ -396,10 +403,35 @@ class AccountInfo(QWidget):
             self.set_error_style(self.email)
             return
 
-        self.generated_code = str(random.randint(100000, 999999))
+        # Disable button and show loading state
+        self.send_code_btn.setEnabled(False)
+        self.send_code_btn.setText("Sending...")
+        self.send_code_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #cccccc;
+                color: {CHOCO_BROWN};
+                font-family: {BODY_FONT};
+                font-size: 15px;
+                font-weight: 700;
+                border-radius: 6px;
+            }}
+        """)
+        self.send_code_btn.repaint()
 
-        sender_email = "basamakita.official@gmail.com"
-        app_password = "tvpq ldae oeiv mjhn"
+        self.generated_code = str(random.randint(100000, 999999))
+        self.code_timestamp = time.time()  # Record code creation time for expiration
+
+        # Securely load credentials from environment variables (.env)
+        sender_email = os.getenv("SENDER_EMAIL")
+        app_password = os.getenv("GMAIL_APP_PASSWORD")
+
+        if not sender_email or not app_password:
+            print("--> Error: SENDER_EMAIL or GMAIL_APP_PASSWORD not found in environment variables.")
+            self.email_error.setText("✖ Configuration error: Missing email credentials.")
+            self.email_error.setVisible(True)
+            self.set_error_style(self.email)
+            self.reset_send_button()
+            return
 
         try:
             msg = MIMEMultipart()
@@ -407,10 +439,10 @@ class AccountInfo(QWidget):
             msg["To"] = email_text
             msg["Subject"] = "BasaMatika Email Verification Code"
 
-            body = f"Mabuhay! Your verification code for BasaMatika is: {self.generated_code}"
+            body = f"Mabuhay! Your verification code for BasaMatika is: {self.generated_code}\n\nThis code will expire in 5 minutes."
             msg.attach(MIMEText(body, "plain"))
 
-            server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+            server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10)
             server.login(sender_email, app_password)
             server.sendmail(sender_email, email_text, msg.as_string())
             server.quit()
@@ -420,7 +452,7 @@ class AccountInfo(QWidget):
             msg_box = QMessageBox(self)
             msg_box.setWindowTitle("Verification Code Sent")
             msg_box.setIcon(QMessageBox.Icon.Information)
-            msg_box.setText(f"A verification code has been successfully emailed to:\n<b>{email_text}</b>")
+            msg_box.setText(f"A 6-digit verification code has been successfully emailed to:\n<b>{email_text}</b>")
             msg_box.setStyleSheet(f"""
                 QMessageBox {{
                     background-color: {LIGHT};
@@ -449,9 +481,32 @@ class AccountInfo(QWidget):
 
         except Exception as e:
             print(f"--> Failed to send verification email: {e}")
-            self.email_error.setText(f"✖ Failed to send email. Check app password or internet.")
+            self.email_error.setText(f"✖ Failed to send email. Check network connection.")
             self.email_error.setVisible(True)
             self.set_error_style(self.email)
+            self.generated_code = None
+            self.code_timestamp = 0
+
+        # Restore send button state
+        self.reset_send_button()
+
+    def reset_send_button(self):
+        """Restores the Send Code button back to normal style and functionality."""
+        self.send_code_btn.setEnabled(True)
+        self.send_code_btn.setText("Send Code")
+        self.send_code_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {CORAL_RED};
+                color: {LIGHT};
+                font-family: {BODY_FONT};
+                font-size: 15px;
+                font-weight: 700;
+                border-radius: 6px;
+            }}
+            QPushButton:hover {{
+                background-color: #d94338;
+            }}
+        """)
 
     def validate_and_create_account(self):
         print("--> BUTTON CLICKED! Validating inputs...")
@@ -482,8 +537,14 @@ class AccountInfo(QWidget):
             self.set_error_style(self.email)
             has_error = True
 
+        # Check code validity and 5-minute (300 seconds) expiration limit
         if not code_text or code_text != self.generated_code:
-            self.code_error.setText("✖  Invalid or missing verification code. Request a code first.")
+            self.code_error.setText("✖  Invalid verification code. Please check your email.")
+            self.code_error.setVisible(True)
+            self.set_error_style(self.code_input)
+            has_error = True
+        elif self.code_timestamp and (time.time() - self.code_timestamp > 300):
+            self.code_error.setText("✖  Verification code has expired. Please request a new one.")
             self.code_error.setVisible(True)
             self.set_error_style(self.code_input)
             has_error = True

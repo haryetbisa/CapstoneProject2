@@ -234,3 +234,5 @@ venv/
 *.pyo
 data/active_session.json
 data/basamatika.db
+
+.env
