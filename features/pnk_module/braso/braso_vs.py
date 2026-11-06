@@ -290,7 +290,7 @@ class BrasoVS(QWidget):
     def handle_back(self):
         self.stop_worker()
         self.score_logged = False
-        self.router.navigate("tiyan")
+        self.router.navigate("braso")
 
     def handle_next(self):
         self.stop_worker()

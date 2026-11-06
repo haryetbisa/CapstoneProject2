@@ -369,7 +369,7 @@ class ManokGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("manok_lesson")
+        self.router.navigate("manokvs")
 
     def handle_next(self):
         self.reset_game()

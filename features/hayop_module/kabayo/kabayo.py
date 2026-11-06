@@ -154,17 +154,14 @@ class LessonScreenKabayo(QWidget):
 
     def play_animal_sound(self):
         """Plays the animal sound clip from assets/sounds/hayop/."""
-        sound_path = os.path.join(SOUNDS_DIR, "kabayo.mp3")
-
-        if not os.path.exists(sound_path):
-            sound_path = os.path.join(SOUNDS_DIR, "kabayo.wav")
+        sound_path = os.path.join(SOUNDS_DIR, "kabayo.wav")
 
         if os.path.exists(sound_path):
             self.player.setSource(QUrl.fromLocalFile(sound_path))
             self.player.play()
         else:
             print(f"Animal sound file missing: {sound_path}")
-
+            
     def showEvent(self, event):
         self.play_instruction_sound()
         super().showEvent(event)

@@ -380,7 +380,7 @@ class AsoGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("aso_lesson")
+        self.router.navigate("asovs")
 
     def handle_next(self):
         self.reset_game()

@@ -369,7 +369,7 @@ class KunehoGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("kuneho_lesson")
+        self.router.navigate("kunehovs")
 
     def handle_next(self):
         self.reset_game()

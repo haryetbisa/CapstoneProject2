@@ -1,4 +1,4 @@
-
+# loading_screen.py
 import os
 import sys
 
@@ -129,10 +129,10 @@ class LoadingScreen(QWidget):
         main_layout.addStretch()
 
     def go_to_next_screen(self):
-        """Intelligently routes user based on active session state."""
-        if AppSession.is_teacher_logged_in():
+        """Intelligently routes user based on active session state after loading."""
+        if AppSession.load_saved_session() and AppSession.is_teacher_logged_in():
             print("--> Auto-login session active! Redirecting to home.")
             self.router.navigate("home")
         else:
-            print("--> No active session found. Redirecting to account creation.")
+            print("--> No active session found. Redirecting to login.")
             self.router.navigate("createacc")

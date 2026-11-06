@@ -290,7 +290,7 @@ class BalikatVS(QWidget):
     def handle_back(self):
         self.stop_worker()
         self.score_logged = False
-        self.router.navigate("leeg")
+        self.router.navigate("balikat")
 
     def handle_next(self):
         self.stop_worker()

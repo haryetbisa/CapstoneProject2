@@ -379,7 +379,7 @@ class BaboyGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("baboy_lesson")
+        self.router.navigate("baboyvs")
 
     def handle_next(self):
         self.reset_game()

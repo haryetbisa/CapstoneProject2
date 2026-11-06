@@ -379,7 +379,7 @@ class IsdaGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("isda_lesson")
+        self.router.navigate("isdavs")
 
     def handle_next(self):
         self.reset_game()

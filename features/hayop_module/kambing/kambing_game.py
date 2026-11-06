@@ -369,7 +369,7 @@ class KambingGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("kambing_lesson")
+        self.router.navigate("kambingvs")
 
     def handle_next(self):
         self.reset_game()

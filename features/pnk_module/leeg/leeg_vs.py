@@ -289,7 +289,7 @@ class LeegVS(QWidget):
     def handle_back(self):
         self.stop_worker()
         self.score_logged = False
-        self.router.navigate("mukha_game")
+        self.router.navigate("leeg")
 
     def handle_next(self):
         self.stop_worker()

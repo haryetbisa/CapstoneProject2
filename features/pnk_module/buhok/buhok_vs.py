@@ -291,7 +291,7 @@ class BuhokVS(QWidget):
     def handle_back(self):
         self.stop_worker()
         self.score_logged = False
-        self.router.navigate("tenga")
+        self.router.navigate("buhok")
 
     def handle_next(self):
         self.stop_worker()

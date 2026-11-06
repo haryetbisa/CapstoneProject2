@@ -268,4 +268,4 @@ class PantigTabo(QWidget):
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
-        self.router.navigate("pantig")
+        self.router.navigate("tasa")

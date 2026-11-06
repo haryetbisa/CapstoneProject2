@@ -82,9 +82,6 @@ class HugisScreen(QWidget):
         bituin_card = CardsPicButton("bituin.png", color = COBALT_BLUE)
         bituin_card.clicked.connect(lambda: self.router.navigate("star"))
 
-        rombus_card = CardsPicButton("brilyante.png", color = TERRACOTTA )
-        rombus_card.clicked.connect(lambda: self.router.navigate("diamond"))
-
         
         grid_layout.addWidget(bilog_card, 0, 0)
         grid_layout.addWidget(tatsu_card, 0, 1)
@@ -93,7 +90,7 @@ class HugisScreen(QWidget):
         grid_layout.addWidget(oblong_card, 0, 4)
         grid_layout.addWidget(parihaba_card, 1, 0)
         grid_layout.addWidget(bituin_card, 1, 1)
-        grid_layout.addWidget(rombus_card, 1, 2)
+        
 
 
         main_layout.addLayout(grid_layout)

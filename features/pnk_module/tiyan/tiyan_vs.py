@@ -289,7 +289,7 @@ class TiyanVS(QWidget):
     def handle_back(self):
         self.stop_worker()
         self.score_logged = False
-        self.router.navigate("balikat")
+        self.router.navigate("tiyan")
 
     def handle_next(self):
         self.stop_worker()

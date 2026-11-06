@@ -30,10 +30,12 @@ class GradeOneDashboard(QWidget):
 
         main_layout = QVBoxLayout(self)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.setContentsMargins(60, 60, 60, 0)
+        main_layout.setContentsMargins(40, 30, 40, 20)
+        main_layout.setSpacing(20)
         
         top_layout = QHBoxLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        top_layout.setSpacing(20)
         main_layout.addLayout(top_layout)
 
         back_btn = QPushButton()
@@ -48,13 +50,12 @@ class GradeOneDashboard(QWidget):
         title = QLabel("GRADE 1 DASHBOARD")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet(f"""
-            font-size: 32px;
+            font-size: 28px;
             font-family: {HEADING_FONT};
             font-weight: 900;
             color: {CHOCO_BROWN};
         """)
         top_layout.addWidget(title)
-        top_layout.setSpacing(30)
 
         # Custom Searchable Dropdown
         self.student_dropdown = SearchableDropdown(placeholder="-- Pumili ng Mag-aaral --")
@@ -80,11 +81,11 @@ class GradeOneDashboard(QWidget):
         self.roster_btn.clicked.connect(lambda: self.router.navigate("grade1_roster"))
         top_layout.addWidget(self.roster_btn)
 
-        main_layout.addSpacing(40)
         grid_layout = QGridLayout()
         grid_layout.setHorizontalSpacing(30)
+        grid_layout.setVerticalSpacing(20)
         grid_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)     
-        grid_layout.setContentsMargins(0, 50, 0, 0)
+        grid_layout.setContentsMargins(0, 10, 0, 0)
 
         # Initialize Grade 1 Cards
         self.bilang_card = CardsButton("Bilang", "Bilang.png", color = LIGHT_GREEN)
@@ -174,6 +175,34 @@ class GradeOneDashboard(QWidget):
     def navigate_with_validation(self, route_name):
         student_id = AppSession.get_active_student_id()
         if not student_id:
-            QMessageBox.warning(self, "Babala", "Mangyaring pumili muna ng mag-aaral mula sa listahan bago simulan ang laro.")
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Babala")
+            msg_box.setIcon(QMessageBox.Icon.Warning)
+            msg_box.setText("Mangyaring pumili muna ng mag-aaral mula sa listahan bago simulan ang laro.")
+            msg_box.setStyleSheet(f"""
+                QMessageBox {{
+                    background-color: {LIGHT};
+                    font-family: {BODY_FONT};
+                    font-size: 16px;
+                    color: {CHOCO_BROWN};
+                }}
+                QLabel {{
+                    color: {CHOCO_BROWN};
+                    font-size: 15px;
+                }}
+                QPushButton {{
+                    background-color: {CORAL_RED};
+                    color: {LIGHT};
+                    font-family: {BODY_FONT};
+                    font-size: 14px;
+                    font-weight: 700;
+                    padding: 6px 16px;
+                    border-radius: 4px;
+                }}
+                QPushButton:hover {{
+                    background-color: #d94338;
+                }}
+            """)
+            msg_box.exec()
             return
         self.router.navigate(route_name)

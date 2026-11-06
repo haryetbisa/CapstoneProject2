@@ -130,11 +130,7 @@ class LessonScreenKuneho(QWidget):
 
     def play_animal_sound(self):
         """Plays animal sound if available."""
-        sound_path = os.path.join(SOUNDS_DIR, "kuneho.mp3")
-
-        if not os.path.exists(sound_path):
-            sound_path = os.path.join(SOUNDS_DIR, "kambing.wav")
-
+        sound_path = os.path.join(SOUNDS_DIR, "kuneho_.mp3")
         if os.path.exists(sound_path):
             self.player.setSource(QUrl.fromLocalFile(sound_path))
             self.player.play()

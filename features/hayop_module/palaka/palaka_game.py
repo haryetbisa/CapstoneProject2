@@ -365,7 +365,7 @@ class PalakaGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("palaka_lesson")
+        self.router.navigate("palakavs")
 
     def handle_next(self):
         self.reset_game()

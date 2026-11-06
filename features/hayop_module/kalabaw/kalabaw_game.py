@@ -369,7 +369,7 @@ class KalabawGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("kalabaw_lesson")
+        self.router.navigate("kalabawvs")
 
     def handle_next(self):
         self.reset_game()

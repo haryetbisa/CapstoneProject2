@@ -369,7 +369,7 @@ class UnggoyGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("unggoy_lesson")
+        self.router.navigate("unggoyvs")
 
     def handle_next(self):
         self.reset_game()

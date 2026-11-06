@@ -380,7 +380,7 @@ class BibeGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("bibe_lesson")
+        self.router.navigate("bibevs")
 
     def handle_next(self):
         self.reset_game()

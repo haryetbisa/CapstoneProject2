@@ -285,7 +285,7 @@ class TengaVS(QWidget):
     def handle_back(self):
         self.stop_worker()
         self.score_logged = False
-        self.router.navigate("ilong")
+        self.router.navigate("tenga")
 
     def handle_next(self):
         self.stop_worker()

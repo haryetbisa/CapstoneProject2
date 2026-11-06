@@ -271,4 +271,4 @@ class PantigParoParo(QWidget):
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
-        self.router.navigate("paa")
+        self.router.navigate("paa1")

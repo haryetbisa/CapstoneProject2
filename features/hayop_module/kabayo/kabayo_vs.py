@@ -186,11 +186,6 @@ class KabayoVS(QWidget):
         sound_path = os.path.join(
             PRONUNCIATION_SOUNDS_DIR, f"Kabayo.mp3"
         )
-        if not os.path.exists(sound_path):
-            sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"Kabayo.wav"
-            )
-
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))

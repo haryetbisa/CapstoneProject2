@@ -368,7 +368,7 @@ class KabayoGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-        self.router.navigate("kabayo_lesson")
+        self.router.navigate("kabayovs")
 
     def handle_next(self):
         self.reset_game()

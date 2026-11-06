@@ -132,7 +132,7 @@ class LessonScreenUnggoy(QWidget):
 
     def play_animal_sound(self):
         """Plays animal sound if available."""
-        sound_path = os.path.join(SOUNDS_DIR, "unggoy.mp3")
+        sound_path = os.path.join(SOUNDS_DIR, "Chimpanzee_.mp3")
 
         if not os.path.exists(sound_path):
             sound_path = os.path.join(SOUNDS_DIR, "unggoy.wav")
