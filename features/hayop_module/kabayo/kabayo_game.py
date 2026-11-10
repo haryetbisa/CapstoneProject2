@@ -250,7 +250,7 @@ class KabayoGame(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-        self.restart_btn = QPushButton(" Restart")
+        self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))

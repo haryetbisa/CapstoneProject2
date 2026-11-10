@@ -66,17 +66,36 @@ class HomeScreen(QWidget):
         inner_layout.addLayout(text_layout)
         inner_layout.addStretch()
 
+        # --- UPDATED SETTINGS (GIRAFFE) BUTTON ---
         self.g_icon = QPushButton()
         audio_icon_path = os.path.join(ASSETS_DIR, "giraffe.png")
         if os.path.exists(audio_icon_path):
             self.g_icon.setIcon(QIcon(audio_icon_path))
-        self.g_icon.setIconSize(QSize(40, 40))
+            
+        self.g_icon.setIconSize(QSize(30, 30))  # Slightly scaled down to fit inside the circle
+        self.g_icon.setFixedSize(50, 50)        # Forces a perfect 50x50 square for the circle
         self.g_icon.setCursor(Qt.PointingHandCursor)
-        self.g_icon.setStyleSheet(
-            "border: none; background-color: transparent;"
-        )
+        self.g_icon.setToolTip("Mga Setting / Settings")  # Appears when hovering
+        
+        # New styling for a floating circular button with hover interactions
+        self.g_icon.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent white background */
+                border-radius: 25px; /* Creates a perfect circle */
+                border: 2px solid #E0B43A; /* Subtle dark yellow border */
+            }
+            QPushButton:hover {
+                background-color: white; /* Solid white when hovered */
+                border: 2px solid #F3554A; /* Border turns coral red to match your theme */
+            }
+            QPushButton:pressed {
+                background-color: #F0E9D8; /* Slightly darker cream when clicked */
+            }
+        """)
+        
         self.g_icon.clicked.connect(lambda: self.router.navigate("settings"))
         inner_layout.addWidget(self.g_icon)
+        # -----------------------------------------
 
         main_layout.addWidget(container)
 

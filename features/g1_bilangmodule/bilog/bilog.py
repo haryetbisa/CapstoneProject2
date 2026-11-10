@@ -62,7 +62,7 @@ class LessonMath1(QWidget):
 
         card = LessonCard(
             title="Aralin 1 : BILOG",
-            body_text="Ang hugis bilog ay isang hugis na paikot. Ito ay may 0 gilid, at 0 sulok."
+            body_text="Ang bilog ay isang hugis na pabilog. Wala itong gilid at wala ring sulok."
         )
         content_layout.addWidget(card)
 

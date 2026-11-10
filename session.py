@@ -1,8 +1,15 @@
 # session.py
 import json
 import os
+import sys
 
-SESSION_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "active_session.json")
+# FIX: Save to the directory where the .exe is located, not the temporary PyInstaller folder
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+SESSION_FILE = os.path.join(BASE_DIR, "data", "active_session.json")
 
 
 class AppSession:

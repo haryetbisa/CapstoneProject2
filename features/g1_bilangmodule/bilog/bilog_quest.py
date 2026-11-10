@@ -91,9 +91,9 @@ class BilangLvl1(QWidget):
         quest_row.setSpacing(29)
         quest_row.setAlignment(Qt.AlignCenter)
 
-        self.opt_1 = ChoicesButton("1", color=SKY_BLUE)     # Wrong
-        self.opt_2 = ChoicesButton("4", color=HOT_PINK)     # Wrong
-        self.opt_3 = ChoicesButton("0", color=LIGHT_GREEN)  # Correct
+        self.opt_1 = ChoicesButton("isa", color=SKY_BLUE)     # Wrong
+        self.opt_2 = ChoicesButton("apat", color=HOT_PINK)     # Wrong
+        self.opt_3 = ChoicesButton("wala sulok at gilid", color=LIGHT_GREEN)  # Correct
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(False, self.opt_1))
         self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2))
@@ -104,12 +104,12 @@ class BilangLvl1(QWidget):
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
-        # Action Buttons Layout (Restart + Next)
+      
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-        self.restart_btn = QPushButton(" Restart")
+        self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))

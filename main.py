@@ -70,21 +70,28 @@ def create_desktop_shortcut():
         desktop = winshell.desktop()
         path = os.path.join(desktop, "BasaMatika.lnk")
         
-        # Check if shortcut already exists to prevent duplication
+      
         if not os.path.exists(path):
-            target = sys.executable  # Points to BasaMatika.exe when frozen
-            icon = sys.executable    # Uses the embedded app icon
+            target = sys.executable  #
             
+           
+            if getattr(sys, 'frozen', False):
+                icon_path = os.path.join(sys._MEIPASS, "app_logo.ico")
+                if not os.path.exists(icon_path):
+                    icon_path = os.path.join(os.path.dirname(sys.executable), "app_logo.ico")
+            else:
+                icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app_logo.ico")
+
             shell = Dispatch('WScript.Shell')
             shortcut = shell.CreateShortcut(path)
             shortcut.TargetPath = target
             shortcut.WorkingDirectory = os.path.dirname(target)
-            shortcut.IconLocation = icon
+            if os.path.exists(icon_path):
+                shortcut.IconLocation = icon_path
             shortcut.Save()
     except Exception as e:
-        # Silently pass if permissions or Windows COM dependencies fail so the app still runs smoothly
+        print(f"--> Shortcut creation error: {e}")
         pass
-
 
 #wag kalimutan mag-import, mag-eerror talaga :)))
 from router import Router

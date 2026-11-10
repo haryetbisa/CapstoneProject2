@@ -1,11 +1,16 @@
 import os
+import sys
 import json
 import queue
 import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 from PySide6.QtCore import QThread, Signal
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 MODEL_DIR = os.path.join(BASE_DIR, "model_tagalog_vr_capstone")
 
 
@@ -63,7 +68,7 @@ class OfflineVoiceWorker(QThread):
                             last_partial = p_text
                             self.status_changed.emit(f"Narinig: {p_text}")
 
-                # If loop ended without full Result(), check FinalResult or last partial text
+                
                 final_res = json.loads(rec.FinalResult())
                 final_text = final_res.get("text", "").strip() or last_partial
                 

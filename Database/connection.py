@@ -2,6 +2,7 @@
 
 import os
 import sqlite3
+from .database_security import encrypt_data, decrypt_data
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "data", "basamatika.db")
@@ -34,7 +35,7 @@ def init_local_database():
             )
         """)
 
-        # 2. Students Table
+        # 2. Students Table (Names will be encrypted for privacy)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS students (
                 student_id TEXT PRIMARY KEY,
@@ -63,7 +64,6 @@ def init_local_database():
                 FOREIGN KEY (student_id) REFERENCES students (student_id)
             )
         """)
-
         
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS sync_queue (
@@ -76,3 +76,39 @@ def init_local_database():
         """)
 
         conn.commit()
+
+
+# --- SECURE HELPER FUNCTIONS FOR STUDENT RECORDS ---
+
+def insert_secure_student(student_id, teacher_id, first_name, last_name, grade_section="Kindergarten - Paharang"):
+    """Encrypts student first and last names before inserting them into the database."""
+    encrypted_first = encrypt_data(first_name)
+    encrypted_last = encrypt_data(last_name)
+    
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT OR REPLACE INTO students (student_id, teacher_id, first_name, last_name, grade_section)
+            VALUES (?, ?, ?, ?, ?)
+        """, (student_id, teacher_id, encrypted_first, encrypted_last, grade_section))
+        conn.commit()
+
+
+def fetch_all_secure_students():
+    """Retrieves all students and automatically decrypts their names for UI display."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT student_id, teacher_id, first_name, last_name, grade_section, created_at FROM students")
+        rows = cursor.fetchall()
+        
+        students_list = []
+        for row in rows:
+            students_list.append({
+                "student_id": row["student_id"],
+                "teacher_id": row["teacher_id"],
+                "first_name": decrypt_data(row["first_name"]),
+                "last_name": decrypt_data(row["last_name"]),
+                "grade_section": row["grade_section"],
+                "created_at": row["created_at"]
+            })
+        return students_list
