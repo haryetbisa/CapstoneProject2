@@ -170,12 +170,12 @@ class KinderDashboard(QWidget):
         """Fetches and updates progress percentages for the active student across all modules."""
         student_id = AppSession.get_active_student_id()
         
-        pantig_pct = get_module_progress_percentage(student_id, "Pantig", total_module_items=15)
+        pantig_pct = get_module_progress_percentage(student_id, "Pantig", total_module_items=20)
         bilang_pct = get_module_progress_percentage(student_id, "Bilang", total_module_items=10)
-        hugis_pct = get_module_progress_percentage(student_id, "Hugis", total_module_items=10)
-        parte_pct = get_module_progress_percentage(student_id, "Parte ng Katawan", total_module_items=10)
-        kulay_pct = get_module_progress_percentage(student_id, "Kulay", total_module_items=10)
-        hayop_pct = get_module_progress_percentage(student_id, "Hayop", total_module_items=10)
+        hugis_pct = get_module_progress_percentage(student_id, "Hugis", total_module_items=7)
+        parte_pct = get_module_progress_percentage(student_id, "Parte ng Katawan", total_module_items=15)
+        kulay_pct = get_module_progress_percentage(student_id, "Kulay", total_module_items=8)
+        hayop_pct = get_module_progress_percentage(student_id, "Hayop", total_module_items=13)
 
         self.pantig_card.set_progress(pantig_pct)
         self.bilang_card.set_progress(bilang_pct)

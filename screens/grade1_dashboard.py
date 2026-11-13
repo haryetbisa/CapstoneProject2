@@ -154,9 +154,9 @@ class GradeOneDashboard(QWidget):
         """Fetches and updates progress percentages for the active student in Grade 1."""
         student_id = AppSession.get_active_student_id()
         
-        bilang_pct = get_module_progress_percentage(student_id, "Bilang (G1)", total_module_items=10)
-        salita_pct = get_module_progress_percentage(student_id, "Salita", total_module_items=10)
-        kuwento_pct = get_module_progress_percentage(student_id, "Kuwento", total_module_items=5)
+        bilang_pct = get_module_progress_percentage(student_id, "Bilang (G1)", total_module_items=15)
+        salita_pct = get_module_progress_percentage(student_id, "Salita", total_module_items=15)
+        kuwento_pct = get_module_progress_percentage(student_id, "Kuwento", total_module_items=10)
 
         self.bilang_card.set_progress(bilang_pct)
         self.salita_card.set_progress(salita_pct)

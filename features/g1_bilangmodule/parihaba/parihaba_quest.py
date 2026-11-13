@@ -91,9 +91,9 @@ class BilangLvl3(QWidget):
         quest_row.setSpacing(29)
         quest_row.setAlignment(Qt.AlignCenter)
 
-        self.opt_1 = ChoicesButton("3", color=SKY_BLUE)     # Wrong
-        self.opt_2 = ChoicesButton("4", color=HOT_PINK)     # Correct
-        self.opt_3 = ChoicesButton("5", color=LIGHT_GREEN)  # Wrong
+        self.opt_1 = ChoicesButton("tatlo", color=SKY_BLUE)     # Wrong
+        self.opt_2 = ChoicesButton("apat", color=HOT_PINK)     # Correct
+        self.opt_3 = ChoicesButton("lima", color=LIGHT_GREEN)  # Wrong
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(False, self.opt_1))
         self.opt_2.clicked.connect(lambda: self.handle_choice(True, self.opt_2))
