@@ -1,5 +1,6 @@
 import os
-from PySide6.QtCore import Qt, QPoint, QSize, QUrl
+import random
+from PySide6.QtCore import Qt, QPoint, QSize, QUrl, QTimer
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout, QApplication, QPushButton
@@ -11,10 +12,10 @@ from session import AppSession
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "salita")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
+SFX_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "sound_tama_mali")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Salita")
 INSTRUCTION_SOUND_FILE = "Magkatunog.mp3" 
-
 
 
 class Dot(QLabel):
@@ -30,20 +31,20 @@ class Dot(QLabel):
             self.setCursor(Qt.OpenHandCursor)
 
     def mousePressEvent(self, event):
-        if not self.is_source or event.button() != Qt.LeftButton:
+        if not self.is_source or event.button() != Qt.LeftButton or self.game.is_completed:
             return
         self.grabMouse()
         self.game.start_drag(self)
 
     def mouseMoveEvent(self, event):
-        if not self.is_source:
+        if not self.is_source or self.game.is_completed:
             return
         global_pos = self.mapToGlobal(event.pos())
         game_pos = self.game.mapFromGlobal(global_pos)
         self.game.update_temp_line(game_pos)
 
     def mouseReleaseEvent(self, event):
-        if not self.is_source:
+        if not self.is_source or self.game.is_completed:
             return
         self.releaseMouse()
 
@@ -65,28 +66,35 @@ class Salita5Game(QWidget):
         self.dragging_from = None
         self.temp_end_point = None
         self.total_pairs = 5
+        self.is_completed = False
 
-        # Audio Setup
+        # Dual Audio Player Setup for Feedback (Voice-over + SFX)
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(0.8)
+        self.feedback_audio_output.setVolume(1.5)
+
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
         self.instruction_audio_output.setVolume(0.9)
 
-
         self._setup_ui()
 
     def _setup_ui(self):
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(40, 30, 40, 30)
+        main_layout.setContentsMargins(40, 20, 40, 20)
         main_layout.setAlignment(Qt.AlignTop)
+        main_layout.setSpacing(10)
 
         # Top Bar
         top_bar = QHBoxLayout()
+        top_bar.setContentsMargins(20, 10, 20, 10)
         back_btn = QPushButton()
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
         if os.path.exists(back_icon_path):
@@ -104,10 +112,16 @@ class Salita5Game(QWidget):
         top_bar.addStretch()
         main_layout.addLayout(top_bar)
 
+        # Feedback Text Label (Placed right above action buttons)
+        self.feedback_label = QLabel("")
+        self.feedback_label.setAlignment(Qt.AlignCenter)
+        self.feedback_label.setStyleSheet(f"font-size: 24px; font-weight: 700; font-family: {BODY_FONT}; color: transparent;")
+        main_layout.addWidget(self.feedback_label)
+
         # Structured Grid Layout for rigid vertical dot alignment
         grid_layout = QGridLayout()
-        grid_layout.setContentsMargins(60, 20, 60, 10)
-        grid_layout.setVerticalSpacing(30)
+        grid_layout.setContentsMargins(60, 10, 60, 10)
+        grid_layout.setVerticalSpacing(20)
         grid_layout.setHorizontalSpacing(20)
         grid_layout.setColumnStretch(3, 1)  # Stretchable middle gap
         main_layout.addLayout(grid_layout)
@@ -126,13 +140,13 @@ class Salita5Game(QWidget):
             left_path = os.path.join(IMAGE_DIR, left_img)
             if os.path.exists(left_path):
                 left_image_lbl.setPixmap(
-                    QPixmap(left_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    QPixmap(left_path).scaled(70, 70, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
             grid_layout.addWidget(left_image_lbl, i, 0, Qt.AlignRight | Qt.AlignVCenter)
 
             left_word_lbl = QLabel(left_txt)
             left_word_lbl.setFixedWidth(130)
-            left_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
+            left_word_lbl.setStyleSheet(f"font-size: 24px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
             grid_layout.addWidget(left_word_lbl, i, 1, Qt.AlignLeft | Qt.AlignVCenter)
 
             source_dot = Dot(is_source=True, item_id=left_key, parent_game=self)
@@ -146,13 +160,13 @@ class Salita5Game(QWidget):
             right_path = os.path.join(IMAGE_DIR, right_img)
             if os.path.exists(right_path):
                 right_image_lbl.setPixmap(
-                    QPixmap(right_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    QPixmap(right_path).scaled(70, 70, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
             grid_layout.addWidget(right_image_lbl, i, 5, Qt.AlignRight | Qt.AlignVCenter)
 
             right_word_lbl = QLabel(right_txt)
             right_word_lbl.setFixedWidth(130)
-            right_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
+            right_word_lbl.setStyleSheet(f"font-size: 24px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
             grid_layout.addWidget(right_word_lbl, i, 6, Qt.AlignLeft | Qt.AlignVCenter)
 
         # Action Buttons Layout
@@ -208,11 +222,28 @@ class Salita5Game(QWidget):
         main_layout.addStretch()
 
     def play_feedback_sound(self, is_correct: bool):
-        filename = "correct.wav" if is_correct else "wrong.wav"
-        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
-        if os.path.exists(sound_path):
+        """Plays randomized voice-over feedback alongside matching sound effect."""
+        if is_correct:
+            voice_file, sfx_file = random.choice([
+                ("tama_1.mp3", "correct.wav"),
+                ("tama_2.mp3", "correct.wav")
+            ])
+        else:
+            voice_file, sfx_file = random.choice([
+                ("mali_Ac.mp3", "wrong.wav"),
+                ("mali_AC2.mp3", "wrong.wav")
+            ])
+
+        sfx_path = os.path.abspath(os.path.join(SFX_SOUNDS_DIR, sfx_file))
+        if os.path.exists(sfx_path):
+            self.sfx_player.stop()
+            self.sfx_player.setSource(QUrl.fromLocalFile(sfx_path))
+            self.sfx_player.play()
+
+        voice_path = os.path.abspath(os.path.join(FEEDBACK_SOUNDS_DIR, voice_file))
+        if os.path.exists(voice_path):
             self.feedback_player.stop()
-            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+            self.feedback_player.setSource(QUrl.fromLocalFile(voice_path))
             self.feedback_player.play()
 
     def start_drag(self, source_dot: Dot):
@@ -240,11 +271,23 @@ class Salita5Game(QWidget):
         self.temp_end_point = None
         self.update()
 
-        self.restart_btn.show()
-
-        if sum(1 for _, _, ok in self.connections if ok) == self.total_pairs:
-            self.next_btn.show()
-            self.save_activity_progress("Salita", "salita_q5", 1.0)
+        if not is_correct:
+            self.feedback_label.setText("Mali. Subukan muli!")
+            self.feedback_label.setStyleSheet(f"font-size: 24px; font-weight: 700; font-family: {BODY_FONT}; color: #C0392B;")
+            self.is_completed = True
+            QTimer.singleShot(1500, self.reset_game)
+        else:
+            correct_count = sum(1 for _, _, ok in self.connections if ok)
+            if correct_count == self.total_pairs:
+                self.is_completed = True
+                self.feedback_label.setText("Magaling! Tama lahat ng iyong sagot!")
+                self.feedback_label.setStyleSheet(f"font-size: 24px; font-weight: 700; font-family: {BODY_FONT}; color: #27AE60;")
+                self.restart_btn.show()
+                self.next_btn.show()
+                self.save_activity_progress("Salita", "salita_q5", 1.0)
+            else:
+                self.feedback_label.setText(f"Magaling! ({correct_count}/{self.total_pairs})")
+                self.feedback_label.setStyleSheet(f"font-size: 24px; font-weight: 700; font-family: {BODY_FONT}; color: #27AE60;")
 
     def save_activity_progress(self, module_name, target_word, score):
         try:
@@ -285,6 +328,9 @@ class Salita5Game(QWidget):
         self.connections.clear()
         self.dragging_from = None
         self.temp_end_point = None
+        self.is_completed = False
+        self.feedback_label.setText("")
+        self.feedback_label.setStyleSheet("color: transparent;")
         self.restart_btn.hide()
         self.next_btn.hide()
         self.update()

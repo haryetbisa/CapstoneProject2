@@ -1,4 +1,5 @@
 import os
+import random
 from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, Signal, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtWidgets import (
@@ -26,7 +27,8 @@ IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pnk")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Vs PNK")
 INSTRUCTION_SOUND_FILE = "PNK Instruction.mp3"
-SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "correct_&_wrong")
+SFX_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "correct_&_wrong")
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "sound_tama_mali")
 
 
 class DraggableWord(QLabel):
@@ -196,11 +198,16 @@ class MukhaGameSample(QWidget):
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
         self.instruction_audio_output.setVolume(0.9)
 
-        # SFX Player Setup
+        # Dual Audio Feedback Setup
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(1.5)
+
         self.sfx_audio_output = QAudioOutput(self)
         self.sfx_player = QMediaPlayer(self)
         self.sfx_player.setAudioOutput(self.sfx_audio_output)
-        self.sfx_audio_output.setVolume(1.0)
+        self.sfx_audio_output.setVolume(0.3)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 20, 40, 20)
@@ -359,14 +366,28 @@ class MukhaGameSample(QWidget):
         self.check_completion()
 
     def play_sfx(self, is_correct: bool):
-        filename = "correct.wav" if is_correct else "wrong.wav"
-        sfx_path = os.path.abspath(os.path.join(SOUNDS_DIR, filename))
+        if is_correct:
+            voice_file, sfx_file = random.choice([
+                ("tama_1.mp3", "correct.wav"),
+                ("tama_2.mp3", "correct.wav")
+            ])
+        else:
+            voice_file, sfx_file = random.choice([
+                ("mali_Ac.mp3", "wrong.wav"),
+                ("mali_AC2.mp3", "wrong.wav")
+            ])
+
+        sfx_path = os.path.abspath(os.path.join(SFX_SOUNDS_DIR, sfx_file))
         if os.path.exists(sfx_path):
             self.sfx_player.stop()
             self.sfx_player.setSource(QUrl.fromLocalFile(sfx_path))
             self.sfx_player.play()
-        else:
-            print(f"SFX sound not found: {sfx_path}")
+
+        voice_path = os.path.abspath(os.path.join(FEEDBACK_SOUNDS_DIR, voice_file))
+        if os.path.exists(voice_path):
+            self.feedback_player.stop()
+            self.feedback_player.setSource(QUrl.fromLocalFile(voice_path))
+            self.feedback_player.play()
 
     def check_completion(self):
         all_correct = all(

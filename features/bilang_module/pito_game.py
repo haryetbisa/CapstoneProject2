@@ -1,4 +1,5 @@
 import os
+import random
 
 from PySide6.QtCore import QPoint, QSize, Qt, QUrl, QMimeData
 from PySide6.QtGui import QIcon, QPixmap, QDrag
@@ -24,8 +25,11 @@ BASE_DIR = os.path.dirname(
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "bilang")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "sound_tama_mali"
 )
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "Vs Bilang")
 INSTRUCTION_SOUND_FILE = "Game Instruction Bilang.mp3" 
@@ -135,11 +139,17 @@ class PitoGame(QWidget):
         self.target_word = "Pito"
         self.score_logged = False  # Prevent duplicate logs in a single run
 
-        # Feedback Audio Player Setup
+        # Voice-over player (for randomized audio feedback) - Volume set to 1.5
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(0.8)
+        self.feedback_audio_output.setVolume(1.5)
+
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -282,7 +292,7 @@ class PitoGame(QWidget):
         self.next_btn.setCursor(Qt.PointingHandCursor)
         self.next_btn.setStyleSheet(f"""
             QPushButton {{
-                background-color: #2E7D32;
+                background-color: {MARIGOLD};
                 color: white;
                 font-family: {BODY_FONT};
                 font-size: 18px;
@@ -308,13 +318,33 @@ class PitoGame(QWidget):
         self.check_btn.show()
         self.restart_btn.show()
 
+    def play_sfx_sound(self, filename: str):
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
+    def play_feedback_sound(self, filename: str):
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
+
     def check_answer(self):
         answer = self.drop_box.answer_label.text().strip()
         is_correct = (answer.lower() == self.target_word.lower())
 
-        self.play_feedback_sound(is_correct)
-
         if is_correct:
+            correct_options = [
+                ("Tama_1.mp3", "correct.wav"),
+                ("Tama_2.mp3", "correct.wav")
+            ]
+            chosen_voice, chosen_sfx = random.choice(correct_options)
+            self.play_sfx_sound(chosen_sfx)
+            self.play_feedback_sound(chosen_voice)
+
             self.drop_box.setStyleSheet(f"""
                 AnswerDropBox {{
                     background-color: transparent;
@@ -338,6 +368,14 @@ class PitoGame(QWidget):
                     print("--> Pito game score successfully logged for active student!")
                     self.score_logged = True
         else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "wrong.wav"),
+                ("Mali_AC2.mp3", "wrong.wav")
+            ]
+            chosen_voice, chosen_sfx = random.choice(wrong_options)
+            self.play_sfx_sound(chosen_sfx)
+            self.play_feedback_sound(chosen_voice)
+
             self.drop_box.setStyleSheet(f"""
                 AnswerDropBox {{
                     background-color: transparent;
@@ -345,13 +383,6 @@ class PitoGame(QWidget):
                     border-radius: 10px;
                 }}
             """)
-
-    def play_feedback_sound(self, is_correct: bool):
-        filename = "correct.wav" if is_correct else "wrong.wav"
-        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
-        if os.path.exists(sound_path):
-            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
-            self.feedback_player.play()
 
     def reset_game(self):
         self.drop_box.answer_label.setText("")

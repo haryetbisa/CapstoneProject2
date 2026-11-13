@@ -1,4 +1,3 @@
-
 import os
 from PySide6.QtCore import Qt, QMimeData, QSize, QUrl
 from PySide6.QtGui import QDrag, QPixmap, QIcon
