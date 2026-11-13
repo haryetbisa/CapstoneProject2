@@ -19,7 +19,7 @@ class OfflineVoiceWorker(QThread):
     status_changed = Signal(str)
 
     def __init__(self, parent=None):
-        super().__init__()
+        super().__init__(parent)
         self.is_listening = True
         self.sample_rate = 16000
         self.q = queue.Queue()
@@ -28,7 +28,8 @@ class OfflineVoiceWorker(QThread):
         """Pushes raw audio buffer into the thread-safe queue."""
         if status:
             print(f"Audio status: {status}")
-        self.q.put(bytes(indata))
+        if self.is_listening:
+            self.q.put(bytes(indata))
 
     def run(self):
         if not os.path.exists(MODEL_DIR):
@@ -51,7 +52,7 @@ class OfflineVoiceWorker(QThread):
 
                 while self.is_listening:
                     try:
-                        data = self.q.get(timeout=0.5)
+                        data = self.q.get(timeout=0.2)
                     except queue.Empty:
                         continue
 
@@ -68,18 +69,25 @@ class OfflineVoiceWorker(QThread):
                             last_partial = p_text
                             self.status_changed.emit(f"Narinig: {p_text}")
 
-                
+                # If stopped manually, check if there's any final text to evaluate
+                if self.is_listening == False and not last_partial:
+                    return
+
                 final_res = json.loads(rec.FinalResult())
                 final_text = final_res.get("text", "").strip() or last_partial
                 
                 if final_text:
                     self.text_recognized.emit(final_text)
-                else:
-                    self.status_changed.emit("Walang narinig. Subukan ulit.")
 
         except Exception as e:
-            self.status_changed.emit(f"Error: {str(e)}")
+            if self.is_listening:  # Only emit error if not intentionally shut down
+                self.status_changed.emit(f"Error: {str(e)}")
 
     def stop(self):
-        """Stops the audio loop cleanly."""
+        """Stops the audio loop cleanly and unblocks the queue."""
         self.is_listening = False
+        # Push a dummy item so queue.get() unblocks immediately instead of waiting for timeout
+        try:
+            self.q.put(b'')
+        except Exception:
+            pass

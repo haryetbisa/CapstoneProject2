@@ -93,7 +93,7 @@ class BilangLvl1(QWidget):
 
         self.opt_1 = ChoicesButton("isa", color=SKY_BLUE)     # Wrong
         self.opt_2 = ChoicesButton("apat", color=HOT_PINK)     # Wrong
-        self.opt_3 = ChoicesButton("wala sulok at gilid", color=LIGHT_GREEN)  # Correct
+        self.opt_3 = ChoicesButton("wala", color=LIGHT_GREEN)  # Correct
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(False, self.opt_1))
         self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2))

@@ -1,4 +1,5 @@
 import os
+import random
 
 from PySide6.QtCore import QSize, Qt, QUrl, Slot
 from PySide6.QtGui import QIcon, QPixmap
@@ -21,8 +22,11 @@ BASE_DIR = os.path.dirname(
 )
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "sound_tama_mali"
 )
 PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
 
@@ -35,19 +39,24 @@ class PantigAraw(QWidget):
         self.target_word = "araw"
         self.worker = None
 
-        
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
+        self.feedback_audio_output.setVolume(1.5)
 
-       
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
+
+        # Word Pronunciation player
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
         self.word_audio_output.setVolume(1.0)
 
-       
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
 
@@ -80,7 +89,7 @@ class PantigAraw(QWidget):
         top_bar.addWidget(pagsasanay)
         main_layout.addLayout(top_bar)
 
-        # Main Graphic (aso.png)
+        # Main Graphic (araw.png)
         image = QLabel()
         image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image_path = os.path.join(IMAGE_DIR, "araw.png")
@@ -200,8 +209,16 @@ class PantigAraw(QWidget):
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))
             self.word_player.play()
 
+    def play_sfx_sound(self, filename: str):
+        """Plays the fixed sound effect (correct.wav / wrong.wav)."""
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
     def play_feedback_sound(self, filename: str):
-        """Plays correct/wrong feedback SFX."""
+        """Plays the randomized voice-over clip."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
@@ -233,6 +250,7 @@ class PantigAraw(QWidget):
         """Updates live status feedback while listening."""
         if (
             "MAGALING" not in self.feedback_label.text()
+            and "TAMA" not in self.feedback_label.text()
             and not self.speak_btn.isEnabled()
         ):
             self.feedback_label.setText(text)
@@ -246,19 +264,35 @@ class PantigAraw(QWidget):
         spoken_words = spoken_clean.split()
 
         if target_clean in spoken_words:
-            self.feedback_label.setText("✅ MAGALING! TAMA!")
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+
+            self.feedback_label.setText(f"✅ {chosen_text}")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
             )
-            self.play_feedback_sound("correct.wav")
+            
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
         else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_VR.mp3", "OOOPS , MALING SALITA! SUBUKAN MULI!")
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
             self.feedback_label.setText(
-                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+                f"❌ {chosen_text} (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
                 f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
-            self.play_feedback_sound("wrong.wav")
+            
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
 
     @Slot()
     def on_speech_finished(self):
@@ -274,6 +308,12 @@ class PantigAraw(QWidget):
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
+
+    def showEvent(self, event):
+        """Resets the UI state whenever the widget becomes visible again."""
+        self.feedback_label.setText("")
+        self.speak_btn.setEnabled(True)
+        super().showEvent(event)
 
     def hideEvent(self, event):
         """Ensures worker thread stops when widget is hidden or navigated away from."""

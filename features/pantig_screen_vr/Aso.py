@@ -1,4 +1,5 @@
 import os
+import random
 
 from PySide6.QtCore import QSize, Qt, QUrl, Slot
 from PySide6.QtGui import QIcon, QPixmap
@@ -21,8 +22,11 @@ BASE_DIR = os.path.dirname(
 )
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "sound_tama_mali"
 )
 PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
 
@@ -35,10 +39,17 @@ class PantigAso(QWidget):
         self.target_word = "aso"
         self.worker = None
 
+        # Voice-over player (for randomized audio lines)
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
+        self.feedback_audio_output.setVolume(1.5)
+
+        # Fixed Sound Effect player (for correct.wav / wrong.wav)
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
@@ -195,8 +206,16 @@ class PantigAso(QWidget):
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))
             self.word_player.play()
 
+    def play_sfx_sound(self, filename: str):
+        """Plays the fixed sound effect (correct.wav / wrong.wav)."""
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
     def play_feedback_sound(self, filename: str):
-        """Plays correct/wrong feedback SFX."""
+        """Plays the randomized voice-over clip."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
@@ -228,6 +247,7 @@ class PantigAso(QWidget):
         """Updates live status feedback while listening."""
         if (
             "MAGALING" not in self.feedback_label.text()
+            and "TAMA" not in self.feedback_label.text()
             and not self.speak_btn.isEnabled()
         ):
             self.feedback_label.setText(text)
@@ -241,19 +261,39 @@ class PantigAso(QWidget):
         spoken_words = spoken_clean.split()
 
         if target_clean in spoken_words:
-            self.feedback_label.setText("✅ MAGALING! TAMA!")
+            # Randomize voice-over and text for correct answer
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+
+            self.feedback_label.setText(f"✅ {chosen_text}")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
             )
-            self.play_feedback_sound("correct.wav")
+            
+            # Play fixed correct sound effect + randomized voice-over
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
         else:
+            # Randomize voice-over and text for wrong answer
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_VR.mp3", "OOOPS , MALING SALITA! SUBUKAN MULI!"),
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
             self.feedback_label.setText(
-                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+                f"❌ {chosen_text} (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
                 f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
-            self.play_feedback_sound("wrong.wav")
+            
+            # Play fixed wrong sound effect + randomized voice-over
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
 
     @Slot()
     def on_speech_finished(self):
@@ -279,3 +319,9 @@ class PantigAso(QWidget):
         """Ensures worker thread stops when widget is hidden or navigated away from."""
         self.stop_worker()
         super().hideEvent(event)
+
+    def showEvent(self, event):
+        """Resets the UI state whenever the widget becomes visible again."""
+        self.feedback_label.setText("")
+        self.speak_btn.setEnabled(True)
+        super().showEvent(event)

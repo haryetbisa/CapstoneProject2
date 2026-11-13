@@ -1,4 +1,5 @@
 import os
+import random
 from PySide6.QtCore import QMimeData, QSize, Qt, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
@@ -19,8 +20,11 @@ IMAGE_DIR = os.path.join(
     BASE_DIR, "..", "..", "..", "assets", "image_content", "hugis"
 )
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong"
+)
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "..", "..", "..", "assets", "sounds", "sound_tama_mali"
 )
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Vs Hugis")
 INSTRUCTION_SOUND_FILE = "Game Instruction Hugis.mp3"
@@ -152,10 +156,17 @@ class StarGame(QWidget):
         self.active_item_widgets = []
         self.score_logged = False  # Prevent duplicate logging per run
 
-        self.audio_output = QAudioOutput(self)
-        self.audio_player = QMediaPlayer(self)
-        self.audio_player.setAudioOutput(self.audio_output)
-        self.audio_output.setVolume(0.8)
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(1.5)
+
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -283,12 +294,19 @@ class StarGame(QWidget):
             self.items_row.addWidget(icon)
             self.active_item_widgets.append(icon)
 
-    def play_sound(self, filename: str):
-        sound_path = os.path.join(SOUNDS_DIR, filename)
+    def play_sfx_sound(self, filename: str):
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
-            self.audio_player.setSource(QUrl.fromLocalFile(abs_path))
-            self.audio_player.play()
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
+    def play_feedback_sound(self, filename: str):
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
 
     def handle_item_drop(self, source_widget: DraggableIcon, item_id: str):
         if item_id in self.target_items:
@@ -298,7 +316,6 @@ class StarGame(QWidget):
                     self.active_item_widgets.remove(source_widget)
 
             self.remaining_targets.discard(item_id)
-            self.play_sound("correct.wav")
 
             if not self.remaining_targets:
                 self.feedback_label.setText(
@@ -307,6 +324,14 @@ class StarGame(QWidget):
                 self.feedback_label.setStyleSheet(
                     f"font-size: 26px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
                 )
+                correct_options = [
+                    ("Tama_1.mp3", "correct.wav"),
+                    ("Tama_2.mp3", "correct.wav")
+                ]
+                chosen_voice, chosen_sfx = random.choice(correct_options)
+                self.play_sfx_sound(chosen_sfx)
+                self.play_feedback_sound(chosen_voice)
+
                 self.restart_btn.show()
                 self.next_btn.show()
 
@@ -328,14 +353,27 @@ class StarGame(QWidget):
                 self.feedback_label.setStyleSheet(
                     f"font-size: 24px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
                 )
+                correct_options = [
+                    ("Tama_1.mp3", "correct.wav"),
+                    ("Tama_2.mp3", "correct.wav")
+                ]
+                chosen_voice, chosen_sfx = random.choice(correct_options)
+                self.play_sfx_sound(chosen_sfx)
+                self.play_feedback_sound(chosen_voice)
         else:
-            self.play_sound("wrong.wav")
             self.feedback_label.setText(
                 "❌ SUBUKAN ULIT! Hindi hugis bituin ang bagay na ito."
             )
             self.feedback_label.setStyleSheet(
                 f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
+            wrong_options = [
+                ("Mali_Ac.mp3", "wrong.wav"),
+                ("Mali_AC2.mp3", "wrong.wav")
+            ]
+            chosen_voice, chosen_sfx = random.choice(wrong_options)
+            self.play_sfx_sound(chosen_sfx)
+            self.play_feedback_sound(chosen_voice)
             self.reset_game()
 
     def reset_game(self):
@@ -347,6 +385,7 @@ class StarGame(QWidget):
 
     def showEvent(self, event):
         self.reset_game()
+        self.feedback_label.setText("")
         self.play_instruction_sound()
         super().showEvent(event)
 
@@ -360,7 +399,7 @@ class StarGame(QWidget):
 
     def handle_next(self):
         self.reset_game()
-        self.router.navigate("diamond")
+        self.router.navigate("hugis")
 
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))

@@ -1,4 +1,5 @@
 import os
+import random
 from PySide6.QtCore import Qt, QPoint, QSize, QUrl
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
@@ -11,7 +12,8 @@ from Database.queries import log_activity
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
+SFX_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "sound_tama_mali")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "VS Pantig")
 INSTRUCTION_SOUND_FILE = "Game Instruction Pantig.mp3" 
 
@@ -59,10 +61,17 @@ class MatchingGame(QWidget):
         super().__init__()
         self.router = router
 
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(0.8)
+        self.feedback_audio_output.setVolume(1.5)
+
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -144,6 +153,17 @@ class MatchingGame(QWidget):
             word_label.setStyleSheet(f"font-size: 46px; font-family:{BODY_FONT}; font-weight: 800; color: #3A2E1F;")
             grid_layout.addWidget(word_label, i, 4, Qt.AlignLeft)
 
+        # Feedback Label
+        self.feedback_label = QLabel("", self)
+        self.feedback_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.feedback_label.setStyleSheet(f"""
+            font-size: 24px;
+            font-family: {BODY_FONT};
+            font-weight: bold;
+            color: {CHOCO_BROWN};
+        """)
+        main_layout.addWidget(self.feedback_label)
+
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
@@ -174,18 +194,15 @@ class MatchingGame(QWidget):
         self.next_btn.setCursor(Qt.PointingHandCursor)
         self.next_btn.setStyleSheet(f"""
             QPushButton {{
-                background-color: #2E7D32;
-                color: white;
+                background-color: {BRIGHT_YELLOW};
+                color: {CHOCO_BROWN};
+                font-size: 22px;
+                font-weight: 800;
+                border-radius: 6px;
                 font-family: {BODY_FONT};
-                font-size: 18px;
-                font-weight: bold;
-                border-radius: 10px;
-                padding: 10px 24px;
-            }}
-            QPushButton:hover {{
-                background-color: #1B5E20;
             }}
         """)
+        self.next_btn.setFixedSize(240, 60)
         self.next_btn.hide()
         self.next_btn.clicked.connect(self.handle_next)
 
@@ -200,6 +217,7 @@ class MatchingGame(QWidget):
         self.dragging_from = None
         self.temp_end_point = None
         self.score_logged = False
+        self.feedback_label.setText("")
         self.restart_btn.hide()
         self.next_btn.hide()
         self.update()
@@ -221,11 +239,18 @@ class MatchingGame(QWidget):
         self.reset_game()
         self.router.navigate("baso")
 
-    def play_feedback_sound(self, is_correct: bool):
-        filename = "correct.wav" if is_correct else "wrong.wav"
+    def play_sfx_sound(self, filename: str):
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
+    def play_feedback_sound(self, filename: str):
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
-            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+            abs_path = os.path.abspath(sound_path)
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
             self.feedback_player.play()
 
     def start_drag(self, source_dot: Dot):
@@ -248,13 +273,44 @@ class MatchingGame(QWidget):
         is_correct = self.correct_pairs.get(source_dot.dot_id) == target_dot.dot_id
         self.connections.append((source_dot, target_dot, is_correct))
 
-        self.play_feedback_sound(is_correct)
-
         self.dragging_from = None
         self.temp_end_point = None
         self.restart_btn.show()
 
-        if len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
+        if is_correct:
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+            
+            self.feedback_label.setText(f"✅ {chosen_text}")
+            self.feedback_label.setStyleSheet(
+                f"font-size: 24px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
+            )
+            
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
+        else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_AC2.mp3", "OOPS, PILIIN ANG TAMANG SAGOT!")
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
+            self.feedback_label.setText(f"❌ {chosen_text}")
+            self.feedback_label.setStyleSheet(
+                f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
+            )
+            
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
+
+        # Check if any connection is wrong -> require restart rule
+        has_wrong = any(not c[2] for c in self.connections)
+        if has_wrong:
+            self.next_btn.hide()
+        elif len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
             self.next_btn.show()
             
             if not self.score_logged:
