@@ -186,6 +186,7 @@ class KabayoVS(QWidget):
         sound_path = os.path.join(
             PRONUNCIATION_SOUNDS_DIR, f"Kabayo.mp3"
         )
+<<<<<<< HEAD
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
                 PRONUNCIATION_SOUNDS_DIR, f"Kabayo.wav"
@@ -225,6 +226,42 @@ class KabayoVS(QWidget):
         self.worker.finished.connect(self.on_speech_finished)
         self.worker.start()
 
+=======
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.word_player.play()
+
+    def play_feedback_sound(self, filename: str):
+        """Plays correct/wrong voice evaluation feedback audio."""
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            self.feedback_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.feedback_player.play()
+        else:
+            print(f"Feedback sound missing: {sound_path}")
+
+    @Slot()
+    def start_listening(self):
+        """Starts background voice recognition."""
+        if self.worker and self.worker.isRunning():
+            self.worker.stop()
+            self.worker.wait()
+
+        self.speak_btn.setEnabled(False)
+        self.feedback_label.setStyleSheet(
+            f"font-size: 24px; color: {CHOCO_BROWN}; font-family: {BODY_FONT};"
+            " font-weight: bold;"
+        )
+        self.feedback_label.setText("Nakikinig... Magsalita na!")
+
+        self.worker = OfflineVoiceWorker()
+        self.worker.status_changed.connect(self.update_status)
+        self.worker.text_recognized.connect(self.evaluate_answer)
+        self.worker.finished.connect(self.on_speech_finished)
+        self.worker.start()
+
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     @Slot(str)
     def update_status(self, text):
         """Updates status text during listening."""

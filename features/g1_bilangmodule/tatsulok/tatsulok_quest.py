@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
@@ -6,6 +11,11 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
+<<<<<<< HEAD
+=======
+from Database.queries import log_activity
+from session import AppSession
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
@@ -15,7 +25,10 @@ INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "aud
 INSTRUCTION_SOUND_FILE = "TANONG 4.mp3" 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 class BilangLvl4(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -88,9 +101,15 @@ class BilangLvl4(QWidget):
         quest_row.setSpacing(29)
         quest_row.setAlignment(Qt.AlignCenter)
 
+<<<<<<< HEAD
         self.opt_1 = ChoicesButton("3", color=SKY_BLUE)     # Correct
         self.opt_2 = ChoicesButton("4", color=HOT_PINK)     # Wrong
         self.opt_3 = ChoicesButton("5", color=LIGHT_GREEN)  # Wrong
+=======
+        self.opt_1 = ChoicesButton("tatlo", color=SKY_BLUE)     # Correct
+        self.opt_2 = ChoicesButton("apat", color=HOT_PINK)     # Wrong
+        self.opt_3 = ChoicesButton("lima", color=LIGHT_GREEN)  # Wrong
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1))
         self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2))
@@ -106,7 +125,11 @@ class BilangLvl4(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
+=======
+        self.restart_btn = QPushButton("Ulitin")
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -172,10 +195,22 @@ class BilangLvl4(QWidget):
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
 
     def showEvent(self, event):
+<<<<<<< HEAD
         """Resets state whenever screen becomes visible."""
         self.reset_game()
         super().showEvent(event)
 
+=======
+        """Resets state and plays instruction sound whenever screen becomes visible."""
+        self.reset_game()
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def handle_back(self):
         """Resets game state and routes back."""
         self.reset_game()
@@ -195,6 +230,7 @@ class BilangLvl4(QWidget):
             self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
             self.feedback_player.play()
 
+<<<<<<< HEAD
     def handle_choice(self, is_correct: bool, button: QPushButton):
         """Handles choice interaction, plays SFX, and reveals action buttons."""
         self.play_feedback_sound(is_correct)
@@ -220,6 +256,8 @@ class BilangLvl4(QWidget):
         self.stop_instruction_sound()
         super().hideEvent(event)
 
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
         if os.path.exists(sound_path):
@@ -230,4 +268,47 @@ class BilangLvl4(QWidget):
             print(f"Instruction sound not found: {sound_path}")
 
     def stop_instruction_sound(self):
+<<<<<<< HEAD
         self.instruction_player.stop()
+=======
+        self.instruction_player.stop()
+
+    def handle_choice(self, is_correct: bool, button: QPushButton):
+        """Handles choice interaction, plays SFX, and logs activity if correct."""
+        self.play_feedback_sound(is_correct)
+
+        self.opt_1.setEnabled(False)
+        self.opt_2.setEnabled(False)
+        self.opt_3.setEnabled(False)
+
+        if is_correct:
+            button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+            self.next_btn.show()
+            
+            # Save progress directly to activity_logs using unique target word tracking for tatsulok
+            self.save_activity_progress(module_name="Bilang (G1)", target_word="tatsulok", score=1.0)
+        else:
+            button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+
+    def save_activity_progress(self, module_name, target_word, score):
+        """Logs correct answer performance locally via activity_logs and queues it for sync."""
+        try:
+            student_id = AppSession.get_active_student_id()
+            if not student_id:
+                print("--> No active student selected for activity logging.")
+                return
+
+            log_activity(
+                student_id=student_id,
+                module_name=module_name,
+                score=score,
+                target_word=target_word,
+                attempts=1
+            )
+            print("--> Tatsulok activity successfully logged and queued for sync!")
+
+        except Exception as e:
+            print(f"--> Error logging activity progress: {e}")
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f

@@ -5,7 +5,12 @@ from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from themes.colors import * 
 from themes.fonts import BODY_FONT
+<<<<<<< HEAD
 from components.choices_button import ChoicesButton
+=======
+from Database.queries import log_activity
+from session import AppSession
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
@@ -15,7 +20,10 @@ INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "
 INSTRUCTION_SOUND_FILE = "Tanong 3.mp3" 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 class Kuwento3Question(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -90,6 +98,7 @@ class Kuwento3Question(QWidget):
         quest_row.setSpacing(20)
         quest_row.setAlignment(Qt.AlignCenter)
 
+<<<<<<< HEAD
         self.opt_1 = ChoicesButton("pula", color=SKY_BLUE) 
         self.opt_2 = ChoicesButton("dilaw", color=HOT_PINK) 
         self.opt_3 = ChoicesButton("bughaw", color=LIGHT_GREEN) 
@@ -101,6 +110,44 @@ class Kuwento3Question(QWidget):
         self.opt_3.clicked.connect(lambda: self.handle_choice(True, self.opt_3, "bughaw"))
         self.opt_4.clicked.connect(lambda: self.handle_choice(True, self.opt_4, "puti"))
         self.opt_5.clicked.connect(lambda: self.handle_choice(False, self.opt_5, "berde"))
+=======
+        # Helper function to create standard cleanly styled choice buttons
+        def create_choice_btn(text, bg_color):
+            btn = QPushButton(text)
+            btn.setFixedSize(160, 76)
+            btn.setCursor(Qt.PointingHandCursor)
+            btn.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: {bg_color};
+                    color: white;
+                    font-family: {BODY_FONT};
+                    font-size: 24px;
+                    font-weight: 800;
+                    border-radius: 12px;
+                    border: none;
+                }}
+                QPushButton:hover {{
+                    opacity: 0.9;
+                }}
+                QPushButton:disabled {{
+                    background-color: {bg_color};
+                    color: white;
+                }}
+            """)
+            return btn
+
+        self.opt_1 = create_choice_btn("pula", SKY_BLUE) 
+        self.opt_2 = create_choice_btn("dilaw", HOT_PINK) 
+        self.opt_3 = create_choice_btn("bughaw", LIGHT_GREEN) 
+        self.opt_4 = create_choice_btn("puti", SKY_BLUE) 
+        self.opt_5 = create_choice_btn("berde", HOT_PINK)
+
+        self.opt_1.clicked.connect(lambda: self.handle_choice(True, self.opt_1, "pula", SKY_BLUE))
+        self.opt_2.clicked.connect(lambda: self.handle_choice(True, self.opt_2, "dilaw", HOT_PINK))
+        self.opt_3.clicked.connect(lambda: self.handle_choice(True, self.opt_3, "bughaw", LIGHT_GREEN))
+        self.opt_4.clicked.connect(lambda: self.handle_choice(True, self.opt_4, "puti", SKY_BLUE))
+        self.opt_5.clicked.connect(lambda: self.handle_choice(False, self.opt_5, "berde", HOT_PINK))
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         quest_row.addWidget(self.opt_1)
         quest_row.addWidget(self.opt_2)
@@ -114,7 +161,11 @@ class Kuwento3Question(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
+=======
+        self.restart_btn = QPushButton("Ulitin")
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -176,6 +227,7 @@ class Kuwento3Question(QWidget):
         
         for opt, color in button_configs:
             opt.setEnabled(True)
+<<<<<<< HEAD
             if hasattr(opt, "reset"):
                 opt.reset()
             else:
@@ -184,6 +236,19 @@ class Kuwento3Question(QWidget):
     def showEvent(self, event):
         self.reset_game()
         super().showEvent(event)
+=======
+            opt.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: {color};
+                    color: white;
+                    font-family: {BODY_FONT};
+                    font-size: 24px;
+                    font-weight: 800;
+                    border-radius: 12px;
+                    border: none;
+                }}
+            """)
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def handle_back(self):
         self.reset_game()
@@ -200,21 +265,83 @@ class Kuwento3Question(QWidget):
             self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
             self.feedback_player.play()
 
+<<<<<<< HEAD
     def handle_choice(self, is_correct: bool, button: QPushButton, choice_key: str):
+=======
+    def handle_choice(self, is_correct: bool, button: QPushButton, choice_key: str, original_color: str):
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.play_feedback_sound(is_correct)
 
         if is_correct:
             button.setEnabled(False)
+<<<<<<< HEAD
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+=======
+            button.setStyleSheet("""
+                QPushButton {
+                    background-color: #2ECC71;
+                    color: white;
+                    font-family: """ + BODY_FONT + """;
+                    font-size: 24px;
+                    font-weight: 800;
+                    border-radius: 12px;
+                    border: none;
+                }
+                QPushButton:disabled {
+                    background-color: #2ECC71;
+                    color: white;
+                }
+            """)
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             self.correct_found.add(choice_key)
 
             if len(self.correct_found) == self.total_correct_answers:
                 self.restart_btn.show()
                 self.next_btn.show()
+<<<<<<< HEAD
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
             self.restart_btn.show()
 
+=======
+                self.save_activity_progress("Kuwento", "kuwento_q3", 1.0)
+        else:
+            button.setEnabled(False)
+            button.setStyleSheet("""
+                QPushButton {
+                    background-color: #E74C3C;
+                    color: white;
+                    font-family: """ + BODY_FONT + """;
+                    font-size: 24px;
+                    font-weight: 800;
+                    border-radius: 12px;
+                    border: none;
+                }
+                QPushButton:disabled {
+                    background-color: #E74C3C;
+                    color: white;
+                }
+            """)
+            self.restart_btn.show()
+
+    def save_activity_progress(self, module_name, target_word, score):
+        try:
+            student_id = AppSession.get_active_student_id()
+            if not student_id:
+                print("--> No active student selected for activity logging.")
+                return
+            log_activity(
+                student_id=student_id,
+                module_name=module_name,
+                score=score,
+                target_word=target_word,
+                attempts=1
+            )
+            print("--> Kuwento Q3 activity successfully logged!")
+        except Exception as e:
+            print(f"--> Error logging activity progress: {e}")
+
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def showEvent(self, event):
         self.reset_game()
         self.play_instruction_sound()

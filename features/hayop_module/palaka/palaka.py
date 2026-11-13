@@ -130,6 +130,7 @@ class LessonScreenPalaka(QWidget):
 
     def play_animal_sound(self):
         """Plays animal sound if available."""
+<<<<<<< HEAD
         sound_path = os.path.join(SOUNDS_DIR, "palaka.mp3")
 
         if not os.path.exists(sound_path):
@@ -149,6 +150,23 @@ class LessonScreenPalaka(QWidget):
         self.stop_instruction_sound()
         super().hideEvent(event)
 
+=======
+        sound_path = os.path.join(SOUNDS_DIR, "palaka_.mp3")
+        if os.path.exists(sound_path):
+            self.player.setSource(QUrl.fromLocalFile(sound_path))
+            self.player.play()
+        else:
+            print(f"Animal sound file missing: {sound_path}")
+
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
         if os.path.exists(sound_path):

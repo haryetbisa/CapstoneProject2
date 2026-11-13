@@ -80,10 +80,35 @@ def get_students_by_teacher_and_section(teacher_id: str, section: str):
 # --- ACTIVITY SCORE LOGGING ---
 
 def log_activity(student_id: str, module_name: str, score: float, target_word=None, speech_accuracy=None, attempts=1):
+
     """Saves practice module or speech recognition performance locally."""
     log_id = str(uuid.uuid4())
     with get_db_connection() as conn:
         cursor = conn.cursor()
+    """Saves practice module or speech recognition performance locally, preventing duplicate entries for the same activity/target."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Check if an entry already exists for this student, module, and target word
+        if target_word:
+            cursor.execute("""
+                SELECT log_id, score, attempts FROM activity_logs 
+                WHERE student_id = ? AND module_name = ? AND target_word = ?
+            """, (student_id, module_name, target_word))
+        else:
+            cursor.execute("""
+                SELECT log_id, score, attempts FROM activity_logs 
+                WHERE student_id = ? AND module_name = ? AND target_word IS NULL
+            """, (student_id, module_name))
+            
+        existing = cursor.fetchone()
+        
+        if existing:
+            print(f"--> Activity already recorded for student {student_id} in {module_name} ({target_word}). Skipping duplicate log.")
+            return existing['log_id']
+            
+        # Otherwise, insert new log if it hasn't been completed yet
+        log_id = str(uuid.uuid4())
         cursor.execute("""
             INSERT INTO activity_logs (log_id, student_id, module_name, target_word, score, speech_accuracy, attempts, is_synced)
             VALUES (?, ?, ?, ?, ?, ?, ?, 0)
@@ -95,6 +120,9 @@ def log_activity(student_id: str, module_name: str, score: float, target_word=No
         """, (log_id,))
         
         conn.commit()
+
+        return log_id
+    print(f"--> Successfully saved first-time score for student {student_id} | Module: {module_name}")
     return log_id
 
 def get_student_activity_logs(student_id: str):
@@ -102,6 +130,8 @@ def get_student_activity_logs(student_id: str):
     with get_db_connection() as conn:
         cursor = conn.cursor()
         # FIXED: Changed 'timestamp' to 'completed_at' to match connection.py schema
+
+
         cursor.execute("""
             SELECT module_name, target_word, score, speech_accuracy, attempts, completed_at 
             FROM activity_logs 
@@ -140,3 +170,24 @@ def clear_local_teachers():
         cursor.execute("DELETE FROM sync_queue WHERE table_name = 'teachers'")
         conn.commit()
         print("--> All local teacher accounts and sync queue entries have been cleared.")
+
+        print("--> All local teacher accounts and sync queue entries have been cleared.")
+
+def clear_local_students():
+    """Deletes all local students and clears their sync queue entries."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM students")
+        cursor.execute("DELETE FROM sync_queue WHERE table_name = 'students'")
+        conn.commit()
+        print("--> All local students and sync queue entries have been cleared.")
+
+def clear_local_activity_logs():
+    """Deletes all activity logs and clears their sync queue entries."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM activity_logs")
+        cursor.execute("DELETE FROM sync_queue WHERE table_name = 'activity_logs'")
+        conn.commit()
+        print("--> All local activity logs and sync queue entries have been cleared.")
+

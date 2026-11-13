@@ -256,7 +256,9 @@ class AnimGame(QWidget):
         self.check_btn.hide()
         self.check_btn.clicked.connect(self.check_answer)
 
+
         self.restart_btn = QPushButton(" Restart")
+        self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -324,7 +326,9 @@ class AnimGame(QWidget):
             """)
             self.next_btn.show()
 
+
             # --- AUTOMATIC SCORE LOGGING ---
+
             if not self.score_logged:
                 student_id = AppSession.get_active_student_id()
                 if student_id:

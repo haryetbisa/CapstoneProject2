@@ -2,7 +2,11 @@ import os
 from PySide6.QtCore import Qt, QPoint, QSize, QUrl
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
+<<<<<<< HEAD
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
+=======
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout, QApplication, QPushButton
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from themes.colors import *
 from themes.fonts import BODY_FONT
 from session import AppSession
@@ -15,8 +19,11 @@ FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "co
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "VS Pantig")
 INSTRUCTION_SOUND_FILE = "Game Instruction Pantig.mp3" 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 class Dot(QLabel):
     def __init__(self, dot_id: str, is_source: bool, parent_game):
         super().__init__()
@@ -74,7 +81,11 @@ class MatchingYa(QWidget):
         self.connections = []
         self.dragging_from = None
         self.temp_end_point = None
+<<<<<<< HEAD
         self.score_logged = False  # Prevent duplicate logs in a single run
+=======
+        self.score_logged = False
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         self.correct_pairs = {
             "footprint": "yapak",
@@ -112,10 +123,19 @@ class MatchingYa(QWidget):
         top_bar.addWidget(pagsasanay)
         top_bar.setSpacing(20)
 
+<<<<<<< HEAD
         rows_layout = QVBoxLayout()
         rows_layout.setSpacing(40)
         rows_layout.setContentsMargins(80, 40, 80, 20)
         main_layout.addLayout(rows_layout)
+=======
+        grid_layout = QGridLayout()
+        grid_layout.setContentsMargins(80, 20, 80, 20)
+        grid_layout.setVerticalSpacing(40)
+        grid_layout.setHorizontalSpacing(35)
+        grid_layout.setColumnStretch(2, 1)
+        main_layout.addLayout(grid_layout)
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         items = [
             ("footprint", "yapak.png", "yate", "Ya-te"),
@@ -123,9 +143,13 @@ class MatchingYa(QWidget):
             ("yacht", "yate.png", "yaya", "Ya-ya"),
         ]
 
+<<<<<<< HEAD
         for image_id, image_file, word_id, word_display in items:
             row = QHBoxLayout()
 
+=======
+        for i, (image_id, image_file, word_id, word_display) in enumerate(items):
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             image_label = QLabel()
             img_path = os.path.join(IMAGE_DIR, image_file)
             if os.path.exists(img_path):
@@ -134,6 +158,7 @@ class MatchingYa(QWidget):
                         140, 140, Qt.KeepAspectRatio, Qt.SmoothTransformation
                     )
                 )
+<<<<<<< HEAD
             row.addWidget(image_label)
 
             source_dot = Dot(image_id, is_source=True, parent_game=self)
@@ -149,12 +174,29 @@ class MatchingYa(QWidget):
             row.addWidget(word_label)
 
             rows_layout.addLayout(row)
+=======
+            grid_layout.addWidget(image_label, i, 0, Qt.AlignCenter)
+
+            source_dot = Dot(image_id, is_source=True, parent_game=self)
+            grid_layout.addWidget(source_dot, i, 1, Qt.AlignCenter)
+
+            target_dot = Dot(word_id, is_source=False, parent_game=self)
+            grid_layout.addWidget(target_dot, i, 3, Qt.AlignCenter)
+
+            word_label = QLabel(word_display)
+            word_label.setStyleSheet(f"font-size: 46px; font-family:{BODY_FONT}; font-weight: 800; color: #3A2E1F;")
+            grid_layout.addWidget(word_label, i, 4, Qt.AlignLeft)
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
+=======
+        self.restart_btn = QPushButton("Ulitin")
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -263,7 +305,10 @@ class MatchingYa(QWidget):
         if len(self.connections) == len(self.correct_pairs) and all(c[2] for c in self.connections):
             self.next_btn.show()
 
+<<<<<<< HEAD
             # --- AUTOMATIC SCORE LOGGING ---
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             if not self.score_logged:
                 student_id = AppSession.get_active_student_id()
                 if student_id:
@@ -277,7 +322,10 @@ class MatchingYa(QWidget):
                         target_word="Ya",
                         score=score_percentage
                     )
+<<<<<<< HEAD
                     print("--> Matching Ya game score successfully logged for active student!")
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
                     self.score_logged = True
 
         self.update()
@@ -309,8 +357,11 @@ class MatchingYa(QWidget):
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
+<<<<<<< HEAD
         else:
             print(f"Instruction sound not found: {sound_path}")
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def stop_instruction_sound(self):
         self.instruction_player.stop()

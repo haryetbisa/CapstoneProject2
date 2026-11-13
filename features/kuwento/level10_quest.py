@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+# features/g1_kuwentomodule/level10_quest.py
+
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
@@ -6,6 +11,11 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
+<<<<<<< HEAD
+=======
+from Database.queries import log_activity
+from session import AppSession
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
@@ -90,7 +100,10 @@ class Kuwento10Question(QWidget):
         self.opt_2 = ChoicesButton("maging\nmasipag", color=HOT_PINK)
         self.opt_3 = ChoicesButton("magandang\ngawi", color=LIGHT_GREEN)
 
+<<<<<<< HEAD
         
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         button_style = f"""
             font-size: 20px !important;
             font-weight: 800;
@@ -103,7 +116,10 @@ class Kuwento10Question(QWidget):
             btn.setFixedSize(300, 120)
             btn.setStyleSheet(btn.styleSheet() + button_style)
             
+<<<<<<< HEAD
             
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             for child in btn.findChildren(QLabel):
                 child.setWordWrap(True)
                 child.setAlignment(Qt.AlignCenter)
@@ -123,7 +139,11 @@ class Kuwento10Question(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
+=======
+        self.restart_btn = QPushButton("Ulitin")
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -217,10 +237,34 @@ class Kuwento10Question(QWidget):
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 12px; font-size: 20px; font-weight: bold;")
             self.restart_btn.show()
             self.next_btn.show()
+<<<<<<< HEAD
+=======
+            self.save_activity_progress("Kuwento", "kuwento_q10", 1.0)
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 12px; font-size: 20px; font-weight: bold;")
             self.restart_btn.show()
 
+<<<<<<< HEAD
+=======
+    def save_activity_progress(self, module_name, target_word, score):
+        try:
+            student_id = AppSession.get_active_student_id()
+            if not student_id:
+                print("--> No active student selected for activity logging.")
+                return
+            log_activity(
+                student_id=student_id,
+                module_name=module_name,
+                score=score,
+                target_word=target_word,
+                attempts=1
+            )
+            print("--> Kuwento Q10 activity successfully logged!")
+        except Exception as e:
+            print(f"--> Error logging activity progress: {e}")
+
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def showEvent(self, event):
         self.reset_game()
         self.play_instruction_sound()

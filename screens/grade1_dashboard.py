@@ -26,14 +26,23 @@ class GradeOneDashboard(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
+
         self.instruction_audio_output.setVolume(0.9)
+
+        self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
+
 
         main_layout = QVBoxLayout(self)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.setContentsMargins(60, 60, 60, 0)
+        main_layout.setContentsMargins(40, 30, 40, 20)
+        main_layout.setSpacing(20)
         
         top_layout = QHBoxLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+
+        top_layout.setSpacing(20)
+
         main_layout.addLayout(top_layout)
 
         back_btn = QPushButton()
@@ -48,12 +57,17 @@ class GradeOneDashboard(QWidget):
         title = QLabel("GRADE 1 DASHBOARD")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet(f"""
+
             font-size: 32px;
+
+            font-size: 28px;
+
             font-family: {HEADING_FONT};
             font-weight: 900;
             color: {CHOCO_BROWN};
         """)
         top_layout.addWidget(title)
+
         top_layout.setSpacing(30)
 
         # Custom Searchable Dropdown
@@ -81,10 +95,38 @@ class GradeOneDashboard(QWidget):
         top_layout.addWidget(self.roster_btn)
 
         main_layout.addSpacing(40)
+
+
+        # Custom Searchable Dropdown
+        self.student_dropdown = SearchableDropdown(placeholder="-- Pumili ng Mag-aaral --")
+        self.student_dropdown.studentSelected.connect(self.on_student_selected)
+        top_layout.addWidget(self.student_dropdown)
+
+        self.roster_btn = QPushButton("Mag-aaral (listahan)")
+        self.roster_btn.setCursor(Qt.PointingHandCursor)
+        self.roster_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {CORAL_RED};
+                color: {LIGHT};
+                font-family: {BODY_FONT};
+                font-size: 14px;
+                font-weight: 700;
+                border-radius: 6px;
+                padding: 10px 16px;
+            }}
+            QPushButton:hover {{
+                background-color: #d94338;
+            }}
+        """)
+        self.roster_btn.clicked.connect(lambda: self.router.navigate("grade1_roster"))
+        top_layout.addWidget(self.roster_btn)
+
+
         grid_layout = QGridLayout()
         grid_layout.setHorizontalSpacing(30)
+        grid_layout.setVerticalSpacing(20)
         grid_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)     
-        grid_layout.setContentsMargins(0, 50, 0, 0)
+        grid_layout.setContentsMargins(0, 10, 0, 0)
 
         # Initialize Grade 1 Cards
         self.bilang_card = CardsButton("Bilang", "Bilang.png", color = LIGHT_GREEN)
@@ -110,7 +152,12 @@ class GradeOneDashboard(QWidget):
         super().showEvent(event)
 
     def stop_instruction_sound(self):
+
         self.instruction_player.stop()
+
+        if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.instruction_player.stop()
+
 
     def hideEvent(self, event):
         self.stop_instruction_sound()
@@ -119,6 +166,12 @@ class GradeOneDashboard(QWidget):
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(BGM_DIR, BGM_FILE))
         if os.path.exists(sound_path):
+
+
+            current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+            self.instruction_audio_output.setVolume(current_vol)
+
+
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
@@ -149,9 +202,15 @@ class GradeOneDashboard(QWidget):
         """Fetches and updates progress percentages for the active student in Grade 1."""
         student_id = AppSession.get_active_student_id()
         
+
         bilang_pct = get_module_progress_percentage(student_id, "Bilang (G1)", total_module_items=10)
         salita_pct = get_module_progress_percentage(student_id, "Salita", total_module_items=10)
         kuwento_pct = get_module_progress_percentage(student_id, "Kuwento", total_module_items=5)
+
+        bilang_pct = get_module_progress_percentage(student_id, "Bilang (G1)", total_module_items=15)
+        salita_pct = get_module_progress_percentage(student_id, "Salita", total_module_items=15)
+        kuwento_pct = get_module_progress_percentage(student_id, "Kuwento", total_module_items=10)
+
 
         self.bilang_card.set_progress(bilang_pct)
         self.salita_card.set_progress(salita_pct)
@@ -170,6 +229,38 @@ class GradeOneDashboard(QWidget):
     def navigate_with_validation(self, route_name):
         student_id = AppSession.get_active_student_id()
         if not student_id:
+
             QMessageBox.warning(self, "Babala", "Mangyaring pumili muna ng mag-aaral mula sa listahan bago simulan ang laro.")
+
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Babala")
+            msg_box.setIcon(QMessageBox.Icon.Warning)
+            msg_box.setText("Mangyaring pumili muna ng mag-aaral mula sa listahan bago simulan ang laro.")
+            msg_box.setStyleSheet(f"""
+                QMessageBox {{
+                    background-color: {LIGHT};
+                    font-family: {BODY_FONT};
+                    font-size: 16px;
+                    color: {CHOCO_BROWN};
+                }}
+                QLabel {{
+                    color: {CHOCO_BROWN};
+                    font-size: 15px;
+                }}
+                QPushButton {{
+                    background-color: {CORAL_RED};
+                    color: {LIGHT};
+                    font-family: {BODY_FONT};
+                    font-size: 14px;
+                    font-weight: 700;
+                    padding: 6px 16px;
+                    border-radius: 4px;
+                }}
+                QPushButton:hover {{
+                    background-color: #d94338;
+                }}
+            """)
+            msg_box.exec()
+
             return
         self.router.navigate(route_name)

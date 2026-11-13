@@ -234,3 +234,8 @@ venv/
 *.pyo
 data/active_session.json
 data/basamatika.db
+=======
+data/basamatika.db
+secret.key
+.env
+

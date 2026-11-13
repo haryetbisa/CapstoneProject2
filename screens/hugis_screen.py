@@ -5,6 +5,7 @@ from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from themes.fonts import HEADING_FONT, BODY_FONT
 from components.cardspng import CardsPicButton
 from themes.colors import *
+from session import AppSession
 
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +24,8 @@ class HugisScreen(QWidget):
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
         self.instruction_audio_output.setVolume(0.9)
+        self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
+
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60,60,60,0)
@@ -81,9 +84,6 @@ class HugisScreen(QWidget):
         bituin_card = CardsPicButton("bituin.png", color = COBALT_BLUE)
         bituin_card.clicked.connect(lambda: self.router.navigate("star"))
 
-        rombus_card = CardsPicButton("brilyante.png", color = TERRACOTTA )
-        rombus_card.clicked.connect(lambda: self.router.navigate("diamond"))
-
         
         grid_layout.addWidget(bilog_card, 0, 0)
         grid_layout.addWidget(tatsu_card, 0, 1)
@@ -92,7 +92,7 @@ class HugisScreen(QWidget):
         grid_layout.addWidget(oblong_card, 0, 4)
         grid_layout.addWidget(parihaba_card, 1, 0)
         grid_layout.addWidget(bituin_card, 1, 1)
-        grid_layout.addWidget(rombus_card, 1, 2)
+        
 
 
         main_layout.addLayout(grid_layout)
@@ -109,6 +109,10 @@ class HugisScreen(QWidget):
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
         if os.path.exists(sound_path):
+            current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+            self.instruction_audio_output.setVolume(current_vol)
+
+
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
@@ -117,3 +121,6 @@ class HugisScreen(QWidget):
 
     def stop_instruction_sound(self):
         self.instruction_player.stop()
+        if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.instruction_player.stop()
+

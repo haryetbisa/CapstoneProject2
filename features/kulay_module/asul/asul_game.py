@@ -225,7 +225,11 @@ class DragDropBlue(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
+=======
+        self.restart_btn = QPushButton("Ulitin")
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))

@@ -17,8 +17,15 @@ os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 QApplication.setHighDpiScaleFactorRoundingPolicy(
     Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
 )
+<<<<<<< HEAD
+=======
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
+
 FONTS_DIR = os.path.join(BASE_DIR, "assets", "fonts")
 
 
@@ -56,6 +63,38 @@ def print_registered_teachers():
     except Exception as e:
         print(f"--> Error fetching registered teachers: {e}")
                 
+
+def create_desktop_shortcut():
+    """Automatically creates a desktop shortcut pointing to BasaMatika.exe on first launch."""
+    try:
+        import winshell
+        from win32com.client import Dispatch
+        
+        desktop = winshell.desktop()
+        path = os.path.join(desktop, "BasaMatika.lnk")
+        
+      
+        if not os.path.exists(path):
+            target = sys.executable  #
+            
+           
+            if getattr(sys, 'frozen', False):
+                icon_path = os.path.join(sys._MEIPASS, "app_logo.ico")
+                if not os.path.exists(icon_path):
+                    icon_path = os.path.join(os.path.dirname(sys.executable), "app_logo.ico")
+            else:
+                icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app_logo.ico")
+
+            shell = Dispatch('WScript.Shell')
+            shortcut = shell.CreateShortcut(path)
+            shortcut.TargetPath = target
+            shortcut.WorkingDirectory = os.path.dirname(target)
+            if os.path.exists(icon_path):
+                shortcut.IconLocation = icon_path
+            shortcut.Save()
+    except Exception as e:
+        print(f"--> Shortcut creation error: {e}")
+        pass
 
 #wag kalimutan mag-import, mag-eerror talaga :)))
 from router import Router
@@ -195,7 +234,10 @@ from features.hugis_module.parisukat.parisukat_vs import ParisukatVS
 from features.hugis_module.puso.puso_vs import PusoVS
 from features.hugis_module.oblong.oblong_vs import OblongVS
 from features.hugis_module.parihaba.parihaba_vs import ParihabaVS
+<<<<<<< HEAD
 from features.hugis_module.diamond.diamond_vs import RombusVS
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from features.hugis_module.star.star_vs import StarVS
 
 #VS Hayop
@@ -255,7 +297,7 @@ from features.hugis_module.parihaba.parihaba import LessonScreenParihaba
 from features.hugis_module.oblong.oblong import LessonScreenOblong
 from features.hugis_module.puso.puso import LessonScreenPuso
 from features.hugis_module.star.star import LessonScreenStar
-from features.hugis_module.diamond.diamond import LessonScreenDiamond
+
 
 #pnk lesson
 from features.pnk_module.mata.mata import LessonScreenMata
@@ -336,7 +378,10 @@ from features.hugis_module.parisukat.parisukat_game import ParisukatGame
 from features.hugis_module.puso.puso_game import PusoGame
 from features.hugis_module.oblong.oblong_game import OblongGame
 from features.hugis_module.parihaba.parihaba_game import ParihabaGame
+<<<<<<< HEAD
 from features.hugis_module.diamond.diamond_game import DiamondGame
+=======
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from features.hugis_module.star.star_game import StarGame
 
 #kuwento screen
@@ -413,6 +458,15 @@ class MainWindow(QMainWindow):
         
         self.setWindowTitle("BasaMatika")
         self.setWindowIcon(QIcon("logo.png"))
+
+        
+        logo_path = os.path.join(BASE_DIR, "assets", "icon", "app_logo.png")
+        if os.path.exists(logo_path):
+            self.setWindowIcon(QIcon(logo_path))
+        else:
+            print(f"--> Window icon not found at: {logo_path}")
+
+
         self.resize(500, 550)
         self.setStyleSheet(f"background-color: {LIGHT};")
 
@@ -546,6 +600,7 @@ class MainWindow(QMainWindow):
         self.router.register("pusovs", PusoVS(self.router))
         self.router.register("oblongvs", OblongVS(self.router))
         self.router.register("parihabavs", ParihabaVS(self.router))
+
         self.router.register("diamondvs", RombusVS(self.router))
         self.router.register("starvs", StarVS(self.router))
 
@@ -607,7 +662,6 @@ class MainWindow(QMainWindow):
         self.router.register("parihaba", LessonScreenParihaba(self.router))
         self.router.register("star", LessonScreenStar(self.router))       
         self.router.register("puso", LessonScreenPuso(self.router))
-        self.router.register("diamond", LessonScreenDiamond(self.router))
 
 #PNK LS
         self.router.register("mata", LessonScreenMata(self.router))
@@ -762,12 +816,11 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     init_local_database()
-
-   
     print_registered_teachers()
 
     app = QApplication(sys.argv)
     load_fonts()
+    create_desktop_shortcut()
 
     sync_worker = CloudSyncWorker(check_interval_seconds=15)
     sync_worker.start()
@@ -780,6 +833,9 @@ if __name__ == "__main__":
         window.router.navigate("home")
     else:
         window.router.navigate("loading_screen")
+
+    window.router.navigate("loading_screen")
+
 
     window.showMaximized()
     sys.exit(app.exec())

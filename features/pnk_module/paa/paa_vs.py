@@ -291,7 +291,11 @@ class PaaVS(QWidget):
     def handle_back(self):
         self.stop_worker()
         self.score_logged = False
+<<<<<<< HEAD
         self.router.navigate("binti")
+=======
+        self.router.navigate("paa")
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def handle_next(self):
         self.stop_worker()

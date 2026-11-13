@@ -28,14 +28,19 @@ class KinderDashboard(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
+
         self.instruction_audio_output.setVolume(0.9)
+        self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(60, 60, 60, 0)
+        main_layout.setContentsMargins(40, 30, 40, 20)
+        main_layout.setSpacing(20)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        # Top Header Bar Layout
         top_layout = QHBoxLayout()
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        top_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        top_layout.setSpacing(20)
         main_layout.addLayout(top_layout)
 
         back_btn = QPushButton()
@@ -51,6 +56,7 @@ class KinderDashboard(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet(f"""
             font-size: 32px;
+            font-size: 28px;
             font-family: {HEADING_FONT};
             font-weight: 900;
             color: {CHOCO_BROWN};
@@ -58,10 +64,12 @@ class KinderDashboard(QWidget):
         top_layout.addWidget(title)
         top_layout.setSpacing(30)
 
+
         # Custom Searchable Dropdown
         self.student_dropdown = SearchableDropdown(placeholder="-- Pumili ng Mag-aaral --")
         self.student_dropdown.studentSelected.connect(self.on_student_selected)
         top_layout.addWidget(self.student_dropdown)
+
 
         self.roster_btn = QPushButton("Mag-aaral (listahan)")
         self.roster_btn.setCursor(Qt.PointingHandCursor)
@@ -82,9 +90,32 @@ class KinderDashboard(QWidget):
         self.roster_btn.clicked.connect(lambda: self.router.navigate("kindergarten_roster"))
         top_layout.addWidget(self.roster_btn)
 
+
+        self.roster_btn = QPushButton("Mag-aaral (listahan)")
+        self.roster_btn.setCursor(Qt.PointingHandCursor)
+        self.roster_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {CORAL_RED};
+                color: {LIGHT};
+                font-family: {BODY_FONT};
+                font-size: 14px;
+                font-weight: 700;
+                border-radius: 6px;
+                padding: 10px 16px;
+            }}
+            QPushButton:hover {{
+                background-color: #d94338;
+            }}
+        """)
+        self.roster_btn.clicked.connect(lambda: self.router.navigate("kindergarten_roster"))
+        top_layout.addWidget(self.roster_btn)
+
+        # Cards Grid Layout
         grid_layout = QGridLayout()
-        grid_layout.setSpacing(50)        
-        grid_layout.setContentsMargins(0, 50, 0, 0)
+        grid_layout.setHorizontalSpacing(30)
+        grid_layout.setVerticalSpacing(20)
+        grid_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)        
+        grid_layout.setContentsMargins(0, 10, 0, 0)
 
         # Initialize Card Buttons and keep references for updating progress
         self.pantig_card = CardsButton("Pantig", "pantig.png", color = LIGHT_GREEN)
@@ -128,12 +159,19 @@ class KinderDashboard(QWidget):
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(BGM_DIR, BGM_FILE))
         if os.path.exists(sound_path):
+
+            current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
+            self.instruction_audio_output.setVolume(current_vol)
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
 
     def stop_instruction_sound(self):
+
         self.instruction_player.stop()
+        if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
+            self.instruction_player.stop()
+
 
     def load_dropdown_students(self):
         """Populates the dropdown with only Kindergarten students."""
@@ -161,7 +199,7 @@ class KinderDashboard(QWidget):
         """Fetches and updates progress percentages for the active student across all modules."""
         student_id = AppSession.get_active_student_id()
         
-        # Calculate progress for each module (adjust total_module_items as needed based on your total sub-lessons)
+# Calculate progress for each module (adjust total_module_items as needed based on your total sub-lessons)
         pantig_pct = get_module_progress_percentage(student_id, "Pantig", total_module_items=15)
         bilang_pct = get_module_progress_percentage(student_id, "Bilang", total_module_items=10)
         hugis_pct = get_module_progress_percentage(student_id, "Hugis", total_module_items=10)
@@ -170,6 +208,15 @@ class KinderDashboard(QWidget):
         hayop_pct = get_module_progress_percentage(student_id, "Hayop", total_module_items=10)
 
         # Apply to cards
+
+        pantig_pct = get_module_progress_percentage(student_id, "Pantig", total_module_items=20)
+        bilang_pct = get_module_progress_percentage(student_id, "Bilang", total_module_items=10)
+        hugis_pct = get_module_progress_percentage(student_id, "Hugis", total_module_items=7)
+        parte_pct = get_module_progress_percentage(student_id, "Parte ng Katawan", total_module_items=15)
+        kulay_pct = get_module_progress_percentage(student_id, "Kulay", total_module_items=8)
+        hayop_pct = get_module_progress_percentage(student_id, "Hayop", total_module_items=13)
+
+
         self.pantig_card.set_progress(pantig_pct)
         self.bilang_card.set_progress(bilang_pct)
         self.hugis_card.set_progress(hugis_pct)
@@ -185,12 +232,43 @@ class KinderDashboard(QWidget):
             AppSession.set_active_student_id(student_id)
             print(f"--> Active Student Set to ID: {student_id} ({full_name})")
         
+
         # Refresh progress bars immediately when a new student is picked
         self.refresh_progress_bars()
 
     def navigate_with_validation(self, route_name):
         student_id = AppSession.get_active_student_id()
         if not student_id:
+
             QMessageBox.warning(self, "Babala", "Mangyaring pumili muna ng mag-aaral mula sa listahan bago simulan ang laro.")
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Babala")
+            msg_box.setIcon(QMessageBox.Icon.Warning)
+            msg_box.setText("Mangyaring pumili muna ng mag-aaral mula sa listahan bago simulan ang laro.")
+            msg_box.setStyleSheet(f"""
+                QMessageBox {{
+                    background-color: {LIGHT};
+                    font-family: {BODY_FONT};
+                    font-size: 16px;
+                    color: {CHOCO_BROWN};
+                }}
+                QLabel {{
+                    color: {CHOCO_BROWN};
+                    font-size: 15px;
+                }}
+                QPushButton {{
+                    background-color: {CORAL_RED};
+                    color: {LIGHT};
+                    font-family: {BODY_FONT};
+                    font-size: 14px;
+                    font-weight: 700;
+                    padding: 6px 16px;
+                    border-radius: 4px;
+                }}
+                QPushButton:hover {{
+                    background-color: #d94338;
+                }}
+            """)
+            msg_box.exec()
             return
         self.router.navigate(route_name)
