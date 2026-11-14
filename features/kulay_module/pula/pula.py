@@ -1,18 +1,10 @@
 from PySide6.QtCore import Qt, QSize, QUrl
-<<<<<<< HEAD
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
-from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
-from themes.colors import *
-from themes.fonts import  BODY_FONT
-=======
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 from themes.colors import *
 from themes.fonts import BODY_FONT
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from components.lesson_card import LessonCard
 
 import os
@@ -22,10 +14,6 @@ IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", 
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "KulayLesson")
 INSTRUCTION_SOUND_FILE = "Pula.mp3"
-<<<<<<< HEAD
-
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 
 class Pula(QWidget):
@@ -88,14 +76,7 @@ class Pula(QWidget):
 
         main_layout.addStretch()
 
-<<<<<<< HEAD
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
-        self.speak_btn.setFixedHeight(40)
-=======
         self.speak_btn = QPushButton("Sunod ➔")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.speak_btn.setCursor(Qt.PointingHandCursor)
         self.speak_btn.setStyleSheet(f"""
             QPushButton {{
@@ -112,8 +93,6 @@ class Pula(QWidget):
             }}
         """)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("pula_game"))
-<<<<<<< HEAD
-=======
         
         main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignRight)
 
@@ -135,7 +114,6 @@ class Pula(QWidget):
             self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def showEvent(self, event):
         self.play_instruction_sound()

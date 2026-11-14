@@ -250,11 +250,8 @@ class TatloGame(QWidget):
         self.check_btn.hide()
         self.check_btn.clicked.connect(self.check_answer)
 
-<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
-=======
         self.restart_btn = QPushButton("Ulitin")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))

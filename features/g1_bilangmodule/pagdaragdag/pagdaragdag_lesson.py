@@ -1,17 +1,14 @@
 import os
-<<<<<<< HEAD
 from PySide6.QtCore import Qt, QUrl, QSize
 from PySide6.QtGui import QIcon
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-=======
 from PySide6.QtCore import Qt, QUrl, QSize, QTimer
 from PySide6.QtGui import QIcon
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
@@ -25,7 +22,6 @@ class LessonMath7(QWidget):
         super().__init__()
         self.router = router
 
-<<<<<<< HEAD
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setSpacing(20)
@@ -33,7 +29,6 @@ class LessonMath7(QWidget):
         # Top Navigation Bar
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(20, 20, 20, 10)
-=======
         # Setup Scroll Area to prevent overlapping and handle different resolutions
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -49,7 +44,6 @@ class LessonMath7(QWidget):
         # Top Navigation Bar
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(20, 10, 20, 10)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
 
         back_btn = QPushButton()
@@ -83,14 +77,12 @@ class LessonMath7(QWidget):
         # ---- Media player + audio output ----
         self.player = QMediaPlayer(self)
         self.audio_output = QAudioOutput(self)
-<<<<<<< HEAD
         self.player.setAudioOutput(self.audio_output)
         self.player.setVideoOutput(self.video_widget)
 
         video_path = os.path.join(VIDEO_DIR, "addition.mp4")
         if os.path.exists(video_path):
             self.player.setSource(QUrl.fromLocalFile(video_path))
-=======
         self.audio_output.setVolume(1.0)
         self.player.setAudioOutput(self.audio_output)
         self.player.setVideoOutput(self.video_widget)
@@ -103,7 +95,6 @@ class LessonMath7(QWidget):
             self.player.setSource(QUrl.fromLocalFile(video_path))
         else:
             print(f"--> ERROR: Video file not found at: {video_path}")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         # ---- Controls row ----
         controls = QHBoxLayout()
@@ -150,11 +141,9 @@ class LessonMath7(QWidget):
         controls.addWidget(self.next_btn)
         main_layout.addLayout(controls)
 
-<<<<<<< HEAD
         # ---- Keep the button label in sync with actual playback state ----
         self.player.playbackStateChanged.connect(self.update_button_label)
 
-=======
         main_layout.addStretch()
         scroll.setWidget(content)
 
@@ -168,7 +157,6 @@ class LessonMath7(QWidget):
     def handle_media_error(self, error, error_string):
         print(f"--> QMediaPlayer Error Occurred: {error} - {error_string}")
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def toggle_play_pause(self):
         if self.player.playbackState() == QMediaPlayer.PlayingState:
             self.player.pause()
@@ -182,26 +170,18 @@ class LessonMath7(QWidget):
             self.play_pause_btn.setText("▶ Play")
 
     def handle_back(self):
-<<<<<<< HEAD
         """Stops video playback and navigates back to Grade 1 Math dashboard."""
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.player.stop()
         self.router.navigate("bilang_g1")
 
     def handle_next(self):
-<<<<<<< HEAD
         """Stops video playback and navigates to Pagdaragdag Question 1."""
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.player.stop()
         self.router.navigate("pagdaragdag_q1")
 
     def showEvent(self, event):
-<<<<<<< HEAD
         """Resets video playback when screen is displayed."""
         self.player.stop()
-=======
         video_path = os.path.abspath(os.path.join(VIDEO_DIR, "addition.mp4"))
         if os.path.exists(video_path):
             if self.player.source().isEmpty():
@@ -210,5 +190,4 @@ class LessonMath7(QWidget):
             self.player.play()
             QTimer.singleShot(150, self.player.pause)
             
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         super().showEvent(event)

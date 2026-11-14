@@ -1,9 +1,5 @@
 from PySide6.QtCore import Qt, QSize, QUrl
-<<<<<<< HEAD
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
-=======
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
@@ -15,11 +11,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
-<<<<<<< HEAD
-ICONS_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "icons")
-=======
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "HugisLesson")
 INSTRUCTION_SOUND_FILE = "Parihaba.mp3"
 
@@ -35,13 +27,6 @@ class LessonScreenParihaba(QWidget):
         self.instruction_audio_output.setVolume(0.9)
 
         main_layout = QVBoxLayout(self)
-<<<<<<< HEAD
-        main_layout.setContentsMargins(60,60,60,0)
-        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        top_layout = QHBoxLayout()
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
-=======
         main_layout.setContentsMargins(50, 40, 50, 40)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         main_layout.setSpacing(20)
@@ -49,7 +34,6 @@ class LessonScreenParihaba(QWidget):
         top_layout = QHBoxLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
         top_layout.setSpacing(25)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         back_btn = QPushButton()
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -85,55 +69,12 @@ class LessonScreenParihaba(QWidget):
         content_layout.addWidget(self.content_image)
 
         card = LessonCard(
-<<<<<<< HEAD
-        title="Aralin 6 : PARIHABA",
-        body_text="Ang hugis parihaba ay may apat na sulok na mas mahaba sa parisukat. Maihahalintulad ito sa mahabang tabla at bintana.")
-        content_layout.addWidget(card)
-
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
-        self.speak_btn.setFixedHeight(40)
-        self.speak_btn.setCursor(Qt.PointingHandCursor)
-        self.speak_btn.setStyleSheet(f"""
-            background-color: {BRIGHT_YELLOW};
-            color: {CHOCO_BROWN};
-            font-size: 22px;
-            font-weight: 800;
-            border-radius: 6px;
-            font-family: {BODY_FONT};
-        """)
-        self.speak_btn.setFixedSize(240, 70)
-        main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("parihabavs"))
-
-    def showEvent(self, event):
-        self.play_instruction_sound()
-        super().showEvent(event)
-
-    def hideEvent(self, event):
-        self.stop_instruction_sound()
-        super().hideEvent(event)
-
-    def play_instruction_sound(self):
-        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
-        if os.path.exists(sound_path):
-            self.instruction_player.stop()
-            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
-            self.instruction_player.play()
-        else:
-            print(f"Instruction sound not found: {sound_path}")
-
-    def stop_instruction_sound(self):
-        self.instruction_player.stop()
-=======
             title="Aralin 6 : PARIHABA",
             body_text="Ang hugis parihaba ay may apat na sulok na mas mahaba sa parisukat. Maihahalintulad ito sa mahabang tabla at bintana."
         )
         content_layout.addWidget(card)
 
         main_layout.addStretch()
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         self.speak_btn = QPushButton("Sunod ➔")
         self.speak_btn.setCursor(Qt.PointingHandCursor)

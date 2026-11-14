@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 import os
 from PySide6.QtCore import Qt, QMimeData, QSize, QUrl
 from PySide6.QtGui import QDrag, QPixmap, QIcon
@@ -10,11 +7,8 @@ from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QFrame
 from themes.fonts import BODY_FONT
 from themes.colors import *
-<<<<<<< HEAD
-=======
 from Database.queries import log_activity
 from session import AppSession
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "salita")
@@ -246,11 +240,7 @@ class Salita12Game(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-<<<<<<< HEAD
-        self.restart_btn = QPushButton(" Restart")
-=======
         self.restart_btn = QPushButton("Ulitin")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -328,11 +318,6 @@ class Salita12Game(QWidget):
 
             if all_correct:
                 self.next_btn.show()
-<<<<<<< HEAD
-            else:
-                self.next_btn.hide()
-
-=======
                 self.save_activity_progress("Salita", "salita_q12", 1.0)
             else:
                 self.next_btn.hide()
@@ -354,7 +339,6 @@ class Salita12Game(QWidget):
         except Exception as e:
             print(f"--> Error logging activity progress: {e}")
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def reset_game(self):
         self.blank1.reset_style()
         self.blank2.reset_style()
@@ -365,13 +349,6 @@ class Salita12Game(QWidget):
         self.restart_btn.hide()
         self.next_btn.hide()
 
-<<<<<<< HEAD
-    def showEvent(self, event):
-        self.reset_game()
-        super().showEvent(event)
-
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def handle_back(self):
         self.reset_game()
         self.router.navigate("salita")
@@ -382,10 +359,6 @@ class Salita12Game(QWidget):
 
     def showEvent(self, event):
         self.reset_game()
-<<<<<<< HEAD
-        self.play_instruction_sound()
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         super().showEvent(event)
 
     def hideEvent(self, event):

@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
@@ -11,11 +8,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from themes.colors import *
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
-<<<<<<< HEAD
-=======
 from Database.queries import log_activity
 from session import AppSession
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "bilang_g1")
@@ -176,11 +170,8 @@ class BilangLvl9(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
-=======
         self.restart_btn = QPushButton("Ulitin")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -246,13 +237,10 @@ class BilangLvl9(QWidget):
             else:
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
 
-<<<<<<< HEAD
     def showEvent(self, event):
         self.reset_game()
         super().showEvent(event)
 
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def handle_back(self):
         self.reset_game()
         self.router.navigate("bilang_g1")
@@ -279,18 +267,13 @@ class BilangLvl9(QWidget):
             self.opt_2.setEnabled(False)
             self.opt_3.setEnabled(False)
             self.next_btn.show()
-<<<<<<< HEAD
-=======
             
             # Log progress under Bilang (G1) matching dashboard
             self.save_activity_progress("Bilang (G1)", "pagdaragdag_q1", 1.0)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
             self.next_btn.hide()
 
-<<<<<<< HEAD
-=======
     def save_activity_progress(self, module_name, target_word, score):
         try:
             student_id = AppSession.get_active_student_id()
@@ -308,7 +291,6 @@ class BilangLvl9(QWidget):
         except Exception as e:
             print(f"--> Error logging activity progress: {e}")
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def showEvent(self, event):
         self.reset_game()
         self.play_instruction_sound()

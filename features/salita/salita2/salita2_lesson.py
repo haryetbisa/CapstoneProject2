@@ -34,11 +34,7 @@ class Salita2(QWidget):
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-<<<<<<< HEAD
-        back_btn.clicked.connect(lambda: self.router.navigate("grade1_dash"))
-=======
         back_btn.clicked.connect(lambda: self.router.navigate("salita"))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         pagsasanay = QLabel("Aralin 2")
         pagsasanay.setStyleSheet(f"""

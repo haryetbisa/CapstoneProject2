@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 import os
 from PySide6.QtCore import Qt, QMimeData, QSize, QUrl
 from PySide6.QtGui import QDrag, QPixmap, QIcon
@@ -9,11 +6,8 @@ from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QFrame
 from themes.fonts import BODY_FONT
 from themes.colors import *
-<<<<<<< HEAD
-=======
 from Database.queries import log_activity
 from session import AppSession
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "bilang_g1")
@@ -51,10 +45,7 @@ class DraggableWord(QLabel):
         drag.setPixmap(self.pixmap())
         drag.setHotSpot(event.pos())
 
-<<<<<<< HEAD
         # Executing move action and hiding from bank if successful
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         result = drag.exec(Qt.MoveAction)
         if result == Qt.MoveAction:
             self.hide()
@@ -98,10 +89,7 @@ class BlankDropTarget(QLabel):
             event.acceptProposedAction()
 
     def dropEvent(self, event):
-<<<<<<< HEAD
         # Return existing picture to the bank if overwriting
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         if self.placed_word_id:
             self.game.return_picture_to_bank(self.placed_word_id)
 
@@ -123,20 +111,14 @@ class BlankDropTarget(QLabel):
                 background-color: {PASTEL_YELLOW};
             """)
 
-<<<<<<< HEAD
             # Signal move action to caller
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             event.setDropAction(Qt.MoveAction)
             event.accept()
 
             self.game.check_completion()
 
     def mousePressEvent(self, event):
-<<<<<<< HEAD
         # Click filled blank to return picture to bank
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         if event.button() == Qt.LeftButton and self.placed_word_id:
             self.game.return_picture_to_bank(self.placed_word_id)
             self.reset_style()
@@ -148,10 +130,7 @@ class BilangLvl5(QWidget):
         super().__init__()
         self.router = router
 
-<<<<<<< HEAD
         # Correct skip-counting sequence (2, 4, 6, 8, 10)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.correct_answers = {
             "blank1": "apat",
             "blank2": "anim",
@@ -160,10 +139,7 @@ class BilangLvl5(QWidget):
 
         self.picture_widgets = {}
 
-<<<<<<< HEAD
         # Audio Setup
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
@@ -182,10 +158,7 @@ class BilangLvl5(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(25)
 
-<<<<<<< HEAD
         # Top Bar Navigation
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         top_bar = QHBoxLayout()
         top_bar.setContentsMargins(60, 50, 0, 20)
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
@@ -207,10 +180,7 @@ class BilangLvl5(QWidget):
         top_bar.addStretch()
         main_layout.addLayout(top_bar)
 
-<<<<<<< HEAD
         # Picture Bank Frame
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         pic_bank = QFrame()
         pic_bank.setMinimumWidth(800)
         pic_bank.setStyleSheet("border: 1px solid #D9CBB0; border-radius: 8px; background-color: #FFFDF5;")
@@ -235,10 +205,7 @@ class BilangLvl5(QWidget):
         pic_bank_row.addStretch(1)
         main_layout.addWidget(pic_bank)
 
-<<<<<<< HEAD
         # Exercise Image Sequence Layout (2, blank1, blank2, 8, blank3)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         image_layout = QHBoxLayout()
         image_layout.setSpacing(15)
         image_layout.setAlignment(Qt.AlignCenter)
@@ -276,19 +243,13 @@ class BilangLvl5(QWidget):
 
         main_layout.addLayout(image_layout)
 
-<<<<<<< HEAD
         # Action Buttons Layout (Restart + Next)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
-=======
         self.restart_btn = QPushButton("Ulitin")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -370,15 +331,13 @@ class BilangLvl5(QWidget):
 
             if all_correct:
                 self.next_btn.show()
-<<<<<<< HEAD
             else:
                 self.next_btn.hide()
 
-=======
                 # Updated module name to match dashboard expectations
                 self.save_activity_progress("Bilang (G1)", "dalawahan_q1", 1.0)
-            else:
-                self.next_btn.hide()
+        else:
+                    self.next_btn.hide()
 
     def save_activity_progress(self, module_name, target_word, score):
         try:
@@ -397,7 +356,6 @@ class BilangLvl5(QWidget):
         except Exception as e:
             print(f"--> Error logging activity progress: {e}")
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def reset_game(self):
         self.blank1.reset_style()
         self.blank2.reset_style()
@@ -409,13 +367,10 @@ class BilangLvl5(QWidget):
         self.restart_btn.hide()
         self.next_btn.hide()
 
-<<<<<<< HEAD
     def showEvent(self, event):
         self.reset_game()
         super().showEvent(event)
 
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def handle_back(self):
         self.reset_game()
         self.router.navigate("bilang_g1")
@@ -424,10 +379,7 @@ class BilangLvl5(QWidget):
         self.reset_game()
         self.router.navigate("dalawahan_quest2")
 
-<<<<<<< HEAD
 
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def showEvent(self, event):
         self.reset_game()
         self.play_instruction_sound()

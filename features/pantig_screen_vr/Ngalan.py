@@ -13,10 +13,7 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
-<<<<<<< HEAD
-=======
 from session import AppSession
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -42,18 +39,10 @@ class PantigNgalan(QWidget):
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-<<<<<<< HEAD
-        self.feedback_audio_output.setVolume(1.0)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
-<<<<<<< HEAD
-        self.word_audio_output.setVolume(1.0)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -87,11 +76,7 @@ class PantigNgalan(QWidget):
         top_bar.addWidget(pagsasanay)
         top_bar.setSpacing(20)
 
-<<<<<<< HEAD
-        # Main Graphic (kahoy.png)
-=======
         # Main Graphic
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         image = QLabel()
         image_path = os.path.join(IMAGE_DIR, "ngalan.png")
         if os.path.exists(image_path):
@@ -196,16 +181,6 @@ class PantigNgalan(QWidget):
         lower_layout.addWidget(self.next_btn)
         main_layout.addLayout(lower_layout)
 
-<<<<<<< HEAD
-    def play_word_sound(self):
-        """Plays the target word pronunciation sound."""
-        sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"NGALAN.mp3"
-        )
-        if not os.path.exists(sound_path):
-            sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"NGALAN.wav"
-=======
     def showEvent(self, event):
         super().showEvent(event)
         music_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
@@ -221,7 +196,6 @@ class PantigNgalan(QWidget):
         if not os.path.exists(sound_path):
             sound_path = os.path.join(
                 PRONUNCIATION_SOUNDS_DIR, "NGALAN.wav"
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             )
 
         if os.path.exists(sound_path):
@@ -268,22 +242,12 @@ class PantigNgalan(QWidget):
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
-<<<<<<< HEAD
-        """Evaluates recognized text against target word using exact word matching."""
-        spoken_clean = spoken_text.lower().replace("-", " ").strip()
-        target_clean = self.target_word.lower().strip()
-
-        spoken_words = spoken_clean.split()
-
-        if target_clean in spoken_words:
-=======
         """Evaluates recognized text against target word with flexible hyphen handling."""
         spoken_clean = spoken_text.lower().replace("-", "").strip()
         target_clean = self.target_word.lower().strip()
 
         # Check if target word is inside the cleaned spoken text
         if target_clean in spoken_clean or any(target_clean in w for w in spoken_clean.split()):
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             self.feedback_label.setText("✅ MAGALING! TAMA!")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"

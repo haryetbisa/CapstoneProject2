@@ -252,11 +252,7 @@ class AsoGame(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-<<<<<<< HEAD
-        self.restart_btn = QPushButton(" Restart")
-=======
         self.restart_btn = QPushButton("Ulitin")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -384,11 +380,7 @@ class AsoGame(QWidget):
 
     def handle_back(self):
         self.reset_game()
-<<<<<<< HEAD
-        self.router.navigate("aso_lesson")
-=======
         self.router.navigate("asovs")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def handle_next(self):
         self.reset_game()

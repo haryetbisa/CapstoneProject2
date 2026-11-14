@@ -193,11 +193,11 @@ class HomeScreen(QWidget):
         main_layout.addLayout(lower_part)
 
     def showEvent(self, event):
-
-        """Refreshes the teacher greeting every time the home screen becomes active."""
         super().showEvent(event)
         self.refresh_teacher_greeting()
+        self.play_dashboard_bgm()
 
+    """Refreshes the teacher greeting every time the home screen becomes active."""
     def refresh_teacher_greeting(self):
         teacher_name = self.get_current_teacher_name()
         if hasattr(self, 'hello_text'):
@@ -217,11 +217,6 @@ class HomeScreen(QWidget):
         except Exception as e:
             print(f"--> Error fetching teacher name: {e}")
 
-
-        """Refreshes greeting and starts dashboard background music when active."""
-        super().showEvent(event)
-        self.refresh_teacher_greeting()
-        self.play_dashboard_bgm()
 
     def hideEvent(self, event):
         """Stops background music when leaving the dashboard screen."""

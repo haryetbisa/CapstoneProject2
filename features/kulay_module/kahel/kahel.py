@@ -1,14 +1,8 @@
 from PySide6.QtCore import Qt, QSize, QUrl
-<<<<<<< HEAD
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
-from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
-=======
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from themes.colors import *
 from themes.fonts import BODY_FONT
 from components.lesson_card import LessonCard
@@ -75,26 +69,14 @@ class Kahel(QWidget):
         content_layout.addWidget(self.content_image)
 
         card = LessonCard(
-<<<<<<< HEAD
-        title="Aralin 2 : KAHEL",
-        body_text="Ang kulay Kahel ay pinaghalong pula at dilaw na kulay. Madalas itong iuugnay sa init ng araw at sa mga masusustansyang prutas at gulay katulad ng papaya, carrots, at orange. Makikita rin ito sa iba't-ibang bagay at hayop tulad ng bola at tigre. ")
-=======
             title="Aralin 2 : KAHEL",
             body_text="Ang kulay Kahel ay pinaghalong pula at dilaw na kulay. Madalas itong iuugnay sa init ng araw at sa mga masusustansyang prutas at gulay katulad ng papaya, carrots, at orange. Makikita rin ito sa iba't-ibang bagay at hayop tulad ng bola at tigre."
         )
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         content_layout.addWidget(card)
 
         main_layout.addStretch()
 
-<<<<<<< HEAD
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
-        self.speak_btn.setFixedHeight(40)
-=======
         self.speak_btn = QPushButton("Sunod ➔")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.speak_btn.setCursor(Qt.PointingHandCursor)
         self.speak_btn.setStyleSheet(f"""
             QPushButton {{
@@ -111,8 +93,6 @@ class Kahel(QWidget):
             }}
         """)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("kahel_game"))
-<<<<<<< HEAD
-=======
         
         main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignRight)
 
@@ -134,7 +114,6 @@ class Kahel(QWidget):
             self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def showEvent(self, event):
         self.play_instruction_sound()

@@ -23,8 +23,8 @@ from PySide6.QtWidgets import (
     QFrame,
     QMessageBox,
     QScrollArea,
+    QApplication
 )
-from PySide6.QtGui import QColor, QPalette, QIcon, QApplication
 from PySide6.QtGui import QColor, QPalette, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
@@ -418,9 +418,9 @@ class Settings(QWidget):
             main_win.showMaximized()
         elif display_mode_str == "Windowed":
 
-        elif display_mode_str == "Fullscreen":
-            main_win.setWindowFlags(Qt.WindowType.Window)
-            main_win.showFullScreen()
+            if display_mode_str == "Fullscreen":
+                main_win.setWindowFlags(Qt.WindowType.Window)
+                main_win.showFullScreen()
         elif display_mode_str == "Borderless":
             main_win.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint)
             main_win.showMaximized()
@@ -459,7 +459,7 @@ class Settings(QWidget):
         # Update teacher name in the database and session
         teacher_id = AppSession.get_teacher_id()
         if teacher_id and new_name:
-        if not new_name:
+         if not new_name:
             self.show_info_dialog("Pansinin", "Hindi maaaring maging bakante ang pangalan.")
             return
 

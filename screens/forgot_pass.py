@@ -4,7 +4,6 @@ import os
 import re
 import sys
 import random
-import load_dotenv
 import time
 import smtplib
 import bcrypt

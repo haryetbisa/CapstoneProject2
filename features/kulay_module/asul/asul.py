@@ -1,18 +1,10 @@
 from PySide6.QtCore import Qt, QSize, QUrl
-<<<<<<< HEAD
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
-from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
-from themes.colors import *
-from themes.fonts import  BODY_FONT
-=======
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 from themes.colors import *
 from themes.fonts import BODY_FONT
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from components.lesson_card import LessonCard
 
 import os
@@ -71,20 +63,10 @@ class Asul(QWidget):
         content_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addLayout(content_layout)
 
-<<<<<<< HEAD
-        #yung image
-        content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "asul.png")).scaled(
-                500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(content_image)
-=======
         self.content_image = QLabel()
         self.image_path = os.path.join(IMAGE_DIR, "asul.png")
         self.content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         content_layout.addWidget(self.content_image)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         card = LessonCard(
             title="Aralin 5 : ASUL",
@@ -94,15 +76,7 @@ class Asul(QWidget):
 
         main_layout.addStretch()
 
-<<<<<<< HEAD
-
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
-        self.speak_btn.setFixedHeight(40)
-=======
         self.speak_btn = QPushButton("Sunod ➔")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.speak_btn.setCursor(Qt.PointingHandCursor)
         self.speak_btn.setStyleSheet(f"""
             QPushButton {{
@@ -118,11 +92,6 @@ class Asul(QWidget):
                 background-color: #F1C40F;
             }}
         """)
-<<<<<<< HEAD
-        self.speak_btn.setFixedSize(240, 70)
-        lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("asul_game"))
-=======
         self.speak_btn.clicked.connect(lambda: self.router.navigate("asul_game"))
         
         main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignRight)
@@ -145,7 +114,6 @@ class Asul(QWidget):
             self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def showEvent(self, event):
         self.play_instruction_sound()

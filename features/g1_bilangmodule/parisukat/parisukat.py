@@ -1,5 +1,4 @@
 from PySide6.QtCore import Qt, QSize
-<<<<<<< HEAD
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
 
@@ -15,10 +14,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "icons")
 
-
-class LessonMath2(QWidget):
-  def __init__(self, router):
-=======
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 
@@ -35,12 +30,10 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 class LessonMath2(QWidget):
     def __init__(self, router):
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         super().__init__()
         self.router = router
 
         main_layout = QVBoxLayout(self)
-<<<<<<< HEAD
         main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -58,8 +51,7 @@ class LessonMath2(QWidget):
    
         pagsasanay = QLabel("Aralin: Parisukat")
         pagsasanay.setStyleSheet(f"""
-            font-size: 30px;
-=======
+            font-size: 30px; """)
         main_layout.setContentsMargins(50, 40, 50, 40)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         main_layout.setSpacing(20)
@@ -81,13 +73,11 @@ class LessonMath2(QWidget):
         pagsasanay = QLabel("Aralin: Parisukat")
         pagsasanay.setStyleSheet(f"""
             font-size: 32px;
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             font-family: {BODY_FONT};
             font-weight: 600;
             color: {CHOCO_BROWN};               
         """)
 
-<<<<<<< HEAD
         
         top_layout.addWidget(back_btn)
         top_layout.addWidget(pagsasanay)
@@ -130,10 +120,6 @@ class LessonMath2(QWidget):
         main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
         self.speak_btn.clicked.connect(lambda: self.router.navigate("parisukat_quest"))
 
-
-
-
-=======
         top_layout.addWidget(back_btn)
         top_layout.addWidget(pagsasanay)
         main_layout.addLayout(top_layout)
@@ -195,4 +181,3 @@ class LessonMath2(QWidget):
             self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f

@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 # features/g1_bilangmodule/pagdaragdag/pagdaragdag_q3.py
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
@@ -11,11 +8,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushBu
 from themes.colors import *
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
-<<<<<<< HEAD
-=======
 from Database.queries import log_activity
 from session import AppSession
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "bilang_g1")
@@ -30,10 +24,7 @@ class BilangLvl11(QWidget):
         super().__init__()
         self.router = router
 
-<<<<<<< HEAD
         # Audio Player Setup for SFX
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
@@ -50,10 +41,7 @@ class BilangLvl11(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
 
-<<<<<<< HEAD
         # Top Navigation Bar
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(20, 20, 20, 10)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
@@ -81,10 +69,7 @@ class BilangLvl11(QWidget):
         top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-<<<<<<< HEAD
         # Word Problem Statement
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         word_prob = QLabel("<b>Piliin ang tamang matematikal na pangungusap:</b><br>"
                            "Bumili si Gabbie ng isang chips at halo-halo sa palengke na may katumbas na <b>limampung piso</b>.<br>"
                            "Nagkakahalaga ang chips at halo-halo ng: ")
@@ -93,19 +78,13 @@ class BilangLvl11(QWidget):
         word_prob.setStyleSheet(f"font-size: 28px; font-weight: 500; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(word_prob)
 
-<<<<<<< HEAD
         # Horizontal container for image graphics
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         graphics = QHBoxLayout()
         graphics.setAlignment(Qt.AlignCenter)
         graphics.setSpacing(80)
         main_layout.addLayout(graphics)
 
-<<<<<<< HEAD
         # Chips Container (20 Piso)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         sentence1 = QHBoxLayout()
         sentence1.setSpacing(10)
         graphics.addLayout(sentence1)
@@ -137,10 +116,7 @@ class BilangLvl11(QWidget):
         bente1.setAlignment(Qt.AlignCenter)
         sentence1.addWidget(bente1)
 
-<<<<<<< HEAD
         # Halo-halo Container (20 + 10 = 30 Piso)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         sentence2 = QHBoxLayout()
         sentence2.setSpacing(10)
         graphics.addLayout(sentence2)
@@ -185,23 +161,17 @@ class BilangLvl11(QWidget):
 
         main_layout.addStretch()
 
-<<<<<<< HEAD
         # Choices Layout
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         quest_row = QHBoxLayout()
         quest_row.setSpacing(20)
         quest_row.setAlignment(Qt.AlignCenter)
 
-<<<<<<< HEAD
         self.opt_1 = ChoicesButton("30 - 20 = 10", color=CORNFLOWER_BLUE)  # Wrong
         self.opt_2 = ChoicesButton("20 + 30 = 50", color=MEDIUM_PURPLE)     # Correct (20 + 30 = 50)
         self.opt_3 = ChoicesButton("50 + 20 = 70", color=HONEY_YELLOW)     # Wrong
-=======
         self.opt_1 = ChoicesButton("30 - 20 = 10", color=CORNFLOWER_BLUE)
         self.opt_2 = ChoicesButton("20 + 30 = 50", color=MEDIUM_PURPLE)
         self.opt_3 = ChoicesButton("50 + 20 = 70", color=HONEY_YELLOW)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(False, self.opt_1))
         self.opt_2.clicked.connect(lambda: self.handle_choice(True, self.opt_2))
@@ -212,19 +182,13 @@ class BilangLvl11(QWidget):
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
-<<<<<<< HEAD
         # Action Buttons Layout (Restart + Next)
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-<<<<<<< HEAD
         self.restart_btn = QPushButton(" Restart")
-=======
         self.restart_btn = QPushButton("Ulitin")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -272,10 +236,7 @@ class BilangLvl11(QWidget):
         main_layout.addStretch()
 
     def reset_game(self):
-<<<<<<< HEAD
         """Resets choice states and hides action buttons."""
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.restart_btn.hide()
         self.next_btn.hide()
 
@@ -292,13 +253,10 @@ class BilangLvl11(QWidget):
             else:
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
 
-<<<<<<< HEAD
     def showEvent(self, event):
         self.reset_game()
         super().showEvent(event)
 
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def handle_back(self):
         self.reset_game()
         self.router.navigate("bilang_g1")
@@ -324,21 +282,16 @@ class BilangLvl11(QWidget):
             self.opt_2.setEnabled(False)
             self.opt_3.setEnabled(False)
             self.next_btn.show()
-<<<<<<< HEAD
-=======
             
             self.save_activity_progress("Bilang (G1)", "pagdaragdag_q3", 1.0)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
             self.next_btn.hide()
 
-<<<<<<< HEAD
     def showEvent(self, event):
         self.reset_game()
         self.play_instruction_sound()
         super().showEvent(event)
-=======
     def save_activity_progress(self, module_name, target_word, score):
         try:
             student_id = AppSession.get_active_student_id()
@@ -360,7 +313,6 @@ class BilangLvl11(QWidget):
         super().showEvent(event)
         self.reset_game()
         self.play_instruction_sound()
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def hideEvent(self, event):
         self.stop_instruction_sound()
@@ -372,10 +324,7 @@ class BilangLvl11(QWidget):
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
-<<<<<<< HEAD
-=======
             print(f"--> Playing instruction audio: {sound_path}")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         else:
             print(f"Instruction sound not found: {sound_path}")
 

@@ -23,42 +23,28 @@ class Kuwento8(QWidget):
         self.word_player.setAudioOutput(self.word_audio_output)
         self.word_audio_output.setVolume(1.0)
 
-<<<<<<< HEAD
-=======
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QScrollArea.NoFrame)
         scroll.setStyleSheet("background: transparent; border: none;")
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         content = QWidget()
         main_layout = QVBoxLayout(content)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
 
-<<<<<<< HEAD
-        #top layout| back buttonnnn
-        top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(60, 50, 0, 50)
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
-=======
         # Top layout | back button aligned cleanly to the top left like Kuwento 9
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(40, 30, 0, 10)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         back_btn = QPushButton()
         back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
         back_btn.setFlat(True)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
-<<<<<<< HEAD
-        back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
-=======
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         back_btn.clicked.connect(lambda: self.router.navigate("kuwento"))
 
         pagsasanay = QLabel("Kuwento 8")
@@ -90,22 +76,6 @@ class Kuwento8(QWidget):
         image.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(image)
 
-<<<<<<< HEAD
-        # Speaker icon + text row
-        text_row = QHBoxLayout()
-        text_row.setSpacing(15)
-        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
-
-        self.speaker_btn = QPushButton()
-        self.speaker_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "audio_icon.png")))
-        self.speaker_btn.setIconSize(QSize(24, 24))
-        self.speaker_btn.setFlat(True)
-        self.speaker_btn.setCursor(Qt.PointingHandCursor)
-        self.speaker_btn.clicked.connect(self.play_word_sound)
-        text_row.addWidget(self.speaker_btn, alignment=Qt.AlignmentFlag.AlignTop)
-
-        
-=======
         # Speaker icon + text row formatted like Kuwento 9
         text_container_layout = QHBoxLayout()
         text_container_layout.setAlignment(Qt.AlignCenter)
@@ -123,31 +93,12 @@ class Kuwento8(QWidget):
         
         text_row.addWidget(self.speaker_btn, alignment=Qt.AlignmentFlag.AlignVCenter)
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         story_text = QLabel(
             "Si Mang Dada ay masipag na magsasaka.\n"
             "Tindi ng sikat ng araw hindi alintana sa kanya.\n"
             "Bawat butil ng palay ay itinanim sa matinding pagod at pawis.\n"
             "Ito ay pagkain ng mayaman at mahirap."
         )
-<<<<<<< HEAD
-        story_text.setAlignment(Qt.AlignLeft)
-        story_text.setWordWrap(True)   
-        story_text.setStyleSheet(f"""
-            font-size: 28px;
-            font-weight: 400;
-            font-family: {BODY_FONT};
-            color: {CHOCO_BROWN};
-        """)
-        text_row.addWidget(story_text)
-        main_layout.addLayout(text_row)
-  
-
-        lower_layout = QHBoxLayout()
-        lower_layout.setSpacing(200)
-        lower_layout.setContentsMargins(70, 20, 70, 30)
-        main_layout.addLayout(lower_layout)
-=======
         story_text.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         story_text.setWordWrap(True)   
         story_text.setStyleSheet(f"""
@@ -168,30 +119,10 @@ class Kuwento8(QWidget):
         lower_layout = QHBoxLayout()
         lower_layout.setContentsMargins(70, 10, 70, 30)
         lower_layout.setAlignment(Qt.AlignRight)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         
         self.next_btn = QPushButton("Sunod")
         self.next_btn.setCursor(Qt.PointingHandCursor)
         self.next_btn.setStyleSheet(f"""
-<<<<<<< HEAD
-                    background-color: {BRIGHT_YELLOW};
-                    color: {CHOCO_BROWN};
-                    font-size: 22px;
-                    font-weight: 700;
-                    border-radius: 6px;
-                    font-family: {BODY_FONT};
-                """)
-        self.next_btn.setFixedSize(180, 50)
-        lower_layout.addWidget(self.next_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.next_btn.clicked.connect(lambda: self.router.navigate("quest8"))
-        
-        main_layout.addStretch()
-
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QScrollArea.NoFrame)
-        scroll.setStyleSheet("background: transparent;")
-=======
             QPushButton {{
                 background-color: {BRIGHT_YELLOW};
                 color: {CHOCO_BROWN};
@@ -210,7 +141,6 @@ class Kuwento8(QWidget):
         
         main_layout.addLayout(lower_layout)
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         scroll.setWidget(content)
 
         outer = QVBoxLayout(self)
@@ -230,8 +160,4 @@ class Kuwento8(QWidget):
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))
-<<<<<<< HEAD
             self.word_player.play()
-=======
-            self.word_player.play()
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f

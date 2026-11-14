@@ -1,5 +1,4 @@
 from PySide6.QtCore import Qt, QSize
-<<<<<<< HEAD
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
 
@@ -15,10 +14,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "icons")
 
-
-class LessonMath4(QWidget):
-  def __init__(self, router):
-=======
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 
@@ -35,12 +30,10 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 class LessonMath4(QWidget):
     def __init__(self, router):
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         super().__init__()
         self.router = router
 
         main_layout = QVBoxLayout(self)
-<<<<<<< HEAD
         main_layout.setContentsMargins(60,60,60,0)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -58,8 +51,7 @@ class LessonMath4(QWidget):
    
         pagsasanay = QLabel("Aralin: Tatsulok")
         pagsasanay.setStyleSheet(f"""
-            font-size: 30px;
-=======
+            font-size: 30px;""")
         main_layout.setContentsMargins(50, 40, 50, 40)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         main_layout.setSpacing(20)
@@ -81,59 +73,11 @@ class LessonMath4(QWidget):
         pagsasanay = QLabel("Aralin: Tatsulok")
         pagsasanay.setStyleSheet(f"""
             font-size: 32px;
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             font-family: {BODY_FONT};
             font-weight: 600;
             color: {CHOCO_BROWN};               
         """)
 
-<<<<<<< HEAD
-        
-        top_layout.addWidget(back_btn)
-        top_layout.addWidget(pagsasanay)
-        top_layout.setSpacing(50)
-        main_layout.addLayout(top_layout)
-
-
-
-        content_layout = QHBoxLayout()
-        content_layout.setContentsMargins(70, 20, 70, 30)
-        content_layout.setSpacing(280)
-        main_layout.addLayout(content_layout)
-
-        #yung image
-        content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "tatsulok.png")).scaled(
-                450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            ))
-        content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(content_image)
-
-        #lesson explanation
-        card = LessonCard(
-        title="Aralin 3 : TATSULOK",
-        body_text="Ang hugis tatsulok ay may tatlong (3) gilid at tatlong (3) sulok.")
-        content_layout.addWidget(card)
-
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setFixedHeight(40)
-        self.speak_btn.setCursor(Qt.PointingHandCursor)
-        self.speak_btn.setStyleSheet(f"""
-            background-color: {BRIGHT_YELLOW};
-            color: {CHOCO_BROWN};
-            font-size: 22px;
-            font-weight: 800;
-            border-radius: 6px;
-            font-family: {BODY_FONT};
-        """)
-        self.speak_btn.setFixedSize(240, 60)
-        main_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("tatsulok_quest"))
-
-
-
-
-=======
         top_layout.addWidget(back_btn)
         top_layout.addWidget(pagsasanay)
         main_layout.addLayout(top_layout)
@@ -195,4 +139,3 @@ class LessonMath4(QWidget):
             self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f

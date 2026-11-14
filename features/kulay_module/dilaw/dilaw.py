@@ -1,18 +1,10 @@
 from PySide6.QtCore import Qt, QSize, QUrl
-<<<<<<< HEAD
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
-from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
-from themes.colors import *
-from themes.fonts import  BODY_FONT
-=======
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 from themes.colors import *
 from themes.fonts import BODY_FONT
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from components.lesson_card import LessonCard
 
 import os
@@ -77,26 +69,14 @@ class Dilaw(QWidget):
         content_layout.addWidget(self.content_image)
 
         card = LessonCard(
-<<<<<<< HEAD
-        title="Aralin 3 : DILAW",
-        body_text="Ang kulay Dilaw ay isa sa mga pangunahing kulay. Sumisimbolo ito ng liwanag ng araw at kasiyahan. Madalas itong makikita sa mga hinog na prutas kagaya ng saging, mangga, at pinya. Makikita din ang kulay na ito sa mga hayop at bulaklak kagaya ng sisiw, ibon, at mirasol o sunflower.")
-=======
             title="Aralin 3 : DILAW",
             body_text="Ang kulay Dilaw ay isa sa mga pangunahing kulay. Sumisimbolo ito ng liwanag ng araw at kasiyahan. Madalas itong makikita sa mga hinog na prutas kagaya ng saging, mangga, at pinya. Makikita din ang kulay na ito sa mga hayop at bulaklak kagaya ng sisiw, ibon, at mirasol o sunflower."
         )
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         content_layout.addWidget(card)
 
         main_layout.addStretch()
 
-<<<<<<< HEAD
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "mic_icon.png")))
-        self.speak_btn.setIconSize(QSize(30, 30))
-        self.speak_btn.setFixedHeight(40)
-=======
         self.speak_btn = QPushButton("Sunod ➔")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         self.speak_btn.setCursor(Qt.PointingHandCursor)
         self.speak_btn.setStyleSheet(f"""
             QPushButton {{
@@ -112,11 +92,6 @@ class Dilaw(QWidget):
                 background-color: #F1C40F;
             }}
         """)
-<<<<<<< HEAD
-        self.speak_btn.setFixedSize(240, 70)
-        lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("dilaw_game"))
-=======
         self.speak_btn.clicked.connect(lambda: self.router.navigate("dilaw_game"))
         
         main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignRight)
@@ -139,7 +114,6 @@ class Dilaw(QWidget):
             self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def showEvent(self, event):
         self.play_instruction_sound()

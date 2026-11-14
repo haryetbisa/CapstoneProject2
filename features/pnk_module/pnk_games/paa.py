@@ -26,10 +26,7 @@ IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pnk")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Vs PNK")
 INSTRUCTION_SOUND_FILE = "PNK Instruction.mp3"
-<<<<<<< HEAD
-=======
 SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "sounds", "correct_&_wrong")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 
 class DraggableWord(QLabel):
@@ -96,19 +93,13 @@ class LabelDropBox(QFrame):
         border_color: str = "#3A2E1F",
         width=180,
         height=70,
-<<<<<<< HEAD
-=======
         sfx_callback=None
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     ):
         super().__init__()
         self.target_word = target_word
         self.default_border_color = border_color
         self.current_word = ""
-<<<<<<< HEAD
-=======
         self.sfx_callback = sfx_callback
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
         self.setAcceptDrops(True)
         self.setFixedSize(width, height)
@@ -168,22 +159,15 @@ class LabelDropBox(QFrame):
         self.current_word = dropped_text
         self.answer_label.setText(dropped_text)
 
-<<<<<<< HEAD
-        if dropped_text.lower() == self.target_word.lower():
-=======
         is_correct = (dropped_text.lower() == self.target_word.lower())
         if is_correct:
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             self.set_correct_style()
         else:
             self.set_incorrect_style()
 
-<<<<<<< HEAD
-=======
         if self.sfx_callback:
             self.sfx_callback(is_correct)
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         event.acceptProposedAction()
         self.word_dropped.emit(dropped_text)
         self.word_changed.emit()
@@ -211,15 +195,12 @@ class PaaGame(QWidget):
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
         self.instruction_audio_output.setVolume(0.9)
 
-<<<<<<< HEAD
-=======
         # SFX Player Setup
         self.sfx_audio_output = QAudioOutput(self)
         self.sfx_player = QMediaPlayer(self)
         self.sfx_player.setAudioOutput(self.sfx_audio_output)
         self.sfx_audio_output.setVolume(1.0)
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 20, 40, 20)
         main_layout.setAlignment(Qt.AlignTop)
@@ -289,15 +270,6 @@ class PaaGame(QWidget):
         diagram_layout.addLayout(first_column)
 
         self.binti_db = LabelDropBox(
-<<<<<<< HEAD
-            target_word="binti", border_color=SKY_BLUE
-        )
-        self.paa_db = LabelDropBox(
-            target_word="paa", border_color=ELECTRIC_VIOLET
-        )
-        self.tuhod_db = LabelDropBox(
-            target_word="tuhod", border_color=SCARLET
-=======
             target_word="binti", border_color=SKY_BLUE, sfx_callback=self.play_sfx
         )
         self.paa_db = LabelDropBox(
@@ -305,7 +277,6 @@ class PaaGame(QWidget):
         )
         self.tuhod_db = LabelDropBox(
             target_word="tuhod", border_color=SCARLET, sfx_callback=self.play_sfx
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         )
 
         first_column.addWidget(self.binti_db)
@@ -361,8 +332,6 @@ class PaaGame(QWidget):
         # Initial completion check
         self.check_completion()
 
-<<<<<<< HEAD
-=======
     def play_sfx(self, is_correct: bool):
         filename = "correct.wav" if is_correct else "wrong.wav"
         sfx_path = os.path.abspath(os.path.join(SOUNDS_DIR, filename))
@@ -373,7 +342,6 @@ class PaaGame(QWidget):
         else:
             print(f"SFX sound not found: {sfx_path}")
 
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def check_completion(self):
         """Enables Tapusin button only when all diagram labels are correctly answered."""
         all_correct = all(
@@ -396,11 +364,7 @@ class PaaGame(QWidget):
 
     def handle_back(self):
         self.score_logged = False
-<<<<<<< HEAD
-        self.router.navigate("paa")
-=======
         self.router.navigate("paavs")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def handle_next(self):
         self.score_logged = False

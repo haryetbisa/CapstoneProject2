@@ -17,14 +17,11 @@ os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 QApplication.setHighDpiScaleFactorRoundingPolicy(
     Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
 )
-<<<<<<< HEAD
-=======
 
 if getattr(sys, 'frozen', False):
     BASE_DIR = sys._MEIPASS
 else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 FONTS_DIR = os.path.join(BASE_DIR, "assets", "fonts")
 
@@ -234,10 +231,7 @@ from features.hugis_module.parisukat.parisukat_vs import ParisukatVS
 from features.hugis_module.puso.puso_vs import PusoVS
 from features.hugis_module.oblong.oblong_vs import OblongVS
 from features.hugis_module.parihaba.parihaba_vs import ParihabaVS
-<<<<<<< HEAD
 from features.hugis_module.diamond.diamond_vs import RombusVS
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from features.hugis_module.star.star_vs import StarVS
 
 #VS Hayop
@@ -378,10 +372,7 @@ from features.hugis_module.parisukat.parisukat_game import ParisukatGame
 from features.hugis_module.puso.puso_game import PusoGame
 from features.hugis_module.oblong.oblong_game import OblongGame
 from features.hugis_module.parihaba.parihaba_game import ParihabaGame
-<<<<<<< HEAD
 from features.hugis_module.diamond.diamond_game import DiamondGame
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 from features.hugis_module.star.star_game import StarGame
 
 #kuwento screen

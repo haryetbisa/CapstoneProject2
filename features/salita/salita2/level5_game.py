@@ -2,17 +2,11 @@ import os
 from PySide6.QtCore import Qt, QPoint, QSize, QUrl
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
-<<<<<<< HEAD
-from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QApplication, QPushButton
-from themes.colors import *
-from themes.fonts import BODY_FONT
-=======
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QGridLayout, QApplication, QPushButton
 from themes.colors import *
 from themes.fonts import BODY_FONT
 from Database.queries import log_activity
 from session import AppSession
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "salita")
@@ -110,75 +104,45 @@ class Salita5Game(QWidget):
         top_bar.addStretch()
         main_layout.addLayout(top_bar)
 
-<<<<<<< HEAD
         # Matching items layout
         rows_layout = QVBoxLayout()
         rows_layout.setSpacing(30)
         rows_layout.setContentsMargins(60, 20, 60, 10)
         main_layout.addLayout(rows_layout)
-=======
-        # Structured Grid Layout for rigid vertical dot alignment
-        grid_layout = QGridLayout()
-        grid_layout.setContentsMargins(60, 20, 60, 10)
-        grid_layout.setVerticalSpacing(30)
-        grid_layout.setHorizontalSpacing(20)
-        grid_layout.setColumnStretch(3, 1)  # Stretchable middle gap
-        main_layout.addLayout(grid_layout)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
+        
 
         items = [
             ("bola.png", "bola", "lola", "lola.png", "lola", "lola"),
             ("mata.png", "mata", "bata", "bata.png", "bata", "bata"),
             ("buto.png", "buto", "bato", "bato.png", "bato", "bato"),
-            ("lapis.png", "lapis", "ipis", "ipis.png", "ipis", "ipis"),
             ("sako.png", "sako", "siko", "braso.png", "siko", "siko"),
         ]
 
-<<<<<<< HEAD
         for left_img, left_txt, left_key, right_img, right_txt, right_key in items:
             row = QHBoxLayout()
 
             # Left side
-=======
         for i, (left_img, left_txt, left_key, right_img, right_txt, right_key) in enumerate(items):
             # Left Side
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             left_image_lbl = QLabel()
             left_path = os.path.join(IMAGE_DIR, left_img)
             if os.path.exists(left_path):
                 left_image_lbl.setPixmap(
                     QPixmap(left_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
-<<<<<<< HEAD
-            row.addWidget(left_image_lbl)
-
-            left_word_lbl = QLabel(left_txt)
-            left_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
-            row.addWidget(left_word_lbl)
-
-            source_dot = Dot(is_source=True, item_id=left_key, parent_game=self)
-            row.addWidget(source_dot)
-
-            row.addStretch()
-
-            # Right side
-            target_dot = Dot(is_source=False, item_id=right_key, parent_game=self)
-            row.addWidget(target_dot)
-=======
-            grid_layout.addWidget(left_image_lbl, i, 0, Qt.AlignRight | Qt.AlignVCenter)
+            rows_layout.addWidget(left_image_lbl, i, 0, Qt.AlignRight | Qt.AlignVCenter)
 
             left_word_lbl = QLabel(left_txt)
             left_word_lbl.setFixedWidth(130)
             left_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
-            grid_layout.addWidget(left_word_lbl, i, 1, Qt.AlignLeft | Qt.AlignVCenter)
+            rows_layout.addWidget(left_word_lbl, i, 1, Qt.AlignLeft | Qt.AlignVCenter)
 
             source_dot = Dot(is_source=True, item_id=left_key, parent_game=self)
-            grid_layout.addWidget(source_dot, i, 2, Qt.AlignLeft | Qt.AlignVCenter)
+            rows_layout.addWidget(source_dot, i, 2, Qt.AlignLeft | Qt.AlignVCenter)
 
             # Right Side
             target_dot = Dot(is_source=False, item_id=right_key, parent_game=self)
-            grid_layout.addWidget(target_dot, i, 4, Qt.AlignRight | Qt.AlignVCenter)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
+            rows_layout.addWidget(target_dot, i, 4, Qt.AlignRight | Qt.AlignVCenter)
 
             right_image_lbl = QLabel()
             right_path = os.path.join(IMAGE_DIR, right_img)
@@ -186,33 +150,19 @@ class Salita5Game(QWidget):
                 right_image_lbl.setPixmap(
                     QPixmap(right_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
-<<<<<<< HEAD
-            row.addWidget(right_image_lbl)
-
-            right_word_lbl = QLabel(right_txt)
-            right_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
-            row.addWidget(right_word_lbl)
-
-            rows_layout.addLayout(row)
-=======
-            grid_layout.addWidget(right_image_lbl, i, 5, Qt.AlignRight | Qt.AlignVCenter)
+            rows_layout.addWidget(right_image_lbl, i, 5, Qt.AlignRight | Qt.AlignVCenter)
 
             right_word_lbl = QLabel(right_txt)
             right_word_lbl.setFixedWidth(130)
             right_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
-            grid_layout.addWidget(right_word_lbl, i, 6, Qt.AlignLeft | Qt.AlignVCenter)
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
+            rows_layout.addWidget(right_word_lbl, i, 6, Qt.AlignLeft | Qt.AlignVCenter)
 
         # Action Buttons Layout
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
-<<<<<<< HEAD
-        self.restart_btn = QPushButton(" Restart")
-=======
         self.restart_btn = QPushButton("Ulitin")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
             self.restart_btn.setIcon(QIcon(restart_icon_path))
@@ -296,8 +246,6 @@ class Salita5Game(QWidget):
 
         if sum(1 for _, _, ok in self.connections if ok) == self.total_pairs:
             self.next_btn.show()
-<<<<<<< HEAD
-=======
             self.save_activity_progress("Salita", "salita_q5", 1.0)
 
     def save_activity_progress(self, module_name, target_word, score):
@@ -316,7 +264,6 @@ class Salita5Game(QWidget):
             print("--> Salita Q5 activity successfully logged!")
         except Exception as e:
             print(f"--> Error logging activity progress: {e}")
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
 
     def dot_center(self, dot: Dot) -> QPoint:
         return dot.mapTo(self, dot.rect().center())
@@ -344,13 +291,6 @@ class Salita5Game(QWidget):
         self.next_btn.hide()
         self.update()
 
-<<<<<<< HEAD
-    def showEvent(self, event):
-        self.reset_game()
-        super().showEvent(event)
-
-=======
->>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
     def handle_back(self):
         self.reset_game()
         self.router.navigate("salita")
