@@ -70,27 +70,6 @@ class KinderDashboard(QWidget):
         self.student_dropdown.studentSelected.connect(self.on_student_selected)
         top_layout.addWidget(self.student_dropdown)
 
-
-        self.roster_btn = QPushButton("Mag-aaral (listahan)")
-        self.roster_btn.setCursor(Qt.PointingHandCursor)
-        self.roster_btn.setStyleSheet(f"""
-            QPushButton {{
-                background-color: {CORAL_RED};
-                color: {LIGHT};
-                font-family: {BODY_FONT};
-                font-size: 14px;
-                font-weight: 700;
-                border-radius: 6px;
-                padding: 10px 16px;
-            }}
-            QPushButton:hover {{
-                background-color: #d94338;
-            }}
-        """)
-        self.roster_btn.clicked.connect(lambda: self.router.navigate("kindergarten_roster"))
-        top_layout.addWidget(self.roster_btn)
-
-
         self.roster_btn = QPushButton("Mag-aaral (listahan)")
         self.roster_btn.setCursor(Qt.PointingHandCursor)
         self.roster_btn.setStyleSheet(f"""

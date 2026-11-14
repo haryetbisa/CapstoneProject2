@@ -92,7 +92,7 @@ class BilangLvl10(QWidget):
         choco.setAlignment(Qt.AlignCenter)
         sentence1.addWidget(choco)
 
-        words1 = QLabel("Nagtimpla si Ginang Cruz ng <b>apat</b> na<br>malamig na tsokolate.")
+        words1 = QLabel("Si Ginang Cruz ay nagtimpla ng <b>apat</b> <br>na baso ng malamig na tsokolate.")
         words1.setAlignment(Qt.AlignCenter)
         words1.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         sentence1.addWidget(words1)
@@ -113,7 +113,7 @@ class BilangLvl10(QWidget):
         juice.setAlignment(Qt.AlignCenter)
         sentence2.addWidget(juice)
 
-        words2 = QLabel("Nagdagdag naman siya ng <b>tatlong</b><br>calamansi juice.")
+        words2 = QLabel("Nagdagdag pa siya ng <b>tatlong</b><br>baso ng <i>calamansi juice.</i>")
         words2.setAlignment(Qt.AlignCenter)
         words2.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         sentence2.addWidget(words2)

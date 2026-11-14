@@ -105,7 +105,7 @@ class LessonScreenKambing(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 7 : KAMBING",
-        body_text="Ang kambing ay isang uri ng alagang hayop sa bukid na may apat na paa at karaniwang may dalawang sungay. Ang kinakain lamang nila ay damo, dahon, at sanga ng kahoy.")
+        body_text="Ang kambing ay isang masigla at maamong hayop sa bukid na may apat na paa, balbas, dalawang maliit na sungay at hindi gaanong makapal na balahibo. Kumakain lamang ito ng sariwang damo, dahon at maliliit na sanga ng halaman.")
         right_column.addWidget(card)
 
 

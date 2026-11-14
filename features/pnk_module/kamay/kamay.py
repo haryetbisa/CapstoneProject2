@@ -70,7 +70,7 @@ class LessonScreenKamay(QWidget):
 
         card = LessonCard(
             title="Aralin 10 : KAMAY",
-            body_text="Ang kamay ay ang dulo ng braso na may mga daliri at palad. Ginagamit itosa paghawak at tumutulong sa paggawa ng mga bagay."
+            body_text="Ang kamay ay ang dulong bahagi ng braso na binubuo ng palad at mga daliri. Ginagamit ito sa paghawak at paggawa ng mga bagay."
         )
         content_layout.addWidget(card)
 

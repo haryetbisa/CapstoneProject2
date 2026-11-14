@@ -72,9 +72,9 @@ class BilangLvl12(QWidget):
 
         # Word Problem Statement
         word_prob = QLabel("<b>Piliin ang tamang matematikal na pangungusap:</b><br>"
-                           "Si Aling Rosa ay nagtitinda ng kakanin. Si Mang Ben naman ay nagtitinda ng taho.<br>"
-                           "Bumili si Joy ng kakanin at taho, nagkakahalaga lahat ng <b>pitumpung piso.</b><br>"
-                           "Nagkakahalaga ang kakanin at taho ng: ")
+                           "Si Aling Rosa ay nagtitinda ng kakanin na nagkakahalaga ng <b>limampung piso</b>.<br>"
+                           "Si Mang Ben naman ay nagtitinda ng taho na nagkakahalaga ng <b>dalawampung piso</b>. <br>"
+                           "Magkano lahat ang babayaran ni Joy kung bumili siya ng kakanin at taho?")
         word_prob.setAlignment(Qt.AlignJustify)
         word_prob.setWordWrap(True)
         word_prob.setStyleSheet(f"font-size: 28px; font-weight: 500; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")

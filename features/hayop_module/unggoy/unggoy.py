@@ -107,7 +107,7 @@ class LessonScreenUnggoy(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 13 : UNGGOY",
-        body_text="Ang unggoy (monkey) ay isang uri ng mamalya , meron silang dalawang kamay at dalawang paa na may mga daliring madaling pangkapit. Karamihan sa kanila ay may mahabang buntot na nakatutulong sa pagbalanse sa mga puno.")
+        body_text="Ang unggoy ay isang hayop na kadalasang matatagpuan sa kagubatan. Mabalahibo ang buong katawan at may mahabang buntot. Isang maliksi at masiglang hayop na mahilig kumain ng matatamis na prutas tulad ng saging. Kinikilalang tuso na hayop sa kagubatan.")
         right_column.addWidget(card)
 
 

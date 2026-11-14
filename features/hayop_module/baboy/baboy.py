@@ -120,9 +120,7 @@ class LessonScreenBaboy(QWidget):
         card = LessonCard(
             title="Aralin 2 : BABOY",
             body_text=(
-                "Ang baboy ay isang uri ng alagang hayop na may apat na"
-                " maiikling paa, malapad na ilong , at maikling buntot na"
-                " karaniwang nakapilipit."
+                "Ang baboy ay isang uri ng alagang hayop na karaniwang kulay rosas, itim o kayumanggi ang balat. Ito ay may apat na paa, mahaba ang bilugang katawan at nakakurba ang maikling buntot. "
             ),
         )
         right_column.addWidget(card)

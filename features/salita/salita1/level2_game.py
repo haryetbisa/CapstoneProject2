@@ -71,7 +71,7 @@ class Salita2Game(QWidget):
         main_layout.addLayout(top_layout)
 
         # Title
-        title = QLabel("Anong mga salita ang maaaring maglarawan sa Punong Pampasko(Christmas Tree)?")
+        title = QLabel("Ano ang mga salita na maaaring maglarawan sa Punong Pampasko <i>(Christmas Tree)</i>?")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)

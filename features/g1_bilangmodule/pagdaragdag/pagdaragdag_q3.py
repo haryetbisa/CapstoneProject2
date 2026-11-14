@@ -70,8 +70,8 @@ class BilangLvl11(QWidget):
         main_layout.addLayout(top_layout)
 
         # Word Problem Statement
-        word_prob = QLabel("<b>Piliin ang tamang matematikal na pangungusap:</b><br>"
-                           "Bumili si Gabbie ng isang chips at halo-halo sa palengke na may katumbas na <b>limampung piso</b>.<br>"
+        word_prob = QLabel("<b>Alin ang tamang matematikal na pangungusap para sa presyo ng <i>chips</i> at haluhalo?</b><br>"
+                           "Bumili si Gabbie ng isang <i>chips</i> at halo-halo sa palengke na nagkakahalaga ng <b>limampung piso</b>.<br>"
                            "Nagkakahalaga ang chips at halo-halo ng: ")
         word_prob.setAlignment(Qt.AlignJustify)
         word_prob.setWordWrap(True)

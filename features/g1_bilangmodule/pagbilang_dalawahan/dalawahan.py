@@ -49,7 +49,7 @@ class LessonMath5(QWidget):
         main_layout.addLayout(top_layout)
 
         # Title
-        title = QLabel("Pagbilang ng Dalawahan")
+        title = QLabel("Pagbilang nang Dalawahan")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 30px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)
@@ -59,7 +59,7 @@ class LessonMath5(QWidget):
         text_row.setSpacing(5)
 
         lesson_text = QLabel(
-            "Sa Pagbilang ng Dalawahan, magdadagdag tayo ng dalawang bilang upang "
+            "Sa Pagbilang ng Dalawahan, magdaragdag tayo ng dalawang bilang upang "
             "makuha ang kasunod na bilang."
         )
         lesson_text.setAlignment(Qt.AlignCenter)

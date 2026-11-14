@@ -76,7 +76,7 @@ class LessonScreenIsda(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 4 : ISDA",
-        body_text="Ang isda ay isang uri ng hayop na nakatira sa tubig. Mayroon silang mga palikpik at buntot na ginagamit sa paglangoy at pagbalanse.")
+        body_text="Ang isda ay isang uri ng lamang-dagat na karaniwang pahaba at balot ng kaliskis ang katawan. Mayroon din itong palikpik na ginagamit sa paglangoy, may buntot at humihinga sa pamamagitan ng hasang.")
         content_layout.addWidget(card)
 
 

@@ -70,7 +70,7 @@ class Asul(QWidget):
 
         card = LessonCard(
             title="Aralin 5 : ASUL",
-            body_text="Ang kulay Asul ay iniuugnay sa kapayapaan at kalmado. Makikita ang kulay na ito sa kalangitan at sa karagatan. Isa din ito sa kulay na makikita sa ating watawat kasama ng pula at dilaw. Madalas din itong nakikita sa araw-araw nating gamit kagaya ng damit, panyo, at bag."
+            body_text="Ang asul ay simbolo ng kapayapaan at pagiging kalmado. Isa itong mahalagang kulay sa watawat ng Pilipinas kasama ang pula, dilaw at puti. Ang kulay na ito rin ang makikita sa kalangitan at karagatan."
         )
         content_layout.addWidget(card)
 

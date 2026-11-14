@@ -122,10 +122,7 @@ class LessonScreenBibe(QWidget):
         card = LessonCard(
             title="Aralin 3 : BIBE",
             body_text=(
-                "Ang bibe ay isang uri ng alagang ibon na karaniwang nakikita"
-                " sa tubig o sa mga bukid. Mayroon silang malapad na tuka, mga"
-                " paang may balat sa pagitan ng daliri na nakatutulong sa kanila"
-                " upang mabilis na lumangoy."
+                "Ang bibe ay isang uri ng ibon na karaniwang namumuhay sa tubig o sa lupa. Mayroon itong malapad at bilugang tuka na karaniwang kulay dilaw o kahel. Ang mga daliri ng paa nito ay magkakadugtong ng manipis na balat na nakatutulong sa mabilis na paglangoy."
             ),
         )
         right_column.addWidget(card)

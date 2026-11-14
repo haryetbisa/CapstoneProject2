@@ -72,10 +72,9 @@ class Salita1(QWidget):
         text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
 
         lesson_text = QLabel(
-            "Ang mga salitang naglalarawan o tinatawag na pang-uri ay ang\n"
-            "mga salitang nagbibigay ng deskripsyon sa tao, bagay, hayop, lugar, o\n"
-            "pangyayari. Maaaring ito ay kulay, laki, hugis, damdamin, o\n"
-            "katangian."
+            "Ang mga salitang naglalarawan o tinatawag na pang-uri ay\n"
+            "mga salitang nagbibigay katangian sa tao, bagay, hayop, lugar, at\n"
+            "pangyayari."
         )
         lesson_text.setAlignment(Qt.AlignLeft)
         lesson_text.setWordWrap(True)   

@@ -69,7 +69,7 @@ class LessonScreenBuhok(QWidget):
 
         card = LessonCard(
             title="Aralin 5 : BUHOK",
-            body_text="Ang buhok ay ang mga hibla na matatagpuan sa ulo ng tao na nagsisilbing proteksyon laban sa init o lamig at nagbibigay ng ganda o anyo sa isang tao."
+            body_text="Ang buhok ay ang mga hibla na matatagpuan sa ulo ng tao na nagsisilbing proteksyon laban sa init o lamig. Nagbibigay ito nang ganda o anyo sa isang tao."
         )
         content_layout.addWidget(card)
 

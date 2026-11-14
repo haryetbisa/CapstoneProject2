@@ -69,7 +69,7 @@ class LessonScreenTaingaa(QWidget):
 
         card = LessonCard(
             title="Aralin 4 : TAINGA/TENGA",
-            body_text="Ang tenga (o tainga) ay ang bahagi ng katawan na ginagamit sa pandinig ng mga tunog at tumutulong din sa pagpapanatili ng balanse ng katawan."
+            body_text="Ang tainga ay bahagi ng katawan ng tao na ginagamit sa pagdinig."
         )
         content_layout.addWidget(card)
 

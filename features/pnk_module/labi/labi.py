@@ -70,7 +70,7 @@ class LessonScreenLabi(QWidget):
 
         card = LessonCard(
             title="Aralin 2 : LABI, NGIPIN, DILA",
-            body_text="Labi: Bahagi ng bibig para sa pagbigkas at pagkain. Ngipin: Matitigas na bahagi sa bibig para sa pagnguya ng pagkain. Dila: Kalamnan sa bibig para sa paglasa at pagsasalita."
+            body_text="<b>Labi:</b> Bahagi ng bibig na nasa dakong labas. Ginagamit ito sa pagbigkas at paglalahad ng ekspresyon ng isang tao.<br> <b> Ngipin: </b>Maputi at matigas na bahagi sa loob ng bibig. Ginagamit sa pagkagat at pagnguya ng pagkain.<br><b> Dila: </b> Bahagi sa loob ng bibig na malambot at kulay-rosas. Ginamit ng tao upang makapagsalita at malasahan ang mga pagkain."
         )
         content_layout.addWidget(card)
 

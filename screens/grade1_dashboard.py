@@ -97,31 +97,6 @@ class GradeOneDashboard(QWidget):
         main_layout.addSpacing(40)
 
 
-        # Custom Searchable Dropdown
-        self.student_dropdown = SearchableDropdown(placeholder="-- Pumili ng Mag-aaral --")
-        self.student_dropdown.studentSelected.connect(self.on_student_selected)
-        top_layout.addWidget(self.student_dropdown)
-
-        self.roster_btn = QPushButton("Mag-aaral (listahan)")
-        self.roster_btn.setCursor(Qt.PointingHandCursor)
-        self.roster_btn.setStyleSheet(f"""
-            QPushButton {{
-                background-color: {CORAL_RED};
-                color: {LIGHT};
-                font-family: {BODY_FONT};
-                font-size: 14px;
-                font-weight: 700;
-                border-radius: 6px;
-                padding: 10px 16px;
-            }}
-            QPushButton:hover {{
-                background-color: #d94338;
-            }}
-        """)
-        self.roster_btn.clicked.connect(lambda: self.router.navigate("grade1_roster"))
-        top_layout.addWidget(self.roster_btn)
-
-
         grid_layout = QGridLayout()
         grid_layout.setHorizontalSpacing(30)
         grid_layout.setVerticalSpacing(20)

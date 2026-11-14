@@ -70,7 +70,7 @@ class LessonScreenIlong(QWidget):
 
         card = LessonCard(
             title="Aralin 3 : ILONG",
-            body_text="Ang Ilong ay ang bahagi ng mukha na ginagamit sa pang-amoy at nagsisilbing pangunahing daanan ng hangin sa paghinga."
+            body_text="Ito ay bahagi ng mukha na may dalawang butas para sa paghinga at pag-amoy."
         )
         content_layout.addWidget(card)
 

@@ -70,7 +70,7 @@ class Itim(QWidget):
 
         card = LessonCard(
             title="Aralin 8 : Itim",
-            body_text="Ang kulay itim ay simisimbolo ng gabi at kadiliman, nabubuo ito kapag nawala na ang lahat ng liwanag. Iniuugnay din ito sa iba't-ibang bagay at kasuotan kagaya ng bag, sapatos, at damit. Makikita din ito sa iba't ibang hayop kagaya ng gagamba, uwak, at pusa."
+            body_text="Ang itim ay itinuturing na pinakamadilim na kulay. Ito ang bumabalot na kulay sa paligid kapag nawala ang liwanag. Ang mga bagay gaya ng uling, tinta at mga kasuotan tulad ng sapatos ay nagtataglay ng ganitong kulay. May mga hayop din kagaya ng gagamba, uwak, at pusa. "
         )
         content_layout.addWidget(card)
 

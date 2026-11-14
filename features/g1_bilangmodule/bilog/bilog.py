@@ -25,7 +25,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 
 
 class LessonMath1(QWidget):
-  def __init__(self, router):
     def __init__(self, router):
         super().__init__()
         self.router = router
@@ -123,45 +122,9 @@ class LessonMath1(QWidget):
         top_layout.addWidget(pagsasanay)
         main_layout.addLayout(top_layout)
 
-        content_layout = QHBoxLayout()
-        content_layout.setContentsMargins(30, 20, 30, 20)
-        content_layout.setSpacing(50)
-        content_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addLayout(content_layout)
-
-        self.content_image = QLabel()
-        self.image_path = os.path.join(IMAGE_DIR, "bilog.png")
-        self.content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(self.content_image)
-
-        card = LessonCard(
-            title="Aralin 1 : BILOG",
-            body_text="Ang bilog ay isang hugis na pabilog. Wala itong gilid at wala ring sulok."
-        )
-        content_layout.addWidget(card)
-
-        main_layout.addStretch()
-
-        self.speak_btn = QPushButton("Sunod ➔")
-        self.speak_btn.setCursor(Qt.PointingHandCursor)
-        self.speak_btn.setStyleSheet(f"""
-            QPushButton {{
-                background-color: {BRIGHT_YELLOW};
-                color: {CHOCO_BROWN};
-                font-size: 22px;
-                font-weight: 800;
-                border-radius: 14px;
-                padding: 14px 35px;
-                font-family: {BODY_FONT};
-            }}
-            QPushButton:hover {{
-                background-color: #F1C40F;
-            }}
-        """)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("bilog_quest"))
+        
         
         main_layout.addWidget(self.speak_btn, alignment=Qt.AlignmentFlag.AlignRight)
-
         self.update_responsive_scaling()
 
     def resizeEvent(self, event):

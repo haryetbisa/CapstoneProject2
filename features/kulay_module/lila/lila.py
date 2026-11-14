@@ -70,7 +70,7 @@ class Lila(QWidget):
 
         card = LessonCard(
             title="Aralin 6 : LILA",
-            body_text="Ang kulay Lila ay nabubuo sa paghahalo ng kulay bughaw at pula. Karaniwan itong makikita sa mga gulay at prutas tulad ng talong, ube, at ubas. Bukod doon, makikita rin ang kulay lila sa mga bulaklak tulad ng bogambilya at orchid."
+            body_text="Ang lila ay isang kulay na nabuo mula sa pinaghalong bughaw at pula. Ito ang kulay ng gulay na ube at talong, gayundin ang prutas na ubas. Bukod dito, makikita rin ang kulay lila sa mga bulaklak tulad ng bogambilya at <i>orchid</i>. "
         )
         content_layout.addWidget(card)
 

@@ -105,10 +105,10 @@ class Salita5Game(QWidget):
         main_layout.addLayout(top_bar)
 
         # Matching items layout
-        rows_layout = QVBoxLayout()
-        rows_layout.setSpacing(30)
-        rows_layout.setContentsMargins(60, 20, 60, 10)
-        main_layout.addLayout(rows_layout)
+        grid_layout = QGridLayout()
+        grid_layout.setSpacing(30)
+        grid_layout.setContentsMargins(60, 20, 60, 10)
+        main_layout.addLayout(grid_layout)
         
 
         items = [
@@ -130,19 +130,19 @@ class Salita5Game(QWidget):
                 left_image_lbl.setPixmap(
                     QPixmap(left_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
-            rows_layout.addWidget(left_image_lbl, i, 0, Qt.AlignRight | Qt.AlignVCenter)
+            grid_layout.addWidget(left_image_lbl, i, 0, Qt.AlignRight | Qt.AlignVCenter)
 
             left_word_lbl = QLabel(left_txt)
             left_word_lbl.setFixedWidth(130)
             left_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
-            rows_layout.addWidget(left_word_lbl, i, 1, Qt.AlignLeft | Qt.AlignVCenter)
+            grid_layout.addWidget(left_word_lbl, i, 1, Qt.AlignLeft | Qt.AlignVCenter)
 
             source_dot = Dot(is_source=True, item_id=left_key, parent_game=self)
-            rows_layout.addWidget(source_dot, i, 2, Qt.AlignLeft | Qt.AlignVCenter)
+            grid_layout.addWidget(source_dot, i, 2, Qt.AlignLeft | Qt.AlignVCenter)
 
             # Right Side
             target_dot = Dot(is_source=False, item_id=right_key, parent_game=self)
-            rows_layout.addWidget(target_dot, i, 4, Qt.AlignRight | Qt.AlignVCenter)
+            grid_layout.addWidget(target_dot, i, 4, Qt.AlignRight | Qt.AlignVCenter)
 
             right_image_lbl = QLabel()
             right_path = os.path.join(IMAGE_DIR, right_img)
@@ -150,12 +150,12 @@ class Salita5Game(QWidget):
                 right_image_lbl.setPixmap(
                     QPixmap(right_path).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 )
-            rows_layout.addWidget(right_image_lbl, i, 5, Qt.AlignRight | Qt.AlignVCenter)
+            grid_layout.addWidget(right_image_lbl, i, 5, Qt.AlignRight | Qt.AlignVCenter)
 
             right_word_lbl = QLabel(right_txt)
             right_word_lbl.setFixedWidth(130)
             right_word_lbl.setStyleSheet(f"font-size: 26px; font-weight: 700; color: {CHOCO_BROWN}; font-family: {BODY_FONT};")
-            rows_layout.addWidget(right_word_lbl, i, 6, Qt.AlignLeft | Qt.AlignVCenter)
+            grid_layout.addWidget(right_word_lbl, i, 6, Qt.AlignLeft | Qt.AlignVCenter)
 
         # Action Buttons Layout
         action_layout = QHBoxLayout()

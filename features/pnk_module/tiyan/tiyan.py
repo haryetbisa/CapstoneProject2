@@ -70,7 +70,7 @@ class LessonScreenTiyan(QWidget):
 
         card = LessonCard(
             title="Aralin 8 : TIYAN",
-            body_text="Ang tiyan ay ang bahagi ng katawan na naglalaman ng mga organo para sa pagtunaw ng pagkain tulad ng bituka at sikmura."
+            body_text="Ang tiyan ay ang malambot na bahagi ng katawan na naglalaman ng mga <i>organo</i> gaya ng bituka at sikmura na tumutulong sa pagtunaw ng pagkain."
         )
         content_layout.addWidget(card)
 

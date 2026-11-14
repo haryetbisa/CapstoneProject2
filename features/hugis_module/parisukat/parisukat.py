@@ -70,7 +70,7 @@ class LessonScreenParisukat(QWidget):
 
         card = LessonCard(
             title="Aralin 3 : PARISUKAT",
-            body_text="Ang hugis parisukat ay isang karaniwang halimbawa ng malaking kahon na may pantay na apat na sulok o gilid."
+            body_text="Ang parisukat ay isang hugis na binubuo ng apat na magkasinghabang gilid na may apat na sulok. Katulad ito ng bintana ng isang bahay, panyo at kahon."
         )
         content_layout.addWidget(card)
 
