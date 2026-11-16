@@ -56,7 +56,7 @@ class BilangLvl4(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Pagsasanay: Tatsulok")
+        pagsasanay = QLabel("Pagsasanay 4: Tatsulok")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};

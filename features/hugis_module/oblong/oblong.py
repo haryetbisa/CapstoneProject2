@@ -45,7 +45,7 @@ class LessonScreenOblong(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(lambda: self.router.navigate("hugis"))
 
-        pagsasanay = QLabel("Aralin: Bilohaba")
+        pagsasanay = QLabel("Aralin: Biluhaba")
         pagsasanay.setStyleSheet(f"""
             font-size: 32px;
             font-family: {BODY_FONT};

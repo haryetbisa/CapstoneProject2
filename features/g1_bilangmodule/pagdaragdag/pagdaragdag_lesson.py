@@ -1,14 +1,10 @@
 import os
-from PySide6.QtCore import Qt, QUrl, QSize
-from PySide6.QtGui import QIcon
-from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
-from PySide6.QtMultimediaWidgets import QVideoWidget
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 from PySide6.QtCore import Qt, QUrl, QSize, QTimer
 from PySide6.QtGui import QIcon
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea
+
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
@@ -22,20 +18,19 @@ class LessonMath7(QWidget):
         super().__init__()
         self.router = router
 
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(40, 30, 40, 30)
-        main_layout.setSpacing(20)
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
 
-        # Top Navigation Bar
-        top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(20, 20, 20, 10)
-        # Setup Scroll Area to prevent overlapping and handle different resolutions
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QScrollArea.NoFrame)
         scroll.setStyleSheet("background: transparent; border: none;")
+        outer.addWidget(scroll)
 
         content = QWidget()
+        content.setStyleSheet("background: transparent;")
+        scroll.setWidget(content)
+
         main_layout = QVBoxLayout(content)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
@@ -56,7 +51,7 @@ class LessonMath7(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Aralin: Pagdaragdag (Addition)")
+        pagsasanay = QLabel("Aralin 7: Pagdaragdag (Addition)")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -145,12 +140,6 @@ class LessonMath7(QWidget):
         self.player.playbackStateChanged.connect(self.update_button_label)
 
         main_layout.addStretch()
-        scroll.setWidget(content)
-
-        # Outer layout
-        outer = QVBoxLayout(self)
-        outer.setContentsMargins(0, 0, 0, 0)
-        outer.addWidget(scroll)
 
         self.player.playbackStateChanged.connect(self.update_button_label)
 

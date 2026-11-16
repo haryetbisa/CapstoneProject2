@@ -121,7 +121,7 @@ class LessonScreenAso(QWidget):
         card = LessonCard(
             title="Aralin 1 : ASO",
             body_text=(
-                "Ang aso ay isang uri ng alagang hayop na may balahibo, apat na paa at karaniwang inaalagaan. Ito ay maituturing din bilang matalik na kaiabigan ng tao."
+                "Ang aso ay isang uri ng alagang hayop na may balahibo, apat na paa at karaniwang inaalagaan. Ito ay maituturing din bilang matalik na kaibigan ng tao."
             ),
         )
         right_column.addWidget(card)

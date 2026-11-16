@@ -70,7 +70,7 @@ class LessonScreenTatsu(QWidget):
 
         card = LessonCard(
             title="Aralin 2 : TATSULOK",
-            body_text="Ang tatsulok ay isang hugis na may tatlong gilid at tatlong sulok. Maari itong ihalintulad sa isang apa ng <i>ice cream</i>  at bubong ng isang bahay."
+            body_text="Ang tatsulok ay isang hugis na may tatlong gilid at tatlong sulok. Maaari itong ihalintulad sa isang apa ng <i>ice cream</i>  at bubong ng isang bahay."
         )
         content_layout.addWidget(card)
 

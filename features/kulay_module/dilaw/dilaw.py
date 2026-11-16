@@ -70,7 +70,7 @@ class Dilaw(QWidget):
 
         card = LessonCard(
             title="Aralin 3 : DILAW",
-            body_text="Ang dilaw ay isang masaya at maliwanag na kulay na parang sikat ng araw. Ito ang kulay ng mga hinoh na prutas tulad ng saging, mangga at pinya. Makikita rin ang kulay na ito sa mga hayop kagaya ng sisiw, ibon at sa bulaklak na <i>sunflower</i>."
+            body_text="Ang dilaw ay isang masaya at maliwanag na kulay na parang sikat ng araw. Ito ang kulay ng mga hinog na prutas tulad ng saging, mangga, at pinya. Makikita rin ang kulay na ito sa mga hayop kagaya ng sisiw, ibon at sa bulaklak na <i>sunflower</i>."
         )
         content_layout.addWidget(card)
 

@@ -56,7 +56,7 @@ class BilangLvl1(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Pagsasanay: Bilog")
+        pagsasanay = QLabel("Pagsasanay 1: Bilog")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -92,12 +92,9 @@ class BilangLvl1(QWidget):
         quest_row.setSpacing(29)
         quest_row.setAlignment(Qt.AlignCenter)
 
-        self.opt_1 = ChoicesButton("1", color=SKY_BLUE)     # Wrong
-        self.opt_2 = ChoicesButton("4", color=HOT_PINK)     # Wrong
-        self.opt_3 = ChoicesButton("0", color=LIGHT_GREEN)  # Correct
         self.opt_1 = ChoicesButton("isa", color=SKY_BLUE)     # Wrong
         self.opt_2 = ChoicesButton("apat", color=HOT_PINK)     # Wrong
-        self.opt_3 = ChoicesButton("wala sulok at gilid", color=LIGHT_GREEN)  # Correct
+        self.opt_3 = ChoicesButton("walang sulok at gilid", color=LIGHT_GREEN)  # Correct
 
         self.opt_1.clicked.connect(lambda: self.handle_choice(False, self.opt_1))
         self.opt_2.clicked.connect(lambda: self.handle_choice(False, self.opt_2))

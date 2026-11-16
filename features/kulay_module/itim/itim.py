@@ -70,7 +70,7 @@ class Itim(QWidget):
 
         card = LessonCard(
             title="Aralin 8 : Itim",
-            body_text="Ang itim ay itinuturing na pinakamadilim na kulay. Ito ang bumabalot na kulay sa paligid kapag nawala ang liwanag. Ang mga bagay gaya ng uling, tinta at mga kasuotan tulad ng sapatos ay nagtataglay ng ganitong kulay. May mga hayop din kagaya ng gagamba, uwak, at pusa. "
+            body_text="Ang itim ay itinuturing na pinakamadilim na kulay. Ito ang bumabalot na kulay sa paligid kapag nawala ang liwanag. Ang mga bagay gaya ng uling, tinta, at mga kasuotan tulad ng sapatos ay nagtataglay ng ganitong kulay. May mga hayop din kagaya ng gagamba, uwak, at pusa. "
         )
         content_layout.addWidget(card)
 

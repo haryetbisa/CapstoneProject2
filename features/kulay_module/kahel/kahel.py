@@ -70,7 +70,7 @@ class Kahel(QWidget):
 
         card = LessonCard(
             title="Aralin 2 : KAHEL",
-            body_text="Ang kahel ay mula sa pinaghalong kulay na pula at dilaw.  Ito ang kulay ng matamis na prutas gaya ng <i>prange</i>, hinog na papaya at <i>carrots</i>. Makikita rin ang kulay na ito sa laruan tulad ng bola at balahibo ng tigre."
+            body_text="Ang kahel ay mula sa pinaghalong kulay na pula at dilaw.  Ito ang kulay ng matamis na prutas gaya ng <i>prange</i>, hinog na papaya, at <i>carrots</i>. Makikita rin ang kulay na ito sa laruan tulad ng bola at balahibo ng tigre."
         )
         content_layout.addWidget(card)
 

@@ -1,37 +1,31 @@
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QPushButton, QLineEdit
 from PySide6.QtGui import QPixmap, QIcon
-
-
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from components.cardsbutton import CardsButton
 from themes.colors import *
 from assets.icon import icon_label
 from themes.fonts import  BODY_FONT
 from components.lesson_card import LessonCard
 
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
-ICONS_DIR = os.path.join(BASE_DIR, "..","..", "..", "assets", "icons")
-
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtGui import QPixmap, QIcon
-
-from themes.colors import *
-from themes.fonts import BODY_FONT
-from components.lesson_card import LessonCard
 
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "G1 Bilang")
+INSTRUCTION_SOUND_FILE = "Parisukat.mp3" 
 
 class LessonMath2(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60,60,60,0)
@@ -70,7 +64,7 @@ class LessonMath2(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(lambda: self.router.navigate("bilang_g1"))
 
-        pagsasanay = QLabel("Aralin: Parisukat")
+        pagsasanay = QLabel("Aralin 2: Parisukat")
         pagsasanay.setStyleSheet(f"""
             font-size: 32px;
             font-family: {BODY_FONT};
@@ -92,12 +86,14 @@ class LessonMath2(QWidget):
         main_layout.addLayout(content_layout)
 
         #yung image
-        content_image = QLabel()
-        content_image.setPixmap(QPixmap(os.path.join(IMAGE_DIR, "parisukat.png")).scaled(
+        self.image_path = os.path.join(IMAGE_DIR, "parisukat.png")
+
+        self.content_image = QLabel()
+        self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 450, 450, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
-        content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content_layout.addWidget(content_image)
+        self.content_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        content_layout.addWidget(self.content_image)
 
         #lesson explanation
         card = LessonCard(
@@ -145,3 +141,24 @@ class LessonMath2(QWidget):
             self.content_image.setPixmap(QPixmap(self.image_path).scaled(
                 img_size, img_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
             ))
+
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()
+        self.instruction_player.stop()

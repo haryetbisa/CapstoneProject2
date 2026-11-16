@@ -18,6 +18,7 @@ INSTRUCTION_SOUND_FILE = "Binti.mp3"
 class LessonScreenBinti(QWidget):
     def __init__(self, router):
         super().__init__()
+        self.router = router
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
