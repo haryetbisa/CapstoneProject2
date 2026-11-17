@@ -1,5 +1,3 @@
-
-
 import os
 from PySide6.QtCore import Qt, QMimeData, QSize, QUrl
 from PySide6.QtGui import QDrag, QPixmap, QIcon
@@ -16,7 +14,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Salita")
 INSTRUCTION_SOUND_FILE = "Pangungusap Instruction.mp3" 
-
 
 
 class DraggableWord(QLabel):

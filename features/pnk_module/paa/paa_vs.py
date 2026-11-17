@@ -1,4 +1,5 @@
 import os
+import random
 
 from features.voice_recog import OfflineVoiceWorker
 from PySide6.QtCore import QSize, Qt, QUrl, Slot
@@ -25,9 +26,10 @@ BASE_DIR = os.path.dirname(
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
+SFX_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "correct_&_wrong")
 FEEDBACK_SOUNDS_DIR = os.path.join(
-    BASE_DIR, "assets", "sounds", "correct_&_wrong"
-)
+    BASE_DIR, "assets", "sounds", "sound_tama_mali")
 PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS PNK")
 
 
@@ -40,11 +42,17 @@ class PaaVS(QWidget):
         self.worker = None
         self.score_logged = False  # Prevent duplicate logging per run
 
-        # Feedback & Word Audio Setup
-        self.audio_output = QAudioOutput(self)
-        self.player = QMediaPlayer(self)
-        self.player.setAudioOutput(self.audio_output)
-        self.audio_output.setVolume(1.0)
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(1.5)
+
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
@@ -58,6 +66,7 @@ class PaaVS(QWidget):
         # Top Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        top_bar.setSpacing(20)
 
         back_btn = QPushButton(self)
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -81,7 +90,6 @@ class PaaVS(QWidget):
 
         top_bar.addWidget(back_btn)
         top_bar.addWidget(pagsasanay)
-        top_bar.setSpacing(20)
         main_layout.addLayout(top_bar)
 
         # Graphic Image Label
@@ -159,48 +167,56 @@ class PaaVS(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
-        # Susunod Action Button
-        action_layout = QHBoxLayout()
-        action_layout.setAlignment(Qt.AlignCenter)
-
-        self.next_btn = QPushButton("Susunod ➔", self)
-        self.next_btn.setCursor(Qt.PointingHandCursor)
-        self.next_btn.setStyleSheet(f"""
-            QPushButton {{
-                background-color: #2E7D32;
-                color: white;
-                font-family: {BODY_FONT};
-                font-size: 18px;
-                font-weight: bold;
-                border-radius: 10px;
-                padding: 10px 24px;
-            }}
-            QPushButton:hover {{
-                background-color: #1B5E20;
-            }}
-        """)
-        self.next_btn.hide()
-        self.next_btn.clicked.connect(self.handle_next)
-        action_layout.addWidget(self.next_btn)
-        main_layout.addLayout(action_layout)
-
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
+        # Action Buttons (Next Button)
+        action_layout = QHBoxLayout()
+        action_layout.setContentsMargins(20, 10, 20, 30)
+
+        self.next_btn = QPushButton("Sunod", self)
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {BRIGHT_YELLOW};
+                color: {CHOCO_BROWN};
+                font-size: 22px;
+                font-weight: 800;
+                border-radius: 6px;
+                font-family: {BODY_FONT};
+            }}
+        """)
+        self.next_btn.setFixedSize(240, 60)
+        self.next_btn.hide()
+        self.next_btn.clicked.connect(self.handle_next)
+
+        action_layout.addStretch()
+        action_layout.addWidget(self.next_btn)
+        main_layout.addLayout(action_layout)
+
     def play_word_audio(self):
         sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Paa.mp3")
+        if not os.path.exists(sound_path):
+            sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Paa.wav")
+
         if os.path.exists(sound_path):
-            self.player.setSource(
-                QUrl.fromLocalFile(os.path.abspath(sound_path))
-            )
-            self.player.play()
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.word_player.play()
+
+    def play_sfx_sound(self, filename: str):
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
 
     def play_feedback_sound(self, filename: str):
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
-            self.player.setSource(QUrl.fromLocalFile(abs_path))
-            self.player.play()
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
 
     @Slot()
     def start_listening(self):
@@ -224,7 +240,7 @@ class PaaVS(QWidget):
     def update_status(self, text):
         if (
             "MAGALING" not in self.feedback_label.text()
-            and "SUBUKAN" not in self.feedback_label.text()
+            and "TAMA" not in self.feedback_label.text()
             and not self.speak_btn.isEnabled()
         ):
             self.feedback_label.setText(text)
@@ -243,12 +259,19 @@ class PaaVS(QWidget):
             or "pah" in spoken_words
             or "pa" in spoken_words
         ):
-            self.feedback_label.setText("✅ MAGALING! TAMA!")
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+
+            self.feedback_label.setText(f"✅ {chosen_text}")
             self.feedback_label.setStyleSheet(
-                f"font-size: 28px; color: green; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 28px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
             )
-            self.play_feedback_sound("correct.wav")
+            
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
             self.next_btn.show()
 
             # --- AUTOMATIC SCORE LOGGING ---
@@ -264,14 +287,21 @@ class PaaVS(QWidget):
                     print("--> Paa pronunciation score successfully logged!")
                     self.score_logged = True
         else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_VR.mp3", "OOOPS, MALING SALITA! SUBUKAN MULI!")
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
             self.feedback_label.setText(
-                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+                f"❌ {chosen_text} (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
-                f"font-size: 24px; color: red; font-family: {BODY_FONT};"
-                " font-weight: bold;"
+                f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
             )
-            self.play_feedback_sound("wrong.wav")
+            
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
 
     @Slot()
     def on_speech_finished(self):
@@ -279,14 +309,8 @@ class PaaVS(QWidget):
 
     def stop_worker(self):
         if self.worker and self.worker.isRunning():
-            try:
-                self.worker.status_changed.disconnect()
-                self.worker.text_recognized.disconnect()
-                self.worker.finished.disconnect()
-            except RuntimeError:
-                pass
-            self.worker.terminate()
-            self.worker = None
+            self.worker.stop()
+            self.worker.wait()
 
     def handle_back(self):
         self.stop_worker()
@@ -297,6 +321,17 @@ class PaaVS(QWidget):
         self.stop_worker()
         self.score_logged = False
         self.router.navigate("paa_game")
+
+    def showEvent(self, event):
+        self.feedback_label.setText("")
+        self.speak_btn.setEnabled(True)
+        self.next_btn.hide()
+        self.score_logged = False
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_worker()
+        super().hideEvent(event)
 
     def closeEvent(self, event):
         self.stop_worker()

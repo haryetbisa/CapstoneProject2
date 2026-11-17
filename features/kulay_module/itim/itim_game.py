@@ -1,4 +1,5 @@
 import os
+import random
 from PySide6.QtCore import QMimeData, QPoint, QSize, Qt, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
@@ -20,8 +21,11 @@ IMAGE_DIR = os.path.join(
     BASE_DIR, "..", "..", "..", "assets", "image_content", "kulay"
 )
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong"
+)
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "..", "..", "..", "assets", "sounds", "sound_tama_mali"
 )
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "VS Kulay")
 INSTRUCTION_SOUND_FILE = "Kulay Instruction.mp3" 
@@ -151,12 +155,19 @@ class DragDropBlack(QWidget):
         self.correct_items = ["spider.png", "bat.png", "tv.png"]
         self.REQUIRED_CORRECT_COUNT = 3
         self.current_correct_count = 0
-        self.score_logged = False  # Prevent duplicate logging per run
+        self.score_logged = False
 
-        self.audio_output = QAudioOutput(self)
-        self.audio_player = QMediaPlayer(self)
-        self.audio_player.setAudioOutput(self.audio_output)
-        self.audio_output.setVolume(0.8)
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(1.5)
+
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -165,7 +176,7 @@ class DragDropBlack(QWidget):
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 30, 40, 30)
-        main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        main_layout.setAlignment(Qt.AlignTop)
 
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(60, 50, 0, 20)
@@ -208,17 +219,6 @@ class DragDropBlack(QWidget):
             os.path.join(IMAGE_DIR, "black_box.png"), parent_game=self
         )
         main_layout.addWidget(self.drop_box, alignment=Qt.AlignCenter)
-
-        self.feedback_label = QLabel("", self)
-        self.feedback_label.setAlignment(Qt.AlignCenter)
-        self.feedback_label.setStyleSheet(f"""
-            font-size: 24px;
-            font-family: {BODY_FONT};
-            font-weight: bold;
-            color: {CHOCO_BROWN};
-            margin-top: 10px;
-        """)
-        main_layout.addWidget(self.feedback_label)
 
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
@@ -288,12 +288,19 @@ class DragDropBlack(QWidget):
             self.items_row.addWidget(icon)
             self.active_icons.append(icon)
 
-    def play_sound(self, filename: str):
-        sound_path = os.path.join(SOUNDS_DIR, filename)
+    def play_sfx_sound(self, filename: str):
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
-            self.audio_player.setSource(QUrl.fromLocalFile(abs_path))
-            self.audio_player.play()
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
+    def play_feedback_sound(self, filename: str):
+        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
 
     def handle_item_drop(self, source_widget: DraggableIcon, filename: str):
         if filename in self.correct_items:
@@ -303,15 +310,17 @@ class DragDropBlack(QWidget):
             source_widget.deleteLater()
 
             if self.current_correct_count >= self.REQUIRED_CORRECT_COUNT:
-                self.feedback_label.setText("✅ MAGALING! TAMA LAHAT!")
-                self.feedback_label.setStyleSheet(
-                    f"font-size: 26px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
-                )
-                self.play_sound("correct.wav")
+                correct_options = [
+                    ("Tama_1.mp3", "correct.wav"),
+                    ("Tama_2.mp3", "correct.wav")
+                ]
+                chosen_voice, chosen_sfx = random.choice(correct_options)
+                self.play_sfx_sound(chosen_sfx)
+                self.play_feedback_sound(chosen_voice)
+
                 self.restart_btn.show()
                 self.next_btn.show()
 
-                # --- AUTOMATIC SCORE LOGGING ---
                 if not self.score_logged:
                     student_id = AppSession.get_active_student_id()
                     if student_id:
@@ -321,22 +330,23 @@ class DragDropBlack(QWidget):
                             target_word="Itim",
                             score=100.0
                         )
-                        print("--> Itim game score successfully logged for active student!")
                         self.score_logged = True
             else:
-                self.feedback_label.setText("Tama! Isa pa!")
-                self.feedback_label.setStyleSheet(
-                    f"font-size: 24px; color: green; font-family: {BODY_FONT}; font-weight: bold;"
-                )
-                self.play_sound("correct.wav")
+                correct_options = [
+                    ("Tama_1.mp3", "correct.wav"),
+                    ("Tama_2.mp3", "correct.wav")
+                ]
+                chosen_voice, chosen_sfx = random.choice(correct_options)
+                self.play_sfx_sound(chosen_sfx)
+                self.play_feedback_sound(chosen_voice)
         else:
-            self.play_sound("wrong.wav")
-            self.feedback_label.setText(
-                "❌ SUBUKAN ULIT! Maling kulay! Na-reset ang laro."
-            )
-            self.feedback_label.setStyleSheet(
-                f"font-size: 24px; color: red; font-family: {BODY_FONT}; font-weight: bold;"
-            )
+            wrong_options = [
+                ("Mali_Ac.mp3", "wrong.wav"),
+                ("Mali_AC2.mp3", "wrong.wav")
+            ]
+            chosen_voice, chosen_sfx = random.choice(wrong_options)
+            self.play_sfx_sound(chosen_sfx)
+            self.play_feedback_sound(chosen_voice)
             self.reset_game()
 
     def reset_game(self):
@@ -348,7 +358,6 @@ class DragDropBlack(QWidget):
 
     def showEvent(self, event):
         self.reset_game()
-        self.feedback_label.setText("")
         self.play_instruction_sound()
         super().showEvent(event)
 
@@ -370,8 +379,6 @@ class DragDropBlack(QWidget):
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
             self.instruction_player.play()
-        else:
-            print(f"Instruction sound not found: {sound_path}")
 
     def stop_instruction_sound(self):
         self.instruction_player.stop()

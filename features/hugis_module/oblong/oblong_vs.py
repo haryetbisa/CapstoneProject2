@@ -1,4 +1,5 @@
 import os
+import random
 
 from features.voice_recog import OfflineVoiceWorker
 from PySide6.QtCore import QSize, Qt, QUrl, Slot
@@ -13,6 +14,8 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
+from session import AppSession
+from Database.queries import log_activity
 
 # Resolve project root directory safely (4 levels up)
 BASE_DIR = os.path.dirname(
@@ -23,9 +26,10 @@ BASE_DIR = os.path.dirname(
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
+SFX_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "correct_&_wrong")
 FEEDBACK_SOUNDS_DIR = os.path.join(
-    BASE_DIR, "assets", "sounds", "correct_&_wrong"
-)
+    BASE_DIR, "assets", "sounds", "sound_tama_mali")
 PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "Vs Hugis")
 
 
@@ -36,13 +40,21 @@ class OblongVS(QWidget):
         self.router = router
         self.target_word = "bilohaba"
         self.worker = None
+        self.score_logged = False  # Prevent duplicate logging per run
 
-        # Audio Output & Player Setup
-        self.audio_output = QAudioOutput(self)
-        self.player = QMediaPlayer(self)
-        self.player.setAudioOutput(self.audio_output)
-        self.audio_output.setVolume(1.0)
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
+        self.feedback_audio_output = QAudioOutput(self)
+        self.feedback_player = QMediaPlayer(self)
+        self.feedback_player.setAudioOutput(self.feedback_audio_output)
+        self.feedback_audio_output.setVolume(1.5)
 
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
+
+        # Player for Word Pronunciation
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
@@ -54,6 +66,7 @@ class OblongVS(QWidget):
         # Top Navigation Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        top_bar.setSpacing(20)
 
         back_btn = QPushButton(self)
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -77,7 +90,6 @@ class OblongVS(QWidget):
 
         top_bar.addWidget(back_btn)
         top_bar.addWidget(pagsasanay)
-        top_bar.setSpacing(20)
         main_layout.addLayout(top_bar)
 
         # Main Graphic Image Label
@@ -155,9 +167,12 @@ class OblongVS(QWidget):
         """)
         main_layout.addWidget(self.feedback_label)
 
-        # Susunod Action Button
-        action_layout = QHBoxLayout()
-        action_layout.setAlignment(Qt.AlignCenter)
+        main_layout.setSpacing(20)
+        main_layout.addStretch(3)
+
+        # Action Buttons (Next Button)
+        lower_layout = QHBoxLayout()
+        lower_layout.setContentsMargins(20, 10, 20, 30)
 
         self.next_btn = QPushButton("Susunod ➔", self)
         self.next_btn.setCursor(Qt.PointingHandCursor)
@@ -175,35 +190,47 @@ class OblongVS(QWidget):
                 background-color: #1B5E20;
             }}
         """)
+        self.next_btn.setFixedSize(240, 60)
         self.next_btn.hide()
         self.next_btn.clicked.connect(self.handle_next)
-        action_layout.addWidget(self.next_btn)
-        main_layout.addLayout(action_layout)
 
-        main_layout.setSpacing(20)
-        main_layout.addStretch(3)
+        lower_layout.addStretch()
+        lower_layout.addWidget(self.next_btn)
+        main_layout.addLayout(lower_layout)
 
     def play_word_audio(self):
+        """Plays the target word pronunciation sound."""
         sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Bilohaba.mp3")
         if not os.path.exists(sound_path):
             sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Bilohaba.wav")
 
         if os.path.exists(sound_path):
-            self.player.setSource(
-                QUrl.fromLocalFile(os.path.abspath(sound_path))
-            )
-            self.player.play()
+            abs_path = os.path.abspath(sound_path)
+            self.word_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.word_player.play()
+
+    def play_sfx_sound(self, filename: str):
+        """Plays the fixed sound effect (correct.wav / wrong.wav)."""
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
 
     def play_feedback_sound(self, filename: str):
+        """Plays the randomized voice-over clip."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
-            self.player.setSource(QUrl.fromLocalFile(abs_path))
-            self.player.play()
+            self.feedback_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.feedback_player.play()
 
     @Slot()
     def start_listening(self):
-        self.stop_worker()
+        """Starts background voice recognition."""
+        if self.worker and self.worker.isRunning():
+            self.worker.stop()
+            self.worker.wait()
 
         self.speak_btn.setEnabled(False)
 
@@ -221,15 +248,17 @@ class OblongVS(QWidget):
 
     @Slot(str)
     def update_status(self, text):
+        """Updates live status feedback while listening."""
         if (
             "MAGALING" not in self.feedback_label.text()
-            and "SUBUKAN" not in self.feedback_label.text()
+            and "TAMA" not in self.feedback_label.text()
             and not self.speak_btn.isEnabled()
         ):
             self.feedback_label.setText(text)
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
+        """Evaluates recognized text against target word using exact word matching."""
         spoken_clean = spoken_text.lower().replace("-", " ").strip()
         target_clean = self.target_word.lower().strip()
 
@@ -238,49 +267,91 @@ class OblongVS(QWidget):
         if (
             target_clean in spoken_words
             or "ob long" in spoken_clean
-            or "biluhaba" in spoken_clean
+            or "bilohaba" in spoken_clean
             or "bilo haba" in spoken_clean
         ):
-            self.feedback_label.setText("✅ MAGALING! TAMA!")
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+
+            self.feedback_label.setText(f"✅ {chosen_text}")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("correct.wav")
+            
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
             self.next_btn.show()
+
+            # --- AUTOMATIC SCORE LOGGING ---
+            if not self.score_logged:
+                student_id = AppSession.get_active_student_id()
+                if student_id:
+                    log_activity(
+                        student_id=student_id,
+                        module_name="Mga Hugis",
+                        target_word="Bilohaba",
+                        score=100.0
+                    )
+                    print("--> Bilohaba pronunciation score successfully logged!")
+                    self.score_logged = True
         else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_VR.mp3", "OOOPS, MALING SALITA! SUBUKAN MULI!")
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
             self.feedback_label.setText(
-                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+                f"❌ {chosen_text} (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
                 f"font-size: 24px; color: red; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("wrong.wav")
+            
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
 
     @Slot()
     def on_speech_finished(self):
         self.speak_btn.setEnabled(True)
 
     def stop_worker(self):
+        """Safely terminates active voice worker threads."""
         if self.worker and self.worker.isRunning():
-            try:
-                self.worker.status_changed.disconnect()
-                self.worker.text_recognized.disconnect()
-                self.worker.finished.disconnect()
-            except RuntimeError:
-                pass
-            self.worker.terminate()
-            self.worker = None
+            self.worker.stop()
+            self.worker.wait()
 
     def handle_back(self):
+        """Safely stops recording before navigating away."""
         self.stop_worker()
+        self.score_logged = False
         self.router.navigate("oblong")
 
     def handle_next(self):
+        """Safely stops recording before navigating away."""
         self.stop_worker()
+        self.score_logged = False
         self.router.navigate("oblong_game")
 
+    def showEvent(self, event):
+        """Resets the UI state whenever the widget becomes visible again."""
+        self.feedback_label.setText("")
+        self.speak_btn.setEnabled(True)
+        self.next_btn.hide()
+        self.score_logged = False
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        """Ensures worker thread stops when widget is hidden or navigated away from."""
+        self.stop_worker()
+        super().hideEvent(event)
+
     def closeEvent(self, event):
+        """Ensures thread cleanup when widget is closed."""
         self.stop_worker()
         event.accept()

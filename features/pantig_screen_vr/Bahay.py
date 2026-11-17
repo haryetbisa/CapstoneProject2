@@ -1,6 +1,6 @@
 import os
+import random
 
-from features.voice_recog import OfflineVoiceWorker
 from PySide6.QtCore import QSize, Qt, QUrl, Slot
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
@@ -11,19 +11,25 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from features.voice_recog import OfflineVoiceWorker
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
+# Path Configurations
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
-
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
 )
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "sound_tama_mali"
+)
 PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
+
 
 class PantigBahay(QWidget):
 
@@ -33,12 +39,19 @@ class PantigBahay(QWidget):
         self.target_word = "bahay"
         self.worker = None
 
-        # Feedback Audio Player Setup
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
+        self.feedback_audio_output.setVolume(1.5)
 
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
+
+        # Word Pronunciation player
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
@@ -50,7 +63,7 @@ class PantigBahay(QWidget):
         # Top Navigation Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        main_layout.addLayout(top_bar)
+        top_bar.setSpacing(20)
 
         back_btn = QPushButton()
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -74,10 +87,11 @@ class PantigBahay(QWidget):
 
         top_bar.addWidget(back_btn)
         top_bar.addWidget(pagsasanay)
-        top_bar.setSpacing(20)
+        main_layout.addLayout(top_bar)
 
-        # Main Graphic (baso.png)
+        # Main Graphic (bahay.png)
         image = QLabel()
+        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image_path = os.path.join(IMAGE_DIR, "bahay.png")
         if os.path.exists(image_path):
             image.setPixmap(
@@ -85,7 +99,6 @@ class PantigBahay(QWidget):
                     250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
-        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(image)
 
         # Word Display Layout
@@ -156,26 +169,27 @@ class PantigBahay(QWidget):
         main_layout.setSpacing(20)
         main_layout.addStretch(3)
 
-
+        # Lower Navigation Layout (Next Button)
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(200)
         lower_layout.setContentsMargins(70, 20, 70, 30)
         main_layout.addLayout(lower_layout)
 
-        self.speak_btn = QPushButton("Sunod")
-        self.speak_btn.setFixedHeight(40)
-        self.speak_btn.setCursor(Qt.PointingHandCursor)
-        self.speak_btn.setStyleSheet(f"""
-            background-color: {BRIGHT_YELLOW};
-            color: {CHOCO_BROWN};
-            font-size: 22px;
-            font-weight: 800;
-            border-radius: 6px;
-            font-family: {BODY_FONT};
+        self.next_btn = QPushButton("Sunod")
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.next_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {BRIGHT_YELLOW};
+                color: {CHOCO_BROWN};
+                font-size: 22px;
+                font-weight: 800;
+                border-radius: 6px;
+                font-family: {BODY_FONT};
+            }}
         """)
-        self.speak_btn.setFixedSize(240, 70)
-        lower_layout.addWidget(self.speak_btn, alignment = Qt.AlignmentFlag.AlignRight)
-        self.speak_btn.clicked.connect(lambda: self.router.navigate("bata"))
+        self.next_btn.setFixedSize(240, 70)
+        self.next_btn.clicked.connect(lambda: self.router.navigate("bata"))
+        lower_layout.addWidget(self.next_btn, alignment=Qt.AlignmentFlag.AlignRight)
 
     def play_word_sound(self):
         """Plays the target word pronunciation sound."""
@@ -192,8 +206,16 @@ class PantigBahay(QWidget):
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))
             self.word_player.play()
 
+    def play_sfx_sound(self, filename: str):
+        """Plays the fixed sound effect (correct.wav / wrong.wav)."""
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
     def play_feedback_sound(self, filename: str):
-        """Plays the correct/wrong feedback audio sound."""
+        """Plays the randomized voice-over clip."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
@@ -225,7 +247,8 @@ class PantigBahay(QWidget):
         """Prevents status messages from overwriting evaluation results."""
         if (
             "MAGALING" not in self.feedback_label.text()
-            and "SUBUKAN" not in self.feedback_label.text()
+            and "TAMA" not in self.feedback_label.text()
+            and not self.speak_btn.isEnabled()
         ):
             self.feedback_label.setText(text)
 
@@ -238,21 +261,37 @@ class PantigBahay(QWidget):
         spoken_words = spoken_clean.split()
 
         if target_clean in spoken_words:
-            self.feedback_label.setText("✅ MAGALING! TAMA!")
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+
+            self.feedback_label.setText(f"✅ {chosen_text}")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("correct.wav")
+            
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
         else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_VR.mp3", "OOOPS , MALING SALITA! SUBUKAN MULI!")
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
             self.feedback_label.setText(
-                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+                f"❌ {chosen_text} (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
                 f"font-size: 24px; color: red; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("wrong.wav")
+            
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
 
     @Slot()
     def on_speech_finished(self):
@@ -260,7 +299,22 @@ class PantigBahay(QWidget):
 
     def handle_back(self):
         """Safely stops recording before navigating away."""
+        self.stop_worker()
+        self.router.navigate("baso")
+
+    def stop_worker(self):
+        """Safely terminates active voice worker threads."""
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
-        self.router.navigate("baso")
+
+    def showEvent(self, event):
+        """Resets the UI state whenever the widget becomes visible again."""
+        self.feedback_label.setText("")
+        self.speak_btn.setEnabled(True)
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        """Ensures worker thread stops when widget is hidden or navigated away from."""
+        self.stop_worker()
+        super().hideEvent(event)

@@ -1,4 +1,5 @@
 import os
+import random
 
 from features.voice_recog import OfflineVoiceWorker
 from PySide6.QtCore import QSize, Qt, QUrl, Slot
@@ -20,8 +21,11 @@ BASE_DIR = os.path.dirname(
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "sound_tama_mali"
 )
 PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
 
@@ -34,12 +38,19 @@ class PantigRaketa(QWidget):
         self.target_word = "raketa"
         self.worker = None
 
-        # Feedback Audio Player Setup
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
+        self.feedback_audio_output.setVolume(1.5)
 
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
+
+        # Word Pronunciation player
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
@@ -51,7 +62,7 @@ class PantigRaketa(QWidget):
         # Top Navigation Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        main_layout.addLayout(top_bar)
+        top_bar.setSpacing(20)
 
         back_btn = QPushButton()
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -75,10 +86,11 @@ class PantigRaketa(QWidget):
 
         top_bar.addWidget(back_btn)
         top_bar.addWidget(pagsasanay)
-        top_bar.setSpacing(20)
+        main_layout.addLayout(top_bar)
 
-        # Main Graphic (kahoy.png)
+        # Main Graphic (raketa.png)
         image = QLabel()
+        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image_path = os.path.join(IMAGE_DIR, "raketa.png")
         if os.path.exists(image_path):
             image.setPixmap(
@@ -86,7 +98,6 @@ class PantigRaketa(QWidget):
                     250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
-        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(image)
 
         # Word Display Layout
@@ -197,8 +208,16 @@ class PantigRaketa(QWidget):
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))
             self.word_player.play()
 
+    def play_sfx_sound(self, filename: str):
+        """Plays the fixed sound effect (correct.wav / wrong.wav)."""
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
+
     def play_feedback_sound(self, filename: str):
-        """Plays the correct/wrong feedback audio sound."""
+        """Plays the randomized voice-over clip."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
@@ -225,14 +244,13 @@ class PantigRaketa(QWidget):
         self.worker.finished.connect(self.on_speech_finished)
         self.worker.start()
 
-
-
     @Slot(str)
     def update_status(self, text):
         """Prevents status messages from overwriting evaluation results."""
         if (
             "MAGALING" not in self.feedback_label.text()
-            and "SUBUKAN" not in self.feedback_label.text()
+            and "TAMA" not in self.feedback_label.text()
+            and not self.speak_btn.isEnabled()
         ):
             self.feedback_label.setText(text)
 
@@ -245,21 +263,37 @@ class PantigRaketa(QWidget):
         spoken_words = spoken_clean.split()
 
         if target_clean in spoken_words:
-            self.feedback_label.setText("✅ MAGALING! TAMA!")
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+
+            self.feedback_label.setText(f"✅ {chosen_text}")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("correct.wav")
+            
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
         else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_VR.mp3", "OOOPS, MALING SALITA! SUBUKAN MULI!")
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
             self.feedback_label.setText(
-                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+                f"❌ {chosen_text} (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
                 f"font-size: 24px; color: red; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("wrong.wav")
+            
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
 
     @Slot()
     def on_speech_finished(self):
@@ -267,7 +301,22 @@ class PantigRaketa(QWidget):
 
     def handle_back(self):
         """Safely stops recording before navigating away."""
+        self.stop_worker()
+        self.router.navigate("radyo")
+
+    def stop_worker(self):
+        """Safely terminates active voice worker threads."""
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
-        self.router.navigate("radyo")
+
+    def showEvent(self, event):
+        """Resets the UI state whenever the widget becomes visible again."""
+        self.feedback_label.setText("")
+        self.speak_btn.setEnabled(True)
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        """Ensures worker thread stops when widget is hidden or navigated away from."""
+        self.stop_worker()
+        super().hideEvent(event)

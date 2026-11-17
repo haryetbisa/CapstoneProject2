@@ -1,5 +1,5 @@
-
 import os
+import random
 from PySide6.QtCore import Qt, QMimeData, QSize, QUrl
 from PySide6.QtGui import QDrag, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
@@ -11,7 +11,8 @@ from session import AppSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
+SFX_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "correct_&_wrong")
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "sounds", "sound_tama_mali")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "G1 Bilang")
 INSTRUCTION_SOUND_FILE = "TANONG 6.mp3" 
 
@@ -142,11 +143,16 @@ class BilangLvl6(QWidget):
 
         self.number_widgets = {}
 
-        # Audio Setup
+        # Dual Audio Player Setup for Feedback (Voice-over + SFX)
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(0.8)
+        self.feedback_audio_output.setVolume(1.5)
+
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -307,11 +313,28 @@ class BilangLvl6(QWidget):
             self.number_widgets[num_text].show()
 
     def play_feedback_sound(self, is_correct: bool):
-        filename = "correct.wav" if is_correct else "wrong.wav"
-        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
-        if os.path.exists(sound_path):
+        """Plays randomized voice-over feedback alongside matching sound effect."""
+        if is_correct:
+            voice_file, sfx_file = random.choice([
+                ("tama_1.mp3", "correct.wav"),
+                ("tama_2.mp3", "correct.wav")
+            ])
+        else:
+            voice_file, sfx_file = random.choice([
+                ("mali_Ac.mp3", "wrong.wav"),
+                ("mali_AC2.mp3", "wrong.wav")
+            ])
+
+        sfx_path = os.path.abspath(os.path.join(SFX_SOUNDS_DIR, sfx_file))
+        if os.path.exists(sfx_path):
+            self.sfx_player.stop()
+            self.sfx_player.setSource(QUrl.fromLocalFile(sfx_path))
+            self.sfx_player.play()
+
+        voice_path = os.path.abspath(os.path.join(FEEDBACK_SOUNDS_DIR, voice_file))
+        if os.path.exists(voice_path):
             self.feedback_player.stop()
-            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+            self.feedback_player.setSource(QUrl.fromLocalFile(voice_path))
             self.feedback_player.play()
 
     def check_completion(self):
@@ -343,10 +366,6 @@ class BilangLvl6(QWidget):
 
             if all_correct:
                 self.next_btn.show()
-            else:
-                self.next_btn.hide()
-
-                # Updated module name to match dashboard expectations
                 self.save_activity_progress("Bilang (G1)", "dalawahan_q2", 1.0)
         else:
                 self.next_btn.hide()

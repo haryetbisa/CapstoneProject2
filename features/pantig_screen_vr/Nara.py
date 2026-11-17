@@ -1,4 +1,5 @@
 import os
+import random
 
 from features.voice_recog import OfflineVoiceWorker
 from PySide6.QtCore import QSize, Qt, QUrl, Slot
@@ -13,15 +14,18 @@ from PySide6.QtWidgets import (
 )
 from themes.colors import *
 from themes.fonts import BODY_FONT
-from session import AppSession
+
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
 
 IMAGE_DIR = os.path.join(BASE_DIR, "assets", "image_content", "pantig")
 ICONS_DIR = os.path.join(BASE_DIR, "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(
+SFX_SOUNDS_DIR = os.path.join(
     BASE_DIR, "assets", "sounds", "correct_&_wrong"
+)
+FEEDBACK_SOUNDS_DIR = os.path.join(
+    BASE_DIR, "assets", "sounds", "sound_tama_mali"
 )
 PRONUNCIATION_SOUNDS_DIR = os.path.join(BASE_DIR, "assets", "audio", "VS Pantig")
 
@@ -36,20 +40,23 @@ class PantigNara(QWidget):
         self.valid_targets = ["nara", "narra"]
         self.worker = None
 
-        # Feedback Audio Player Setup
+        # Voice-over player (for randomized audio lines) - Volume set to 1.5
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(1.0)
+        self.feedback_audio_output.setVolume(1.5)
 
+        # Fixed Sound Effect player (for correct.wav / wrong.wav) - Volume set to 0.3
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
+
+        # Word Pronunciation player
         self.word_audio_output = QAudioOutput(self)
         self.word_player = QMediaPlayer(self)
         self.word_player.setAudioOutput(self.word_audio_output)
         self.word_audio_output.setVolume(1.0)
-        
-        self.word_audio_output = QAudioOutput(self)
-        self.word_player = QMediaPlayer(self)
-        self.word_player.setAudioOutput(self.word_audio_output)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -57,7 +64,7 @@ class PantigNara(QWidget):
         # Top Navigation Bar
         top_bar = QHBoxLayout()
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        main_layout.addLayout(top_bar)
+        top_bar.setSpacing(20)
 
         back_btn = QPushButton()
         back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
@@ -81,10 +88,11 @@ class PantigNara(QWidget):
 
         top_bar.addWidget(back_btn)
         top_bar.addWidget(pagsasanay)
-        top_bar.setSpacing(20)
+        main_layout.addLayout(top_bar)
 
         # Main Graphic (narra.png)
         image = QLabel()
+        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         image_path = os.path.join(IMAGE_DIR, "narra.png")
         if os.path.exists(image_path):
             image.setPixmap(
@@ -92,7 +100,6 @@ class PantigNara(QWidget):
                     250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 )
             )
-        image.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(image)
 
         # Word Display Layout
@@ -189,22 +196,6 @@ class PantigNara(QWidget):
         main_layout.addLayout(lower_layout)
 
     def play_word_sound(self):
-        """Plays the target word pronunciation sound."""
-        sound_path = os.path.join(
-            PRONUNCIATION_SOUNDS_DIR, f"Nara.mp3"
-        )
-        if not os.path.exists(sound_path):
-            sound_path = os.path.join(
-                PRONUNCIATION_SOUNDS_DIR, f"Nara.wav"
-            )
-    def showEvent(self, event):
-        super().showEvent(event)
-        music_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
-        sfx_vol = AppSession.get_sfx_volume() if hasattr(AppSession, 'get_sfx_volume') else 0.7
-        self.word_audio_output.setVolume(music_vol)
-        self.feedback_audio_output.setVolume(sfx_vol)
-
-    def play_word_sound(self):
         """Plays the target word pronunciation sound safely."""
         sound_path = os.path.join(PRONUNCIATION_SOUNDS_DIR, "Nara.mp3")
         if not os.path.exists(sound_path):
@@ -214,11 +205,17 @@ class PantigNara(QWidget):
             abs_path = os.path.abspath(sound_path)
             self.word_player.setSource(QUrl.fromLocalFile(abs_path))
             self.word_player.play()
-        else:
-            print(f"--> Pronunciation audio file not found at: {sound_path}")
+
+    def play_sfx_sound(self, filename: str):
+        """Plays the fixed sound effect (correct.wav / wrong.wav)."""
+        sound_path = os.path.join(SFX_SOUNDS_DIR, filename)
+        if os.path.exists(sound_path):
+            abs_path = os.path.abspath(sound_path)
+            self.sfx_player.setSource(QUrl.fromLocalFile(abs_path))
+            self.sfx_player.play()
 
     def play_feedback_sound(self, filename: str):
-        """Plays the correct/wrong feedback audio sound."""
+        """Plays the randomized voice-over clip."""
         sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
         if os.path.exists(sound_path):
             abs_path = os.path.abspath(sound_path)
@@ -250,7 +247,8 @@ class PantigNara(QWidget):
         """Prevents status messages from overwriting evaluation results."""
         if (
             "MAGALING" not in self.feedback_label.text()
-            and "SUBUKAN" not in self.feedback_label.text()
+            and "TAMA" not in self.feedback_label.text()
+            and not self.speak_btn.isEnabled()
         ):
             self.feedback_label.setText(text)
 
@@ -267,25 +265,40 @@ class PantigNara(QWidget):
         spoken_clean = spoken_text.lower().replace("-", " ").strip()
         spoken_words = spoken_clean.split()
 
-        # Check if any spoken word matches either 'nara' or 'narra'
         is_match = any(target in spoken_words or target in w for target in self.valid_targets for w in spoken_words)
 
         if is_match:
-            self.feedback_label.setText("✅ MAGALING! TAMA!")
+            correct_options = [
+                ("Tama_1.mp3", "TAMA! MAHUSAY!"),
+                ("Tama_2.mp3", "WOW, MAGALING!")
+            ]
+            chosen_file, chosen_text = random.choice(correct_options)
+
+            self.feedback_label.setText(f"✅ {chosen_text}")
             self.feedback_label.setStyleSheet(
                 f"font-size: 28px; color: green; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("correct.wav")
+            
+            self.play_sfx_sound("correct.wav")
+            self.play_feedback_sound(chosen_file)
         else:
+            wrong_options = [
+                ("Mali_Ac.mp3", "KAYA MO YAN, SUBUKAN MULI!"),
+                ("Mali_VR.mp3", "OOOPS, MALING SALITA! SUBUKAN MULI!")
+            ]
+            chosen_file, chosen_text = random.choice(wrong_options)
+
             self.feedback_label.setText(
-                f"❌ SUBUKAN ULIT (Narinig: '{spoken_text}')"
+                f"❌ {chosen_text} (Narinig: '{spoken_text}')"
             )
             self.feedback_label.setStyleSheet(
                 f"font-size: 24px; color: red; font-family: {BODY_FONT};"
                 " font-weight: bold;"
             )
-            self.play_feedback_sound("wrong.wav")
+            
+            self.play_sfx_sound("wrong.wav")
+            self.play_feedback_sound(chosen_file)
 
     @Slot()
     def on_speech_finished(self):
@@ -293,7 +306,22 @@ class PantigNara(QWidget):
 
     def handle_back(self):
         """Safely stops recording before navigating away."""
+        self.stop_worker()
+        self.router.navigate("nanay")
+
+    def stop_worker(self):
+        """Safely terminates active voice worker threads."""
         if self.worker and self.worker.isRunning():
             self.worker.stop()
             self.worker.wait()
-            self.router.navigate("nanay")
+
+    def showEvent(self, event):
+        """Resets the UI state whenever the widget becomes visible again."""
+        self.feedback_label.setText("")
+        self.speak_btn.setEnabled(True)
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        """Ensures worker thread stops when widget is hidden or navigated away from."""
+        self.stop_worker()
+        super().hideEvent(event)

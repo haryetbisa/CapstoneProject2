@@ -1,7 +1,6 @@
-# features/g1_kuwentomodule/level5_quest.py
-
 import os
-from PySide6.QtCore import Qt, QSize, QUrl
+import random
+from PySide6.QtCore import Qt, QSize, QUrl, QTimer
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
@@ -14,7 +13,8 @@ from session import AppSession
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
-FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
+SFX_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
+FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "sound_tama_mali")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "KuwentoQuestions")
 INSTRUCTION_SOUND_FILE = "Tanong 5.mp3" 
 
@@ -27,7 +27,12 @@ class Kuwento5Question(QWidget):
         self.feedback_audio_output = QAudioOutput(self)
         self.feedback_player = QMediaPlayer(self)
         self.feedback_player.setAudioOutput(self.feedback_audio_output)
-        self.feedback_audio_output.setVolume(0.8)
+        self.feedback_audio_output.setVolume(1.5)
+
+        self.sfx_audio_output = QAudioOutput(self)
+        self.sfx_player = QMediaPlayer(self)
+        self.sfx_player.setAudioOutput(self.sfx_audio_output)
+        self.sfx_audio_output.setVolume(0.3)
 
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
@@ -35,13 +40,13 @@ class Kuwento5Question(QWidget):
         self.instruction_audio_output.setVolume(0.9)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(40, 30, 40, 30)
+        main_layout.setContentsMargins(40, 20, 40, 20)
         main_layout.setAlignment(Qt.AlignTop)
-        main_layout.setSpacing(20)
+        main_layout.setSpacing(15)
 
         # Header Navigation Bar
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(60, 50, 0, 20)
+        top_layout.setContentsMargins(20, 10, 20, 10)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
 
         back_btn = QPushButton()
@@ -103,6 +108,12 @@ class Kuwento5Question(QWidget):
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
+        # Feedback Text Label
+        self.feedback_label = QLabel("")
+        self.feedback_label.setAlignment(Qt.AlignCenter)
+        self.feedback_label.setStyleSheet(f"font-size: 24px; font-weight: 700; font-family: {BODY_FONT}; color: transparent;")
+        main_layout.addWidget(self.feedback_label)
+
         # Action Buttons Layout (Restart + Next)
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
@@ -156,6 +167,8 @@ class Kuwento5Question(QWidget):
         main_layout.addStretch()
 
     def reset_game(self):
+        self.feedback_label.setText("")
+        self.feedback_label.setStyleSheet("color: transparent;")
         self.restart_btn.hide()
         self.next_btn.hide()
         
@@ -174,7 +187,12 @@ class Kuwento5Question(QWidget):
 
     def showEvent(self, event):
         self.reset_game()
+        self.play_instruction_sound()
         super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
 
     def handle_back(self):
         self.reset_game()
@@ -185,10 +203,27 @@ class Kuwento5Question(QWidget):
         self.router.navigate("level6")
 
     def play_feedback_sound(self, is_correct: bool):
-        filename = "correct.wav" if is_correct else "wrong.wav"
-        sound_path = os.path.join(FEEDBACK_SOUNDS_DIR, filename)
-        if os.path.exists(sound_path):
-            self.feedback_player.setSource(QUrl.fromLocalFile(os.path.abspath(sound_path)))
+        if is_correct:
+            voice_file, sfx_file = random.choice([
+                ("tama_1.mp3", "correct.wav"),
+                ("tama_2.mp3", "correct.wav")
+            ])
+        else:
+            voice_file, sfx_file = random.choice([
+                ("mali_Ac.mp3", "wrong.wav"),
+                ("mali_AC2.mp3", "wrong.wav")
+            ])
+
+        sfx_path = os.path.abspath(os.path.join(SFX_SOUNDS_DIR, sfx_file))
+        if os.path.exists(sfx_path):
+            self.sfx_player.stop()
+            self.sfx_player.setSource(QUrl.fromLocalFile(sfx_path))
+            self.sfx_player.play()
+
+        voice_path = os.path.abspath(os.path.join(FEEDBACK_SOUNDS_DIR, voice_file))
+        if os.path.exists(voice_path):
+            self.feedback_player.stop()
+            self.feedback_player.setSource(QUrl.fromLocalFile(voice_path))
             self.feedback_player.play()
 
     def handle_choice(self, is_correct: bool, button: QPushButton):
@@ -200,12 +235,17 @@ class Kuwento5Question(QWidget):
 
         if is_correct:
             button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+            self.feedback_label.setText("Magaling! Tama ang iyong sagot!")
+            self.feedback_label.setStyleSheet(f"font-size: 24px; font-weight: 700; font-family: {BODY_FONT}; color: #27AE60;")
             self.restart_btn.show()
             self.next_btn.show()
             self.save_activity_progress("Kuwento", "kuwento_q5", 1.0)
         else:
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
+            self.feedback_label.setText("Mali. Subukan muli!")
+            self.feedback_label.setStyleSheet(f"font-size: 24px; font-weight: 700; font-family: {BODY_FONT}; color: #C0392B;")
             self.restart_btn.show()
+            QTimer.singleShot(1500, self.reset_game)
 
     def save_activity_progress(self, module_name, target_word, score):
         try:
@@ -223,15 +263,6 @@ class Kuwento5Question(QWidget):
             print("--> Kuwento Q5 activity successfully logged!")
         except Exception as e:
             print(f"--> Error logging activity progress: {e}")
-
-    def showEvent(self, event):
-        self.reset_game()
-        self.play_instruction_sound()
-        super().showEvent(event)
-
-    def hideEvent(self, event):
-        self.stop_instruction_sound()
-        super().hideEvent(event)
 
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
