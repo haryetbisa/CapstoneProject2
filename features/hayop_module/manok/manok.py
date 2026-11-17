@@ -104,7 +104,7 @@ class LessonScreenManok(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 9 : MANOK",
-        body_text="Ang manok ay isang uri ng alagang ibon na karaniwang inaalagaan sa bakuran o sa mga bukid.")
+        body_text="Ang manok ay isang uri ng alagang ibon na hindi lumilipad nang mataas, madaling paamuhin at karaniwang inaalagaan sa bakuran o sa mga bukid. Sila ay nagbibigay ng itlog sa mga tao na nagsisilbing pangunahing pagkain na may protina. ")
         right_column.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

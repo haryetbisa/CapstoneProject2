@@ -15,7 +15,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "PNK_Lesson")
 INSTRUCTION_SOUND_FILE = "Balikat.mp3"
 
-
 class LessonScreenBalikat(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -70,7 +69,7 @@ class LessonScreenBalikat(QWidget):
 
         card = LessonCard(
             title="Aralin 7 : BALIKAT",
-            body_text="Ang balikat ay ang bahagi ng katawan na nag-uugnay sa braso at sa itaas na bahagi ng katawan. Ito ay nagbibigay-daan sa paggalaw at pag-angat ng mga kamay."
+            body_text="Ang balikat ay bahagi ng katawan na nag-uugnay sa braso at itaas na bahagi ng katawan. Ito ay nagbibigay-daan sa paggalaw at pag-angat ng mga kamay."
         )
         content_layout.addWidget(card)
 

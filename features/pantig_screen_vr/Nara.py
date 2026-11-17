@@ -35,6 +35,7 @@ class PantigNara(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+        self.target_word = "nara"
         # Accept both correct spellings (single and double 'r')
         self.valid_targets = ["nara", "narra"]
         self.worker = None
@@ -253,7 +254,14 @@ class PantigNara(QWidget):
 
     @Slot(str)
     def evaluate_answer(self, spoken_text):
-        """Evaluates recognized text against valid target spellings."""
+        """Evaluates recognized text against target word using exact word matching."""
+        spoken_clean = spoken_text.lower().replace("-", " ").strip()
+        target_clean = self.target_word.lower().strip()
+
+        spoken_words = spoken_clean.split()
+
+        if target_clean in spoken_words:
+            """Evaluates recognized text against valid target spellings."""
         spoken_clean = spoken_text.lower().replace("-", " ").strip()
         spoken_words = spoken_clean.split()
 

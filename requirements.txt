@@ -3,9 +3,6 @@ PySide6
 vosk
 sounddevice
 numpy
-
-PySide6
-vosk
-sounddevice
-numpy
+winshell; sys_platform == "win32"
+pywin32; sys_platform == "win32"
 

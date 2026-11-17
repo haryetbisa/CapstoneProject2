@@ -69,8 +69,8 @@ class LessonScreenStar(QWidget):
         content_layout.addWidget(self.content_image)
 
         card = LessonCard(
-            title="Aralin 7 : STAR",
-            body_text="Ang hugis star o bituin ay may limang sulok. Ito ay isang simbolo na ginagamit sa bandila, parangal, at sining. Ito rin ay sumisimbolo ng liwanag at gabay."
+            title="Aralin 7 : BITUIN",
+            body_text="Ang bituin ay hugis na karaniwang may limang patulis na bahagi. Sa wikang Ingles, ito ay tinatawag na <i>“Star”</i>. Kadalasan itong makikita bilang simbolo sa bandila, parangal, at sining. Bituin din ang tawag sa mga kumikislap na liwanag sa kalangitan tuwing gabi."
         )
         content_layout.addWidget(card)
 

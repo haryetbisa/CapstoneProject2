@@ -8,6 +8,8 @@ ROOT_DIR = os.path.join(BASE_DIR, "..")
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
+
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import (
     QWidget,
@@ -21,10 +23,11 @@ from PySide6.QtWidgets import (
     QFrame,
     QMessageBox,
     QScrollArea,
-    QApplication,
+    QApplication
 )
 from PySide6.QtGui import QColor, QPalette, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
+
 
 from components.btn_dropshadow import add_drop_shadow
 from themes.colors import *
@@ -102,6 +105,10 @@ class Settings(QWidget):
         main_layout.addWidget(self.make_section_label("Audio"))
 
         self.music_slider = self.make_slider(default=70)
+
+        main_layout.addWidget(self.make_field_row("Music", self.music_slider))
+
+        self.sfx_slider = self.make_slider(default=70)
         self.music_slider.valueChanged.connect(self.on_music_volume_changed)
         main_layout.addWidget(self.make_field_row("Music", self.music_slider))
 
@@ -201,9 +208,11 @@ class Settings(QWidget):
         if self.media_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
             self.media_player.stop()
 
+
     def on_display_mode_changed(self, mode_text):
         is_windowed = (mode_text == "Windowed")
         self.resolution.setEnabled(is_windowed)
+
 
     def on_music_volume_changed(self, value):
         """Update music volume live via slider, audio output, AppSession, and auto-save instantly."""
@@ -241,6 +250,7 @@ class Settings(QWidget):
                 json.dump(settings_data, f, indent=4)
         except Exception as e:
             print(f"--> Failed to auto-save audio settings: {e}")
+
 
     def load_current_teacher_info(self):
         teacher_id = AppSession.get_teacher_id()
@@ -398,25 +408,43 @@ class Settings(QWidget):
         if not main_win:
             return
 
+
+        main_win.setWindowFlags(Qt.WindowType.Window)
+
         if display_mode_str == "Fullscreen":
-            main_win.setWindowFlags(Qt.WindowType.Window)
             main_win.showFullScreen()
+        elif display_mode_str == "Borderless":
+            main_win.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+            main_win.showMaximized()
+        elif display_mode_str == "Windowed":
+
+            if display_mode_str == "Fullscreen":
+                main_win.setWindowFlags(Qt.WindowType.Window)
+                main_win.showFullScreen()
         elif display_mode_str == "Borderless":
             main_win.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint)
             main_win.showMaximized()
         elif display_mode_str == "Windowed":
             main_win.setWindowFlags(Qt.WindowType.Window)
+
             main_win.showNormal()
             if "x" in res_str:
                 try:
                     w, h = map(int, res_str.split("x"))
                     main_win.resize(w, h)
+
+                    screen_geo = main_win.screen().geometry()
+                    x = (screen_geo.width() - w) // 2
+                    y = (screen_geo.height() - h) // 2
+                    main_win.move(max(0, x), max(0, y))
+
                     
                     screen = main_win.windowHandle().screen() if main_win.windowHandle() else QApplication.primaryScreen()
                     screen_geo = screen.availableGeometry()
                     x = screen_geo.x() + (screen_geo.width() - w) // 2
                     y = screen_geo.y() + (screen_geo.height() - h) // 2
                     main_win.move(max(screen_geo.x(), x), max(screen_geo.y(), y))
+
                 except ValueError:
                     pass
 
@@ -427,12 +455,17 @@ class Settings(QWidget):
         res = self.resolution.currentText()
         new_name = self.username.text().strip()
 
-        if not new_name:
+
+        # Update teacher name in the database and session
+        teacher_id = AppSession.get_teacher_id()
+        if teacher_id and new_name:
+         if not new_name:
             self.show_info_dialog("Pansinin", "Hindi maaaring maging bakante ang pangalan.")
             return
 
         teacher_id = AppSession.get_teacher_id()
         if teacher_id:
+
             try:
                 with get_db_connection() as conn:
                     cursor = conn.cursor()
@@ -440,10 +473,16 @@ class Settings(QWidget):
                     conn.commit()
                 if hasattr(AppSession, 'set_teacher_name'):
                     AppSession.set_teacher_name(new_name)
+
+                print(f"--> Teacher name updated to: {new_name}")
+            except Exception as e:
+                print(f"--> Failed to update teacher name in database: {e}")
+
             except Exception as e:
                 print(f"--> Failed to update teacher name in database: {e}")
                 self.show_info_dialog("Babala", "Hindi nai-save ang pangalan sa database.")
                 return
+
 
         settings_data = {
             "music_volume": self.music_slider.value(),
@@ -463,7 +502,9 @@ class Settings(QWidget):
             self.show_info_dialog("Tagumpay", "Na-i-save nang matagumpay ang iyong mga setting at pangalan!")
         except Exception as e:
             print(f"--> Failed to save settings file: {e}")
+
             self.show_info_dialog("Babala", "Hindi nai-save ang mga setting file.")
+
 
     def load_saved_preferences(self):
         if os.path.exists(SETTINGS_FILE):
@@ -548,7 +589,10 @@ class Settings(QWidget):
         confirm.exec()
 
         if confirm.clickedButton() == yes_btn:
+
+
             self.stop_settings_bgm()
+
             AppSession.clear_all()
             print("--> Teacher logged out successfully. Session file removed.")
             self.router.navigate("createacc")

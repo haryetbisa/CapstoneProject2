@@ -15,7 +15,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "PNK_Lesson")
 INSTRUCTION_SOUND_FILE = "Paa.mp3"
 
-
 class LessonScreenPaa(QWidget):
     def __init__(self, router):
         super().__init__()

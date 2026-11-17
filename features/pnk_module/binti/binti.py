@@ -15,7 +15,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "PNK_Lesson")
 INSTRUCTION_SOUND_FILE = "Binti.mp3"
 
-
 class LessonScreenBinti(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -70,7 +69,7 @@ class LessonScreenBinti(QWidget):
 
         card = LessonCard(
             title="Aralin 11 : BINTI AT TUHOD",
-            body_text="Binti: Ang bahagi ng katawan mula tuhod hanggang sakong na ginagamit sa pagtayo, paglakad, at pagtakbo. Tuhod: Ang kasukasuan sa pagitan ng hita at binti na nagpapabaluktot sa binti upang makagalaw at makalakad."
+            body_text="<b>Binti:</b> Ang bahagi ng katawan mula tuhod hanggang sakong na ginagamit sa pagtayo, paglakad, at pagtakbo. <b>Tuhod:</b> Ang buto sa ginta ng binti na kayang yumuko at umikot. Ito ay nakatutulong sa paggalaw gaya ng paglakad, pagtalon, pag-upo."
         )
         content_layout.addWidget(card)
 

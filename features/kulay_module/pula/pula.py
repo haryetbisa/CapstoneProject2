@@ -70,7 +70,7 @@ class Pula(QWidget):
 
         card = LessonCard(
             title="Aralin 1 : PULA",
-            body_text="Ang kulay pula ay isa sa pangunahing kulay. Ang mga bagay na halimbawa ng kulay na ito ay mansanas, rosas, kamatis, at puso. Ito naman ay sumisimbolo sa katapangan at pag-ibig."
+            body_text="Ang pula ay isa sa tatlong pangunahing kulay. Ito ang kulay ng matatamis na prutas gaya ng mansanas at pakwan, gayundin ang kamatis at hugis-puso. Sumisimbolo naman ito sa katapangan at pag-ibig."
         )
         content_layout.addWidget(card)
 

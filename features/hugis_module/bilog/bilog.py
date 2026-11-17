@@ -70,7 +70,7 @@ class LessonScreenBilog(QWidget):
 
         card = LessonCard(
             title="Aralin 1 : BILOG",
-            body_text="Ang hugis bilog ay isang simpleng hugis na paikot at walang simula o dulo. Ito ay walang mga sulok o gilid, at binubuo ng isang tuloy-tuloy na linyang kurba, halimbawa nito ay bola at bariya."
+            body_text="Ang bilog ay isang simpleng hugis na paikot na walang simula o dulo. Ito ay uri ng hugis kung saan walang nabubuong linya, binubuo ng isang tuloy-tuloy na linyang kurba. Halimbawa nito ay bola at perang bariya."
         )
         content_layout.addWidget(card)
 

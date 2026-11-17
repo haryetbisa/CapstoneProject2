@@ -45,7 +45,7 @@ class LessonScreenOblong(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(lambda: self.router.navigate("hugis"))
 
-        pagsasanay = QLabel("Aralin: Bilohaba")
+        pagsasanay = QLabel("Aralin: Biluhaba")
         pagsasanay.setStyleSheet(f"""
             font-size: 32px;
             font-family: {BODY_FONT};
@@ -69,8 +69,8 @@ class LessonScreenOblong(QWidget):
         content_layout.addWidget(self.content_image)
 
         card = LessonCard(
-            title="Aralin 5 : BILOHABA",
-            body_text="Ang hugis bilohaba ay tinatawag na oblong. Ito ay tumutukoy sa isang pinahabang hugis bilog. Halimbawa ng hugis na ito ay itlog at pakwan."
+            title="Aralin 5 : BILUHABA",
+            body_text="Ang biluhaba ay hugis na pabilog ngunit pahaba na tulad ng itlog. Sa wikang Ingles, kilala ito sa tawag na <i>oval</i>."
         )
         content_layout.addWidget(card)
 

@@ -23,6 +23,7 @@ class BilangScreen(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
         self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
 
         outer_layout = QVBoxLayout(self)
@@ -141,5 +142,6 @@ class BilangScreen(QWidget):
             print(f"Instruction sound not found: {sound_path}")
 
     def stop_instruction_sound(self):
+        self.instruction_player.stop()
         if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
             self.instruction_player.stop()

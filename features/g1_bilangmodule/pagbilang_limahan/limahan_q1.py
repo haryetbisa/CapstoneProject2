@@ -18,6 +18,7 @@ INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "aud
 INSTRUCTION_SOUND_FILE = "TANONG 7.mp3" 
 
 
+
 class DraggableWord(QLabel):
     """A picture from the picture bank that the user can drag onto a blank."""
 
@@ -245,6 +246,7 @@ class BilangLvl7(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -341,9 +343,12 @@ class BilangLvl7(QWidget):
 
             if all_correct:
                 self.next_btn.show()
+            else:
+                self.next_btn.hide()
+
                 # Log progress under Bilang (G1) matching dashboard
                 self.save_activity_progress("Bilang (G1)", "limahan_q1", 1.0)
-            else:
+        else:
                 self.next_btn.hide()
 
     def save_activity_progress(self, module_name, target_word, score):
@@ -372,6 +377,10 @@ class BilangLvl7(QWidget):
 
         self.restart_btn.hide()
         self.next_btn.hide()
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
 
     def handle_back(self):
         self.reset_game()

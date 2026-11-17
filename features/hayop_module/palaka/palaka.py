@@ -106,7 +106,7 @@ class LessonScreenPalaka(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 11 : PALAKA",
-        body_text="Ang palaka ay isang uri ng hayop na kayang mabuhay sa tubig at sa lupa. May basa-basa at madulas na balat na tumutulong din sa kanila na huminga, mayroon din silang mahahabang binti sa likod na ginagamit sa pagtalon nang malayo at sa paglangoy.")
+        body_text="Ang palaka ay maliit na hayop na naninirahan sa tubig at sa lupa. May apat itong paa na ang dalawang nasa huli ay higit na malaki at mahaba kaysa ang nasa unahan. Kabit-kabit ang daliri at patalon-talon ang paraan ng pagkilos. ")
         right_column.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

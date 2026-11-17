@@ -9,6 +9,7 @@ import smtplib
 import bcrypt
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
 from dotenv import load_dotenv
 
 # Load environment variables from local .env file
@@ -54,6 +55,7 @@ class ForgotPassword(QWidget):
         self.router = router
         self.generated_code = None
         self.verified_email = None
+
         self.code_timestamp = 0  # Added for 5-minute code expiration tracking
 
         # Outer layout with ScrollArea for screen responsiveness
@@ -165,6 +167,7 @@ class ForgotPassword(QWidget):
         self.new_password.setFixedSize(888, 56)
         self.new_password.setPlaceholderText("At least 8 characters")
         self.new_password.setEchoMode(QLineEdit.Password)
+        self.set_password_style(self.new_password)  # Uses dedicated padding for the eye button!
         self.set_password_style(self.new_password)
         input_layout.addWidget(self.new_password, alignment=Qt.AlignmentFlag.AlignLeft)
 
@@ -275,6 +278,7 @@ class ForgotPassword(QWidget):
         self.new_password.clear()
         self.generated_code = None
         self.verified_email = None
+
         self.code_timestamp = 0
         self.email_error.hide()
         self.code_error.hide()
@@ -297,6 +301,7 @@ class ForgotPassword(QWidget):
         """)
 
     def set_password_style(self, widget):
+        # Includes extra right padding (50px) so typed text doesn't overlap the eye icon
         widget.setStyleSheet(f"""
             QLineEdit {{
                 font-family: {BODY_FONT};
@@ -340,6 +345,7 @@ class ForgotPassword(QWidget):
             self.set_error_style(self.email)
             return
 
+
         # Show loading state on button
         self.send_code_btn.setEnabled(False)
         self.send_code_btn.setText("Sending...")
@@ -355,16 +361,20 @@ class ForgotPassword(QWidget):
                 self.email_error.setText("✖  No account found with this email address.")
                 self.email_error.setVisible(True)
                 self.set_error_style(self.email)
+
                 self.reset_send_button()
                 return
 
         except Exception as e:
             print(f"--> Database check error: {e}")
+
             self.reset_send_button()
             return
 
         self.generated_code = str(random.randint(100000, 999999))
         self.verified_email = email_text
+        sender_email = "basamakita.official@gmail.com"
+        app_password = "tvpq ldae oeiv mjhn"
         self.code_timestamp = time.time()  # Record timestamp for 5-minute expiration
 
         # Securely load credentials from environment variables (.env)
@@ -384,6 +394,12 @@ class ForgotPassword(QWidget):
             msg["From"] = sender_email
             msg["To"] = email_text
             msg["Subject"] = "BasaMatika Password Reset Code"
+
+
+            body = f"Mabuhay! Your password reset verification code is: {self.generated_code}"
+            msg.attach(MIMEText(body, "plain"))
+
+            server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 
             body = f"Mabuhay! Your password reset verification code is: {self.generated_code}\n\nThis code will expire in 5 minutes."
             msg.attach(MIMEText(body, "plain"))
@@ -423,6 +439,7 @@ class ForgotPassword(QWidget):
             self.email_error.setText("✖ Failed to send email. Check network connection.")
             self.email_error.setVisible(True)
             self.set_error_style(self.email)
+
             self.generated_code = None
             self.verified_email = None
             self.code_timestamp = 0
@@ -445,12 +462,14 @@ class ForgotPassword(QWidget):
             self.set_error_style(self.email)
             has_error = True
 
+
         # Check code validity and 5-minute (300 seconds) expiration limit
         if not code_text or code_text != self.generated_code:
             self.code_error.setText("✖  Invalid or missing verification code.")
             self.code_error.setVisible(True)
             self.set_error_style(self.code_input)
             has_error = True
+
         elif self.code_timestamp and (time.time() - self.code_timestamp > 300):
             self.code_error.setText("✖  Verification code has expired. Please request a new one.")
             self.code_error.setVisible(True)

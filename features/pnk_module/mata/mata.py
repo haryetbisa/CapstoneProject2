@@ -70,7 +70,7 @@ class LessonScreenMata(QWidget):
 
         card = LessonCard(
             title="Aralin 1 : MATA, KILAY, PILIK",
-            body_text="Mata: Ito ang pangunahing pandama na ginagamit upang makakita ng liwanag, kulay, hugis, at mga bagay sa paligid. Ang Kilay ay ang buhok sa ibabaw ng mga mata na humaharang sa pawis at ulan upang hindi ito pumasok sa mata. Tumutulong din ito sa pagpapahayag ng emosyon. Ang Pilik-mata ay ang maikling buhok sa gilid ng talukap na nagsisilbing panangga ng mata laban sa alikabok, dumi, at insekto."
+            body_text="<b>Mata:</b> Bahagi sa mukha ng tao na nagbibigay ng kakayahang makakita.</br> <b> Kilay: </b> Guhit ng buhok sa ibabaw ng mata na nagsisilbing pananggalang sa pawis at ulan upang hindi pumasok sa mata. Sumasabay din ito sa ekspresyon ng mukha gaya ng pagiging masaya, pagkagulat, at pagkalungkot.</br><b> Pilik-mata:</b> Maiikling buhok sa gilid ng talukap ng mata. Nagsisilbing panangga laban sa alikabok, dumi, at insekto."
         )
         content_layout.addWidget(card)
 

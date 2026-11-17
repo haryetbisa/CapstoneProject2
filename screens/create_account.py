@@ -8,7 +8,9 @@ import urllib.parse
 import webbrowser
 import requests
 import uuid
+
 import bcrypt
+
 
 from PySide6.QtCore import Qt, QSize, Signal, QObject
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QMessageBox
@@ -17,6 +19,7 @@ from themes.colors import *
 from themes.fonts import BODY_FONT
 from session import AppSession
 from Database.connection import get_db_connection
+
 
 try:
     from config import SUPABASE_URL, SUPABASE_KEY  # type: ignore
@@ -28,6 +31,8 @@ try:
     from supabase import create_client
 except ImportError:
     create_client = None
+
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "assets", "image")
@@ -292,58 +297,64 @@ class CreateAccount(QWidget):
                 if teacher:
                     AppSession.set_teacher(teacher_id=teacher["teacher_id"], full_name=teacher["full_name"], remember=True)
                     self.router.navigate("home")
-                else:
-                    # Check if teacher already exists in Supabase cloud (handles local DB resets gracefully)
-                    existing_teacher_id = None
-                    existing_name = "Guro"
-                    existing_pw_hash = None
+                    return
 
-                    if SUPABASE_URL and SUPABASE_KEY and create_client:
-                        try:
-                            supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-                            response = supabase.table("teachers").select("*").eq("email", email).execute()
-                            if response.data and len(response.data) > 0:
-                                cloud_teacher = response.data[0]
-                                existing_teacher_id = cloud_teacher.get("teacher_id")
-                                existing_name = cloud_teacher.get("full_name", "Guro")
-                                existing_pw_hash = cloud_teacher.get("password_hash")
-                                print(f"--> Found existing cloud teacher for {email}: {existing_teacher_id}")
-                        except Exception as cloud_ex:
-                            print(f"--> Could not check cloud for existing teacher: {cloud_ex}")
+                # A local database may have been reset while this teacher remains in Supabase.
+                existing_teacher_id = None
+                existing_name = "Guro"
+                existing_pw_hash = None
 
-                    if existing_teacher_id:
-                        if not existing_pw_hash:
-                            raw_dummy_pw = "oauth_google_secured"
-                            existing_pw_hash = bcrypt.hashpw(raw_dummy_pw.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                if SUPABASE_URL and SUPABASE_KEY and create_client:
+                    try:
+                        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+                        response = supabase.table("teachers").select("*").eq("email", email).execute()
+                        if response.data:
+                            cloud_teacher = response.data[0]
+                            existing_teacher_id = cloud_teacher.get("teacher_id")
+                            existing_name = cloud_teacher.get("full_name") or "Guro"
+                            existing_pw_hash = cloud_teacher.get("password_hash")
+                            print(f"--> Found existing cloud teacher for {email}: {existing_teacher_id}")
+                    except Exception as cloud_ex:
+                        print(f"--> Could not check cloud for existing teacher: {cloud_ex}")
 
-                        # Reuse the cloud teacher_id locally and mark as already synced
-                        cursor.execute(
-                            "INSERT INTO teachers (teacher_id, full_name, email, password_hash, section_name, is_synced) VALUES (?, ?, ?, ?, ?, 1)",
-                            (existing_teacher_id, existing_name, email, existing_pw_hash, "Kindergarten - Paharang")
-                        )
-                        conn.commit()
-                        AppSession.set_teacher(teacher_id=existing_teacher_id, full_name=existing_name, remember=True)
-                        print("--> Re-linked existing cloud teacher to local database successfully.")
-                        self.router.navigate("home")
-                    else:
-                        # Register brand new teacher from Google OAuth
-                        new_teacher_id = str(uuid.uuid4())
-                        
+                if existing_teacher_id:
+                    if not existing_pw_hash:
                         raw_dummy_pw = "oauth_google_secured"
-                        hashed_pw = bcrypt.hashpw(raw_dummy_pw.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                        
-                        cursor.execute(
-                            "INSERT INTO teachers (teacher_id, full_name, email, password_hash, section_name, is_synced) VALUES (?, ?, ?, ?, ?, 0)",
-                            (new_teacher_id, "Guro", email, hashed_pw, "Kindergarten - Paharang")
-                        )
-                        
-                        cursor.execute(
-                            "INSERT INTO sync_queue (table_name, record_id, action) VALUES ('teachers', ?, 'INSERT')",
-                            (new_teacher_id,)
-                        )
-                        
-                        conn.commit()
-                        AppSession.set_teacher(teacher_id=new_teacher_id, full_name="Guro", remember=True)
-                        self.router.navigate("home")
+                        existing_pw_hash = bcrypt.hashpw(
+                            raw_dummy_pw.encode("utf-8"), bcrypt.gensalt()
+                        ).decode("utf-8")
+
+                    cursor.execute(
+                        "INSERT INTO teachers (teacher_id, full_name, email, password_hash, section_name, is_synced) "
+                        "VALUES (?, ?, ?, ?, ?, 1)",
+                        (existing_teacher_id, existing_name, email, existing_pw_hash, "Kindergarten - Paharang")
+                    )
+                    conn.commit()
+                    AppSession.set_teacher(
+                        teacher_id=existing_teacher_id, full_name=existing_name, remember=True
+                    )
+                    print("--> Re-linked existing cloud teacher to local database successfully.")
+                else:
+                    # Register a new teacher from Google OAuth.
+                    new_teacher_id = str(uuid.uuid4())
+                    raw_dummy_pw = "oauth_google_secured"
+                    hashed_pw = bcrypt.hashpw(
+                        raw_dummy_pw.encode("utf-8"), bcrypt.gensalt()
+                    ).decode("utf-8")
+
+                    cursor.execute(
+                        "INSERT INTO teachers (teacher_id, full_name, email, password_hash, section_name, is_synced) "
+                        "VALUES (?, ?, ?, ?, ?, 0)",
+                        (new_teacher_id, "Guro", email, hashed_pw, "Kindergarten - Paharang")
+                    )
+                    cursor.execute(
+                        "INSERT INTO sync_queue (table_name, record_id, action) "
+                        "VALUES ('teachers', ?, 'INSERT')",
+                        (new_teacher_id,)
+                    )
+                    conn.commit()
+                    AppSession.set_teacher(teacher_id=new_teacher_id, full_name="Guro", remember=True)
+
+            self.router.navigate("home")
         except Exception as e:
             print(f"--> Google login database error: {e}")

@@ -4,6 +4,10 @@ import os
 import re
 import sys
 import random
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import time
 import smtplib
 from email.mime.text import MIMEText
@@ -28,6 +32,7 @@ from PySide6.QtWidgets import (
     QToolButton,
     QMessageBox,
     QScrollArea
+
 )
 from PySide6.QtGui import QPixmap, QColor, QPalette, QIcon
 
@@ -56,6 +61,11 @@ class AccountInfo(QWidget):
         super().__init__()
         self.router = router
         self.generated_code = None  # Stores the random verification code temporarily
+
+
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 10, 0, 10)
+        main_layout.setSpacing(8)
         self.code_timestamp = 0     # Stores when the code was generated for expiration tracking
 
         outer_layout = QVBoxLayout(self)
@@ -81,15 +91,51 @@ class AccountInfo(QWidget):
         logo.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         logo.setPixmap(
-            QPixmap(os.path.join(IMAGE_DIR, "logoo.png")).scaled(
-                220, 220, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                QPixmap(
+                QPixmap(os.path.join(IMAGE_DIR, "logoo.png")).scaled(
+                    280, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
             )
         )
+
+        
         main_layout.addWidget(logo)
 
         # Form Inputs Layout
         input_layout = QVBoxLayout()
         input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        input_layout.setSpacing(6)
+        main_layout.addLayout(input_layout)
+
+        # --- Full Name Field ---
+        name_label = QLabel("Full Name")
+        name_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+        )
+        input_layout.addWidget(name_label, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        self.full_name = QLineEdit()
+        self.full_name.setFixedSize(888, 48)
+        self.full_name.setPlaceholderText("e.g. Teacher Maria Santos")
+        self.set_normal_style(self.full_name)
+        input_layout.addWidget(self.full_name, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        # Full Name Inline Error Label
+        self.name_error = QLabel("")
+        self.name_error.setFixedWidth(888)
+        self.name_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.name_error.hide()
+        input_layout.addWidget(self.name_error, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        # Email Field Label
+        email_label = QLabel("Email")
+        email_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+        )
+        input_layout.addWidget(email_label, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        # Email & Send Code Row Layout
+
         input_layout.setSpacing(10)
         main_layout.addLayout(input_layout)
 
@@ -128,11 +174,13 @@ class AccountInfo(QWidget):
         )
         email_group.addWidget(email_label)
 
+
         email_row_layout = QHBoxLayout()
         email_row_layout.setSpacing(10)
         email_row_layout.setContentsMargins(0, 0, 0, 0)
 
         self.email = QLineEdit()
+        self.email.setFixedSize(720, 48)
         self.email.setFixedSize(720, 44)
         self.email.setPlaceholderText("name@gmail.com")
         self.set_normal_style(self.email)
@@ -143,6 +191,7 @@ class AccountInfo(QWidget):
         email_row_layout.addWidget(self.email)
 
         self.send_code_btn = QPushButton("Send Code")
+        self.send_code_btn.setFixedSize(158, 48)
         self.send_code_btn.setFixedSize(158, 44)
         self.send_code_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.send_code_btn.setStyleSheet(f"""
@@ -150,8 +199,8 @@ class AccountInfo(QWidget):
                 background-color: {CORAL_RED};
                 color: {LIGHT};
                 font-family: {BODY_FONT};
+                font-size: 16px;
                 font-size: 15px;
-                font-weight: 700;
                 border-radius: 6px;
             }}
             QPushButton:hover {{
@@ -164,6 +213,48 @@ class AccountInfo(QWidget):
         email_container = QWidget()
         email_container.setFixedWidth(888)
         email_container.setLayout(email_row_layout)
+        input_layout.addWidget(email_container, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        # Email Inline Error Label
+        self.email_error = QLabel("")
+        self.email_error.setFixedWidth(888)
+        self.email_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.email_error.hide()
+        input_layout.addWidget(self.email_error, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        # --- Verification Code Field ---
+        code_label = QLabel("Verification Code")
+        code_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+        )
+        input_layout.addWidget(code_label, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        self.code_input = QLineEdit()
+        self.code_input.setFixedSize(888, 48)
+        self.code_input.setPlaceholderText("Enter 6-digit verification code")
+        self.set_normal_style(self.code_input)
+        input_layout.addWidget(self.code_input, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        # Verification Code Inline Error Label
+        self.code_error = QLabel("")
+        self.code_error.setFixedWidth(888)
+        self.code_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.code_error.hide()
+        input_layout.addWidget(self.code_error, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        # Password Field 
+        pass_label = QLabel("Password")
+        pass_label.setStyleSheet(
+            f"font-family: {BODY_FONT}; font-size: 15px; color: {CORAL_RED}; font-weight: 600;"
+        )
+        input_layout.addWidget(pass_label, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        self.password = QLineEdit()
+        self.password.setFixedSize(888, 48)
+        self.password.setAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+        )
+        self.password.setPlaceholderText("eg. 123abcd")
         email_group.addWidget(email_container)
 
         self.email_error = QLabel("")
@@ -214,14 +305,25 @@ class AccountInfo(QWidget):
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
         )
         self.password.setPlaceholderText("e.g. password123")
+
         self.password.setEchoMode(QLineEdit.Password)
         self.set_normal_style(self.password)
 
         palette = self.password.palette()
         palette.setColor(QPalette.PlaceholderText, QColor(CHOCO_BROWN))
         self.password.setPalette(palette)
-        pass_group.addWidget(self.password)
+        input_layout.addWidget(self.password, alignment=Qt.AlignmentFlag.AlignLeft)
 
+        # Password Inline Error Label
+        self.password_error = QLabel("")
+        self.password_error.setFixedWidth(888)
+        self.password_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 13px; color: #d93025; font-weight: 600;")
+        self.password_error.hide()
+        input_layout.addWidget(self.password_error, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        self.ICON_PIXEL_SIZE = 30
+
+        pass_group.addWidget(self.password)
         self.password_error = QLabel("")
         self.password_error.setStyleSheet(f"font-family: {BODY_FONT}; font-size: 12px; color: #d93025; font-weight: 600;")
         self.password_error.hide()
@@ -230,6 +332,7 @@ class AccountInfo(QWidget):
         input_layout.addLayout(pass_group)
 
         self.ICON_PIXEL_SIZE = 28
+
         self.eye_btn = QToolButton(self.password)
         self.eye_btn.setCheckable(True)
         self.eye_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -246,11 +349,21 @@ class AccountInfo(QWidget):
         # Return Navigation Row
         header_row = QHBoxLayout()
         header_row.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        header_row.setContentsMargins(0, 4, 0, 4)
+        
+        create_label = QLabel("Nais mo bang bumalik?")
+        create_label.setStyleSheet(
+              f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 15px;"
+        )
+             
         header_row.setContentsMargins(0, 2, 0, 2)
+        
+            
         
         create_label = QLabel("Nais mo bang bumalik?")
         create_label.setStyleSheet(
             f"font-family: {BODY_FONT}; color: {CHOCO_BROWN}; font-weight: 600; font-size: 14px;"
+
         )
         header_row.addWidget(create_label)
 
@@ -263,6 +376,7 @@ class AccountInfo(QWidget):
                 font-family: {BODY_FONT};
                 color: {CORAL_RED};
                 font-weight: 700;
+                font-size: 15px;
                 font-size: 14px;
                 text-align: left;
             }}
@@ -282,6 +396,7 @@ class AccountInfo(QWidget):
 
         # Create Account Button
         self.create_btn = QPushButton("Create account")
+        self.create_btn.setFixedSize(340, 50)
         self.create_btn.setFixedSize(300, 48)
         self.create_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.create_btn.setStyleSheet(f"""
@@ -289,6 +404,7 @@ class AccountInfo(QWidget):
                 background-color: {CORAL_RED};
                 color: {LIGHT};
                 font-family: {BODY_FONT};
+                font-size: 20px;
                 font-size: 18px;
                 font-weight: 900;
                 border-radius: 6px;
@@ -315,16 +431,21 @@ class AccountInfo(QWidget):
         image_bottom = QHBoxLayout()
         image_bottom.setSpacing(0)
         image_bottom.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        image_bottom.setContentsMargins(0, 5, 0, 0)
         image_bottom.setContentsMargins(0, 10, 0, 0)
+
 
         for img_name in ["kids2.png", "kids1.png", "kids2.png", "kids1.png"]:
             kid = QLabel()
             kid.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
             kid.setPixmap(
-                QPixmap(os.path.join(IMAGE_DIR, img_name)).scaled(
-                    160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation
-                )
+                    QPixmap(
+                    QPixmap(os.path.join(IMAGE_DIR, img_name)).scaled(
+                        220, 220, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                    )
             )
+            )
+
             kid.setAlignment(Qt.AlignmentFlag.AlignLeft)
             image_bottom.addWidget(kid)
 
@@ -349,12 +470,15 @@ class AccountInfo(QWidget):
         widget.setStyleSheet(f"""
             QLineEdit {{
                 font-family: {BODY_FONT};
+                font-size: 16px;
                 font-size: 15px;
                 color: {CHOCO_BROWN};
                 border: 2px solid {CORAL_RED};        
                 border-radius: 6px;
                 background-color: {LIGHT}; 
+                padding: 6px 14px;        
                 padding: 4px 12px;        
+
             }}
         """)
 
@@ -362,12 +486,15 @@ class AccountInfo(QWidget):
         widget.setStyleSheet(f"""
             QLineEdit {{
                 font-family: {BODY_FONT};
+                font-size: 16px;
                 font-size: 15px;
                 color: {CHOCO_BROWN};
                 border: 2px solid #d93025;        
                 border-radius: 6px;
                 background-color: {LIGHT}; 
+                padding: 6px 14px;        
                 padding: 4px 12px;        
+
             }}
         """)
 
@@ -403,6 +530,10 @@ class AccountInfo(QWidget):
             self.set_error_style(self.email)
             return
 
+        self.generated_code = str(random.randint(100000, 999999))
+
+        sender_email = "basamakita.official@gmail.com"
+        app_password = "tvpq ldae oeiv mjhn"
         # Disable button and show loading state
         self.send_code_btn.setEnabled(False)
         self.send_code_btn.setText("Sending...")
@@ -433,16 +564,22 @@ class AccountInfo(QWidget):
             self.reset_send_button()
             return
 
+
         try:
             msg = MIMEMultipart()
             msg["From"] = sender_email
             msg["To"] = email_text
             msg["Subject"] = "BasaMatika Email Verification Code"
 
+            body = f"Mabuhay! Your verification code for BasaMatika is: {self.generated_code}"
+            msg.attach(MIMEText(body, "plain"))
+
+            server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
             body = f"Mabuhay! Your verification code for BasaMatika is: {self.generated_code}\n\nThis code will expire in 5 minutes."
             msg.attach(MIMEText(body, "plain"))
 
             server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10)
+
             server.login(sender_email, app_password)
             server.sendmail(sender_email, email_text, msg.as_string())
             server.quit()
@@ -452,6 +589,7 @@ class AccountInfo(QWidget):
             msg_box = QMessageBox(self)
             msg_box.setWindowTitle("Verification Code Sent")
             msg_box.setIcon(QMessageBox.Icon.Information)
+            msg_box.setText(f"A verification code has been successfully emailed to:\n<b>{email_text}</b>")
             msg_box.setText(f"A 6-digit verification code has been successfully emailed to:\n<b>{email_text}</b>")
             msg_box.setStyleSheet(f"""
                 QMessageBox {{
@@ -481,6 +619,10 @@ class AccountInfo(QWidget):
 
         except Exception as e:
             print(f"--> Failed to send verification email: {e}")
+
+            self.email_error.setText(f"✖ Failed to send email. Check app password or internet.")
+            self.email_error.setVisible(True)
+            self.set_error_style(self.email)
             self.email_error.setText(f"✖ Failed to send email. Check network connection.")
             self.email_error.setVisible(True)
             self.set_error_style(self.email)
@@ -507,6 +649,7 @@ class AccountInfo(QWidget):
                 background-color: #d94338;
             }}
         """)
+
 
     def validate_and_create_account(self):
         print("--> BUTTON CLICKED! Validating inputs...")
@@ -536,6 +679,10 @@ class AccountInfo(QWidget):
             self.email_error.setVisible(True)
             self.set_error_style(self.email)
             has_error = True
+
+
+        if not code_text or code_text != self.generated_code:
+            self.code_error.setText("✖  Invalid or missing verification code. Request a code first.")
 
         # Check code validity and 5-minute (300 seconds) expiration limit
         if not code_text or code_text != self.generated_code:

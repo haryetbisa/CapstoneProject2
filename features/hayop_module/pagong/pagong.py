@@ -58,8 +58,6 @@ class LessonScreenPagong(QWidget):
         top_layout.setSpacing(50)
         main_layout.addLayout(top_layout)
 
-
-
         content_layout = QHBoxLayout()
         content_layout.setContentsMargins(70, 20, 70, 30)
         content_layout.setSpacing(280)
@@ -76,7 +74,7 @@ class LessonScreenPagong(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 10 : PAGONG",
-        body_text="Ang pagong ay isang uri nang hayop na naninirahan sa tubig, at meron ding pagong na naninirahan sa lupa. Mayroon itong matigas na shell na nagsisilbing kanilang proteksyon. Maaari nitong ipasok ang kanyang ulo at mga paa sa loob nito kapag may panganib.")
+        body_text="Ang pagong ay isang uri nang hayop na nabubuhay sa tubig at lupa. Mayroon itong matigas na <i>shell</i> na nagsisilbing kanilang proteksyon. Nagagawang ipasok dito ang kanilang ulo at mga paa tuwing may panganib. Isa sa natatanging katangian nito ang mabagal na paglakad o pagkilos.")
         content_layout.addWidget(card)
 
 

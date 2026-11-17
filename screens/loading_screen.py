@@ -2,6 +2,7 @@
 import os
 import sys
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.join(BASE_DIR, "..")
 if ROOT_DIR not in sys.path:
@@ -129,6 +130,14 @@ class LoadingScreen(QWidget):
         main_layout.addStretch()
 
     def go_to_next_screen(self):
+
+        """Intelligently routes user based on active session state."""
+        if AppSession.is_teacher_logged_in():
+            print("--> Auto-login session active! Redirecting to home.")
+            self.router.navigate("home")
+        else:
+            print("--> No active session found. Redirecting to account creation.")
+
         """Intelligently routes user based on active session state after loading."""
         if AppSession.load_saved_session() and AppSession.is_teacher_logged_in():
             print("--> Auto-login session active! Redirecting to home.")

@@ -266,6 +266,7 @@ class SampuGame(QWidget):
         self.check_btn.hide()
         self.check_btn.clicked.connect(self.check_answer)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):

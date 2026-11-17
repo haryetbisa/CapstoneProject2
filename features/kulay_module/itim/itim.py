@@ -27,19 +27,18 @@ class Itim(QWidget):
         self.instruction_audio_output.setVolume(0.9)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(50, 40, 50, 40)
-        main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(0,0,0,0)
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout = QHBoxLayout()
-        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
-        top_layout.setSpacing(25)
+        top_layout.setContentsMargins(0, 50, 0, 60)
+        top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter  )
 
         back_btn = QPushButton()
-        back_icon_path = os.path.join(ICONS_DIR, "back_arrow.png")
-        if os.path.exists(back_icon_path):
-            back_btn.setIcon(QIcon(back_icon_path))
+        back_btn.setIcon(QIcon(os.path.join(ICONS_DIR, "back_arrow.png")))
         back_btn.setFlat(True)
+        back_btn.setIconSize(QSize(40, 40))
+        back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setIconSize(QSize(40, 40))
         back_btn.setCursor(Qt.PointingHandCursor)
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
@@ -48,6 +47,7 @@ class Itim(QWidget):
         pagsasanay = QLabel("Aralin: Itim")
         pagsasanay.setStyleSheet(f"""
             font-size: 32px;
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
             font-family: {BODY_FONT};
             font-weight: 600;
             color: {CHOCO_BROWN};               
@@ -70,7 +70,7 @@ class Itim(QWidget):
 
         card = LessonCard(
             title="Aralin 8 : Itim",
-            body_text="Ang kulay itim ay simisimbolo ng gabi at kadiliman, nabubuo ito kapag nawala na ang lahat ng liwanag. Iniuugnay din ito sa iba't-ibang bagay at kasuotan kagaya ng bag, sapatos, at damit. Makikita din ito sa iba't ibang hayop kagaya ng gagamba, uwak, at pusa."
+            body_text="Ang itim ay itinuturing na pinakamadilim na kulay. Ito ang bumabalot na kulay sa paligid kapag nawala ang liwanag. Ang mga bagay gaya ng uling, tinta, at mga kasuotan tulad ng sapatos ay nagtataglay ng ganitong kulay. May mga hayop din kagaya ng gagamba, uwak, at pusa. "
         )
         content_layout.addWidget(card)
 

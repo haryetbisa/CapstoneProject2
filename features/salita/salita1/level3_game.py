@@ -78,7 +78,7 @@ class Salita3Game(QWidget):
         main_layout.addLayout(top_layout)
 
         # Question Title
-        title = QLabel("Anong mga salita ang maaaring maglarawan sa mga mag-aaral?")
+        title = QLabel("Ano ang mga salita na maaaring maglarawan sa mga mag-aaral?")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)

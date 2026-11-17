@@ -69,8 +69,8 @@ class Berde(QWidget):
         content_layout.addWidget(self.content_image)
 
         card = LessonCard(
-            title="Aralin 4 : BERDE",
-            body_text="Ang kulay Berde o Luntian ay pinaghalong dilaw at bughaw (asul) na kulay. Madalas itong sumisimbolo sa kalikasan at kalusugan. Ang kulay na ito ay palaging nakikita kahit saan tulad ng puno, prutas, damit, damo, at halaman."
+            title="Aralin 4 : LUNTIAN",
+            body_text="Ang luntian o mas kilala sa tawag na “berde” ay mula sa pinaghalong kulay na dilaw at bughaw (asul). Ito ang kulay na makikita sa paligid at sumisimbolo sa kalikasan. Taglay ng mga dahon sa puno, damo, halaman at ilang masusustansyang gulay at prutas ang kulay na ito."
         )
         content_layout.addWidget(card)
 

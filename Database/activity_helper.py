@@ -12,6 +12,8 @@ from session import AppSession
 
 
 def save_student_performance(module_name: str, score: float, target_word: str = None, speech_accuracy: float = None, attempts: int = 1):
+
+    student_id = AppSession.get_student_id()
     # Fixed to use get_active_student_id() so it matches grade1_dashboard and kinder_dashboard session state
     student_id = AppSession.get_active_student_id()
 

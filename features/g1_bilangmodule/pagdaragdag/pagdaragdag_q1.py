@@ -175,6 +175,7 @@ class BilangLvl9(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -240,6 +241,10 @@ class BilangLvl9(QWidget):
                 opt.reset()
             else:
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
 
     def handle_back(self):
         self.reset_game()

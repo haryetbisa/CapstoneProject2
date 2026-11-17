@@ -78,7 +78,7 @@ class Salita4Game(QWidget):
         main_layout.addLayout(top_layout)
 
         # Title
-        title = QLabel("Anong mga salita ang maaaring maglarawan sa parke?")
+        title = QLabel("Ano ang mga salita na maaaring maglarawan sa parke?")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(title)

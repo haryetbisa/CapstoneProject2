@@ -70,7 +70,7 @@ class LessonScreenPuso(QWidget):
 
         card = LessonCard(
             title="Aralin 4 : PUSO",
-            body_text="Ang hugis puso ay ang kilalang simbolo sa mundo ng pag-ibig at pagmamahal. Karaniwan itong kinukulayan ng kulay pula."
+            body_text="Ang puso o kilala sa tawag na <i>heart shape</i> ng karamihan ay isang hugis na may dalawang bilog na kurba sa itaas at patulis sa ibaba kagaya ng letrang V. Karaniwan itong kulay pula at ginagamit bilang simbolo ng pag-ibig at pagmamahal."
         )
         content_layout.addWidget(card)
 

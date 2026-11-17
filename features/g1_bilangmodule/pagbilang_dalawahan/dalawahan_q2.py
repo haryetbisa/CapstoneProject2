@@ -17,6 +17,7 @@ INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "aud
 INSTRUCTION_SOUND_FILE = "TANONG 6.mp3" 
 
 
+
 class DraggableWord(QLabel):
     """A number label from the number bank that the user can drag onto a blank."""
 
@@ -97,6 +98,7 @@ class BlankDropTarget(QLabel):
             event.acceptProposedAction()
 
     def dropEvent(self, event):
+        # Return previously placed number to word bank if overwriting
         if self.text():
             self.game.return_number_to_bank(self.text())
 
@@ -118,6 +120,7 @@ class BlankDropTarget(QLabel):
         self.game.check_completion()
 
     def mousePressEvent(self, event):
+        # Click filled blank to clear and return number back to bank
         if event.button() == Qt.LeftButton and self.text():
             self.game.return_number_to_bank(self.text())
             self.reset_style()
@@ -129,6 +132,7 @@ class BilangLvl6(QWidget):
         super().__init__()
         self.router = router
 
+        # Correct skip-counting sequence answers (26, 28, 30, 32, 34, 36, 38, 40)
         self.correct_answers = {
             "blank1": "26",
             "blank2": "30",
@@ -155,6 +159,7 @@ class BilangLvl6(QWidget):
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
         self.instruction_audio_output.setVolume(0.9)
 
+
         self._setup_ui()
 
     def _setup_ui(self):
@@ -163,6 +168,7 @@ class BilangLvl6(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(25)
 
+        # Top Bar Navigation
         top_bar = QHBoxLayout()
         top_bar.setContentsMargins(60, 50, 0, 20)
         top_bar.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
@@ -184,6 +190,7 @@ class BilangLvl6(QWidget):
         top_bar.addStretch()
         main_layout.addLayout(top_bar)
 
+        # Numbers Bank
         word_bank = QFrame()
         word_bank.setMinimumWidth(600)
         word_bank.setStyleSheet("border: 1px solid #D9CBB0; border-radius: 8px; background-color: #FFFDF5;")
@@ -201,10 +208,12 @@ class BilangLvl6(QWidget):
 
         main_layout.addWidget(word_bank)
 
+        # Number Sequence Lines
         sentence_layout = QVBoxLayout()
         sentence_layout.setSpacing(40)
         sentence_layout.setAlignment(Qt.AlignCenter)
 
+        # First Line: [blank1]  28  [blank2]  [blank3]
         first_line = QHBoxLayout()
         first_line.setSpacing(50)
         first_line.setAlignment(Qt.AlignCenter)
@@ -224,6 +233,7 @@ class BilangLvl6(QWidget):
 
         sentence_layout.addLayout(first_line)
 
+        # Second Line: 34  36  [blank4]  [blank5]
         second_line = QHBoxLayout()
         second_line.setSpacing(50)
         second_line.setAlignment(Qt.AlignCenter)
@@ -245,10 +255,12 @@ class BilangLvl6(QWidget):
         sentence_layout.addLayout(second_line)
         main_layout.addLayout(sentence_layout)
 
+        # Action Buttons Layout (Restart + Next)
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -355,7 +367,7 @@ class BilangLvl6(QWidget):
             if all_correct:
                 self.next_btn.show()
                 self.save_activity_progress("Bilang (G1)", "dalawahan_q2", 1.0)
-            else:
+        else:
                 self.next_btn.hide()
 
     def save_activity_progress(self, module_name, target_word, score):
@@ -387,6 +399,10 @@ class BilangLvl6(QWidget):
 
         self.restart_btn.hide()
         self.next_btn.hide()
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
 
     def handle_back(self):
         self.reset_game()

@@ -231,6 +231,7 @@ from features.hugis_module.parisukat.parisukat_vs import ParisukatVS
 from features.hugis_module.puso.puso_vs import PusoVS
 from features.hugis_module.oblong.oblong_vs import OblongVS
 from features.hugis_module.parihaba.parihaba_vs import ParihabaVS
+from features.hugis_module.diamond.diamond_vs import RombusVS
 from features.hugis_module.star.star_vs import StarVS
 
 #VS Hayop
@@ -371,6 +372,7 @@ from features.hugis_module.parisukat.parisukat_game import ParisukatGame
 from features.hugis_module.puso.puso_game import PusoGame
 from features.hugis_module.oblong.oblong_game import OblongGame
 from features.hugis_module.parihaba.parihaba_game import ParihabaGame
+from features.hugis_module.diamond.diamond_game import DiamondGame
 from features.hugis_module.star.star_game import StarGame
 
 #kuwento screen
@@ -446,12 +448,15 @@ class MainWindow(QMainWindow):
         super().__init__()
         
         self.setWindowTitle("BasaMatika")
+        self.setWindowIcon(QIcon("logo.png"))
+
         
         logo_path = os.path.join(BASE_DIR, "assets", "icon", "app_logo.png")
         if os.path.exists(logo_path):
             self.setWindowIcon(QIcon(logo_path))
         else:
             print(f"--> Window icon not found at: {logo_path}")
+
 
         self.resize(500, 550)
         self.setStyleSheet(f"background-color: {LIGHT};")
@@ -586,6 +591,8 @@ class MainWindow(QMainWindow):
         self.router.register("pusovs", PusoVS(self.router))
         self.router.register("oblongvs", OblongVS(self.router))
         self.router.register("parihabavs", ParihabaVS(self.router))
+
+        self.router.register("diamondvs", RombusVS(self.router))
         self.router.register("starvs", StarVS(self.router))
 
 #VR Hayop
@@ -726,6 +733,7 @@ class MainWindow(QMainWindow):
         self.router.register("puso_game", PusoGame(self.router))
         self.router.register("oblong_game", OblongGame(self.router))
         self.router.register("parihaba_game", ParihabaGame(self.router))
+        self.router.register("diamond_game", DiamondGame(self.router))
         self.router.register("star_game", StarGame(self.router))
 
 #Kuwento Screen
@@ -799,13 +807,10 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     init_local_database()
-
     print_registered_teachers()
 
     app = QApplication(sys.argv)
     load_fonts()
-
-    
     create_desktop_shortcut()
 
     sync_worker = CloudSyncWorker(check_interval_seconds=15)
@@ -815,7 +820,13 @@ if __name__ == "__main__":
 
     window = MainWindow()
 
+    if AppSession.load_saved_session():
+        window.router.navigate("home")
+    else:
+        window.router.navigate("loading_screen")
+
     window.router.navigate("loading_screen")
+
 
     window.showMaximized()
     sys.exit(app.exec())

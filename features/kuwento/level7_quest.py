@@ -11,7 +11,6 @@ from Database.queries import log_activity
 from session import AppSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "image_content", "kuwento")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "icons")
 SFX_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "correct_&_wrong")
 FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "sound_tama_mali")

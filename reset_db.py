@@ -1,5 +1,6 @@
 # reset_db.py
 
+from Database.queries import clear_local_teachers
 import os
 from Database.connection import get_db_connection
 from Database.queries import (
@@ -31,5 +32,6 @@ if __name__ == "__main__":
             print("--> Active session file cleared.")
         except Exception as e:
             print(f"--> Error removing session file: {e}")
+
 
     print("--> Local database reset complete! You can now run your app for fresh testing.")

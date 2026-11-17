@@ -6,11 +6,7 @@ import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 from PySide6.QtCore import QThread, Signal
 
-if getattr(sys, 'frozen', False):
-    BASE_DIR = sys._MEIPASS
-else:
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODEL_DIR = os.path.join(BASE_DIR, "model_tagalog_vr_capstone")
 
 

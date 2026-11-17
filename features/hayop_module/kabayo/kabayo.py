@@ -121,10 +121,7 @@ class LessonScreenKabayo(QWidget):
         card = LessonCard(
             title="Aralin 5 : KABAYO",
             body_text=(
-                "Ang kabayo ay isang malaking hayop na inaalagaan ng mga tao na"
-                " may apat na paa at matitigas na kuko. Kilala sila sa"
-                " pagkakaroon ng mahabang buhok sa leeg , mahabang buntot, at"
-                " mabilis na pagtakbo."
+                "Ang kabayo ay isang uri ng hayop na mabilis tumakbo, may apat na mahahabang paa, malagong buhok sa kahabaan ng batok, mahabang buntot at bilugang katawan. Ito ay nagsisilbi rin bilang sasakyan ng mga tao noong unang panahon."
             ),
         )
         right_column.addWidget(card)

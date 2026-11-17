@@ -1,22 +1,28 @@
 import os
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtGui import QPixmap, QIcon
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSizePolicy
 from themes.colors import * 
 from themes.fonts import BODY_FONT
 from components.choices_button import ChoicesButton
-
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "image_content", "salita")
 ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
-
+INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "Salita")
+INSTRUCTION_SOUND_FILE = "Pang-uri.mp3"
 
 
 class Salita1(QWidget):
     def __init__(self, router):
         super().__init__()
         self.router = router
+
+        self.instruction_audio_output = QAudioOutput(self)
+        self.instruction_player = QMediaPlayer(self)
+        self.instruction_player.setAudioOutput(self.instruction_audio_output)
+        self.instruction_audio_output.setVolume(0.9)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(40, 30, 40, 30)
@@ -36,7 +42,7 @@ class Salita1(QWidget):
         back_btn.setStyleSheet(f"border: none; background-color: none; border-radius: 6px")
         back_btn.clicked.connect(lambda: self.router.navigate("salita"))
 
-        pagsasanay = QLabel("Aralin 1")
+        pagsasanay = QLabel("Aralin 1: Salitang Naglalarawan")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -68,24 +74,23 @@ class Salita1(QWidget):
 
         # Speaker icon + text row
         text_row = QHBoxLayout()
-        text_row.setSpacing(15)
-        text_row.setAlignment(Qt.AlignTop | Qt.AlignCenter)
+        text_row.setContentsMargins(60, 0, 60, 0)
 
         lesson_text = QLabel(
-            "Ang mga salitang naglalarawan o tinatawag na pang-uri ay ang\n"
-            "mga salitang nagbibigay ng deskripsyon sa tao, bagay, hayop, lugar, o\n"
-            "pangyayari. Maaaring ito ay kulay, laki, hugis, damdamin, o\n"
-            "katangian."
+            "Ang mga salitang naglalarawan o tinatawag na pang-uri ay "
+            "mga salitang nagbibigay katangian sa tao, bagay, hayop, lugar, at "
+            "pangyayari."
         )
-        lesson_text.setAlignment(Qt.AlignLeft)
-        lesson_text.setWordWrap(True)   
+        lesson_text.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        lesson_text.setWordWrap(True)  
+        lesson_text.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding) 
         lesson_text.setStyleSheet(f"""
             font-size: 28px;
             font-weight: 400;
             font-family: {BODY_FONT};
             color: {CHOCO_BROWN};
         """)
-        text_row.addWidget(lesson_text)
+        text_row.addWidget(lesson_text, 1)
 
         main_layout.addLayout(text_row)
         main_layout.addStretch()
@@ -112,3 +117,23 @@ class Salita1(QWidget):
 
         main_layout.addStretch()
 
+
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()

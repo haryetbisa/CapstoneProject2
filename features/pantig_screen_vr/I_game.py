@@ -17,6 +17,7 @@ FEEDBACK_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "sounds", "so
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "assets", "audio", "VS Pantig")
 INSTRUCTION_SOUND_FILE = "Game Instruction Pantig.mp3" 
 
+
 class Dot(QLabel):
     def __init__(self, dot_id: str, is_source: bool, parent_game):
         super().__init__()
@@ -141,6 +142,20 @@ class MatchingI(QWidget):
                         140, 140, Qt.KeepAspectRatio, Qt.SmoothTransformation
                     )
                 )
+            grid_layout.addWidget(image_label)
+
+            source_dot = Dot(image_id, is_source=True, parent_game=self)
+            grid_layout.addWidget(source_dot)
+
+
+
+            target_dot = Dot(word_id, is_source=False, parent_game=self)
+            grid_layout.addWidget(target_dot)
+
+            word_label = QLabel(word_display)
+            word_label.setStyleSheet(f"font-size: 46px; font-family:{BODY_FONT}; font-weight: 800; color: #3A2E1F;")
+            grid_layout.addWidget(word_label)
+
             grid_layout.addWidget(image_label, i, 0, Qt.AlignCenter)
 
             source_dot = Dot(image_id, is_source=True, parent_game=self)
@@ -168,6 +183,7 @@ class MatchingI(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -359,4 +375,4 @@ class MatchingI(QWidget):
             self.instruction_player.play()
 
     def stop_instruction_sound(self):
-        self.instruction_player.stop()
+            self.instruction_player.stop()

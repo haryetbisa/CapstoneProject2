@@ -4,6 +4,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea
+
 from themes.colors import *
 from themes.fonts import BODY_FONT
 
@@ -17,13 +18,19 @@ class LessonMath7(QWidget):
         super().__init__()
         self.router = router
 
-        # Setup Scroll Area to prevent overlapping and handle different resolutions
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QScrollArea.NoFrame)
         scroll.setStyleSheet("background: transparent; border: none;")
+        outer.addWidget(scroll)
 
         content = QWidget()
+        content.setStyleSheet("background: transparent;")
+        scroll.setWidget(content)
+
         main_layout = QVBoxLayout(content)
         main_layout.setContentsMargins(40, 30, 40, 30)
         main_layout.setAlignment(Qt.AlignTop)
@@ -44,7 +51,7 @@ class LessonMath7(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Aralin: Pagdaragdag (Addition)")
+        pagsasanay = QLabel("Aralin 7: Pagdaragdag (Addition)")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -65,6 +72,12 @@ class LessonMath7(QWidget):
         # ---- Media player + audio output ----
         self.player = QMediaPlayer(self)
         self.audio_output = QAudioOutput(self)
+        self.player.setAudioOutput(self.audio_output)
+        self.player.setVideoOutput(self.video_widget)
+
+        video_path = os.path.join(VIDEO_DIR, "addition.mp4")
+        if os.path.exists(video_path):
+            self.player.setSource(QUrl.fromLocalFile(video_path))
         self.audio_output.setVolume(1.0)
         self.player.setAudioOutput(self.audio_output)
         self.player.setVideoOutput(self.video_widget)
@@ -123,13 +136,10 @@ class LessonMath7(QWidget):
         controls.addWidget(self.next_btn)
         main_layout.addLayout(controls)
 
-        main_layout.addStretch()
-        scroll.setWidget(content)
+        # ---- Keep the button label in sync with actual playback state ----
+        self.player.playbackStateChanged.connect(self.update_button_label)
 
-        # Outer layout
-        outer = QVBoxLayout(self)
-        outer.setContentsMargins(0, 0, 0, 0)
-        outer.addWidget(scroll)
+        main_layout.addStretch()
 
         self.player.playbackStateChanged.connect(self.update_button_label)
 
@@ -149,14 +159,18 @@ class LessonMath7(QWidget):
             self.play_pause_btn.setText("▶ Play")
 
     def handle_back(self):
+        """Stops video playback and navigates back to Grade 1 Math dashboard."""
         self.player.stop()
         self.router.navigate("bilang_g1")
 
     def handle_next(self):
+        """Stops video playback and navigates to Pagdaragdag Question 1."""
         self.player.stop()
         self.router.navigate("pagdaragdag_q1")
 
     def showEvent(self, event):
+        """Resets video playback when screen is displayed."""
+        self.player.stop()
         video_path = os.path.abspath(os.path.join(VIDEO_DIR, "addition.mp4"))
         if os.path.exists(video_path):
             if self.player.source().isEmpty():

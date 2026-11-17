@@ -70,7 +70,7 @@ class Kayumanggi(QWidget):
 
         card = LessonCard(
             title="Aralin 7 : Kayumanggi",
-            body_text="Ang kulay Kayumanggi ay nabubuo sa tatlong pinagsamang kulay, ito ay ang pula, dilaw, at asul. Ito ay iniuugnay sa kalikasan at katatagan, makikita ito sa lupang tinatapakan natin at sa mga puno. Madalas din itong makikita sa mga pagkain at prutas kagaya ng tsokolate, kiwi, at itlog."
+            body_text="Ang kulay kayumanggi ay nabuo mula sa tatlong pinagsamang kulay: pula, dilaw at asul. Iniuugnay ito sa katatagan at karaniwang kulay ng Pilipino. Ito ang pangunahing kulay ng mga pagkain gaya ng tsokolate, kiwi, at katawan ng puno."
         )
         content_layout.addWidget(card)
 

@@ -26,7 +26,11 @@ class GradeOneDashboard(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
+
+        self.instruction_audio_output.setVolume(0.9)
+
         self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
+
 
         main_layout = QVBoxLayout(self)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -35,7 +39,10 @@ class GradeOneDashboard(QWidget):
         
         top_layout = QHBoxLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+
         top_layout.setSpacing(20)
+
         main_layout.addLayout(top_layout)
 
         back_btn = QPushButton()
@@ -50,12 +57,18 @@ class GradeOneDashboard(QWidget):
         title = QLabel("GRADE 1 DASHBOARD")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet(f"""
+
+            font-size: 32px;
+
             font-size: 28px;
+
             font-family: {HEADING_FONT};
             font-weight: 900;
             color: {CHOCO_BROWN};
         """)
         top_layout.addWidget(title)
+
+        top_layout.setSpacing(30)
 
         # Custom Searchable Dropdown
         self.student_dropdown = SearchableDropdown(placeholder="-- Pumili ng Mag-aaral --")
@@ -80,6 +93,9 @@ class GradeOneDashboard(QWidget):
         """)
         self.roster_btn.clicked.connect(lambda: self.router.navigate("grade1_roster"))
         top_layout.addWidget(self.roster_btn)
+
+        main_layout.addSpacing(40)
+
 
         grid_layout = QGridLayout()
         grid_layout.setHorizontalSpacing(30)
@@ -111,8 +127,12 @@ class GradeOneDashboard(QWidget):
         super().showEvent(event)
 
     def stop_instruction_sound(self):
+
+        self.instruction_player.stop()
+
         if self.instruction_player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
             self.instruction_player.stop()
+
 
     def hideEvent(self, event):
         self.stop_instruction_sound()
@@ -121,8 +141,11 @@ class GradeOneDashboard(QWidget):
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(BGM_DIR, BGM_FILE))
         if os.path.exists(sound_path):
+
+
             current_vol = AppSession.get_music_volume() if hasattr(AppSession, 'get_music_volume') else 0.7
             self.instruction_audio_output.setVolume(current_vol)
+
 
             self.instruction_player.stop()
             self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
@@ -154,9 +177,15 @@ class GradeOneDashboard(QWidget):
         """Fetches and updates progress percentages for the active student in Grade 1."""
         student_id = AppSession.get_active_student_id()
         
+
+        bilang_pct = get_module_progress_percentage(student_id, "Bilang (G1)", total_module_items=10)
+        salita_pct = get_module_progress_percentage(student_id, "Salita", total_module_items=10)
+        kuwento_pct = get_module_progress_percentage(student_id, "Kuwento", total_module_items=5)
+
         bilang_pct = get_module_progress_percentage(student_id, "Bilang (G1)", total_module_items=15)
         salita_pct = get_module_progress_percentage(student_id, "Salita", total_module_items=15)
         kuwento_pct = get_module_progress_percentage(student_id, "Kuwento", total_module_items=10)
+
 
         self.bilang_card.set_progress(bilang_pct)
         self.salita_card.set_progress(salita_pct)
@@ -175,6 +204,9 @@ class GradeOneDashboard(QWidget):
     def navigate_with_validation(self, route_name):
         student_id = AppSession.get_active_student_id()
         if not student_id:
+
+            QMessageBox.warning(self, "Babala", "Mangyaring pumili muna ng mag-aaral mula sa listahan bago simulan ang laro.")
+
             msg_box = QMessageBox(self)
             msg_box.setWindowTitle("Babala")
             msg_box.setIcon(QMessageBox.Icon.Warning)
@@ -204,5 +236,6 @@ class GradeOneDashboard(QWidget):
                 }}
             """)
             msg_box.exec()
+
             return
         self.router.navigate(route_name)

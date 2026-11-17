@@ -70,7 +70,7 @@ class LessonScreenParihaba(QWidget):
 
         card = LessonCard(
             title="Aralin 6 : PARIHABA",
-            body_text="Ang hugis parihaba ay may apat na sulok na mas mahaba sa parisukat. Maihahalintulad ito sa mahabang tabla at bintana."
+            body_text="Ang parihaba ay hugis na binubuo ng dalawang pares ng gilid na magkasinghaba. Ito rin ay mayroong apat na sulok at maihahalintulad sa isang mahabang tabla at pinto."
         )
         content_layout.addWidget(card)
 

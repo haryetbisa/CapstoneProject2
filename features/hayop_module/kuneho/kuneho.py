@@ -106,7 +106,7 @@ class LessonScreenKuneho(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 8 : KUNEHO",
-        body_text="Ang kuneho  ay isang maliit na uri ng mamalya Meron itong  mahahabang tainga, malalambot na balahibo, mahahabang paa sa likod na ginagamit sa pagtalon, at maliit na buntot na mukhang bulak.")
+        body_text="Ang kuneho ay isang maliit na uri ng hayop na may malambot na balahibo at maikling buntot na parang bulak. Mayroon din mahahabang tainga at paa sa likod na ginagamit sa pagtalon.")
         right_column.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

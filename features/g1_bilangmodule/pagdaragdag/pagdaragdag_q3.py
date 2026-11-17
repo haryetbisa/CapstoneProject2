@@ -48,6 +48,7 @@ class BilangLvl11(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.setSpacing(20)
 
+        # Top Navigation Bar
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(20, 20, 20, 10)
         top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignCenter)
@@ -75,19 +76,22 @@ class BilangLvl11(QWidget):
         top_layout.setSpacing(30)
         main_layout.addLayout(top_layout)
 
-        word_prob = QLabel("<b>Piliin ang tamang matematikal na pangungusap:</b><br>"
-                           "Bumili si Gabbie ng isang chips at halo-halo sa palengke na may katumbas na <b>limampung piso</b>.<br>"
+        # Word Problem Statement
+        word_prob = QLabel("<b>Alin ang tamang matematikal na pangungusap para sa presyo ng <i>chips</i> at haluhalo?</b><br>"
+                           "Bumili si Gabbie ng isang <i>chips</i> at halo-halo sa palengke na nagkakahalaga ng <b>limampung piso</b>.<br>"
                            "Nagkakahalaga ang chips at halo-halo ng: ")
         word_prob.setAlignment(Qt.AlignJustify)
         word_prob.setWordWrap(True)
         word_prob.setStyleSheet(f"font-size: 28px; font-weight: 500; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         main_layout.addWidget(word_prob)
 
+        # Horizontal container for image graphics
         graphics = QHBoxLayout()
         graphics.setAlignment(Qt.AlignCenter)
         graphics.setSpacing(80)
         main_layout.addLayout(graphics)
 
+        # Chips Container (20 Piso)
         sentence1 = QHBoxLayout()
         sentence1.setSpacing(10)
         graphics.addLayout(sentence1)
@@ -119,6 +123,7 @@ class BilangLvl11(QWidget):
         bente1.setAlignment(Qt.AlignCenter)
         sentence1.addWidget(bente1)
 
+        # Halo-halo Container (20 + 10 = 30 Piso)
         sentence2 = QHBoxLayout()
         sentence2.setSpacing(10)
         graphics.addLayout(sentence2)
@@ -163,10 +168,14 @@ class BilangLvl11(QWidget):
 
         main_layout.addStretch()
 
+        # Choices Layout
         quest_row = QHBoxLayout()
         quest_row.setSpacing(20)
         quest_row.setAlignment(Qt.AlignCenter)
 
+        self.opt_1 = ChoicesButton("30 - 20 = 10", color=CORNFLOWER_BLUE)  # Wrong
+        self.opt_2 = ChoicesButton("20 + 30 = 50", color=MEDIUM_PURPLE)     # Correct (20 + 30 = 50)
+        self.opt_3 = ChoicesButton("50 + 20 = 70", color=HONEY_YELLOW)     # Wrong
         self.opt_1 = ChoicesButton("30 - 20 = 10", color=CORNFLOWER_BLUE)
         self.opt_2 = ChoicesButton("20 + 30 = 50", color=MEDIUM_PURPLE)
         self.opt_3 = ChoicesButton("50 + 20 = 70", color=HONEY_YELLOW)
@@ -180,10 +189,12 @@ class BilangLvl11(QWidget):
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
+        # Action Buttons Layout (Restart + Next)
         action_layout = QHBoxLayout()
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -232,6 +243,7 @@ class BilangLvl11(QWidget):
         main_layout.addStretch()
 
     def reset_game(self):
+        """Resets choice states and hides action buttons."""
         self.restart_btn.hide()
         self.next_btn.hide()
 
@@ -247,6 +259,10 @@ class BilangLvl11(QWidget):
                 opt.reset()
             else:
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
 
     def handle_back(self):
         self.reset_game()
@@ -297,6 +313,10 @@ class BilangLvl11(QWidget):
             button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
             self.next_btn.hide()
 
+    def showEvent(self, event):
+        self.reset_game()
+        self.play_instruction_sound()
+        super().showEvent(event)
     def save_activity_progress(self, module_name, target_word, score):
         try:
             student_id = AppSession.get_active_student_id()

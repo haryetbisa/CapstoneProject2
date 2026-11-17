@@ -106,7 +106,7 @@ class LessonScreenPusa(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 12 : PUSA",
-        body_text="Ang pusa ay isang uri ng maliit na alagang hayop na may apat na paa, balahibo, at mahabang buntot.")
+        body_text="Ang pusa ay isang uri ng maliit na  alagang hayop na may apat na paa, malambot na balahibo, matulis na kuko, at karaniwang inaalagaan sa tahanan.")
         right_column.addWidget(card)
 
 

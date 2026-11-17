@@ -15,7 +15,6 @@ ICONS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "icons")
 INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "audio", "PNK_Lesson")
 INSTRUCTION_SOUND_FILE = "Tainga.mp3"
 
-
 class LessonScreenTaingaa(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -70,7 +69,7 @@ class LessonScreenTaingaa(QWidget):
 
         card = LessonCard(
             title="Aralin 4 : TAINGA/TENGA",
-            body_text="Ang tenga (o tainga) ay ang bahagi ng katawan na ginagamit sa pandinig ng mga tunog at tumutulong din sa pagpapanatili ng balanse ng katawan."
+            body_text="Ang tainga ay bahagi ng katawan ng tao na ginagamit sa pagdinig."
         )
         content_layout.addWidget(card)
 

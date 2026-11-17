@@ -21,6 +21,7 @@ INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "aud
 INSTRUCTION_SOUND_FILE = "TANONG 9.mp3" 
 
 
+
 class BilangLvl10(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -98,7 +99,7 @@ class BilangLvl10(QWidget):
         choco.setAlignment(Qt.AlignCenter)
         sentence1.addWidget(choco)
 
-        words1 = QLabel("Nagtimpla si Ginang Cruz ng <b>apat</b> na<br>malamig na tsokolate.")
+        words1 = QLabel("Si Ginang Cruz ay nagtimpla ng <b>apat</b> <br>na baso ng malamig na tsokolate.")
         words1.setAlignment(Qt.AlignCenter)
         words1.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         sentence1.addWidget(words1)
@@ -119,7 +120,7 @@ class BilangLvl10(QWidget):
         juice.setAlignment(Qt.AlignCenter)
         sentence2.addWidget(juice)
 
-        words2 = QLabel("Nagdagdag naman siya ng <b>tatlong</b><br>calamansi juice.")
+        words2 = QLabel("Nagdagdag pa siya ng <b>tatlong</b><br>baso ng <i>calamansi juice.</i>")
         words2.setAlignment(Qt.AlignCenter)
         words2.setStyleSheet(f"font-size: 32px; font-weight: 600; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
         sentence2.addWidget(words2)
@@ -180,6 +181,7 @@ class BilangLvl10(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -206,7 +208,11 @@ class BilangLvl10(QWidget):
         self.next_btn.setCursor(Qt.PointingHandCursor)
         self.next_btn.setStyleSheet(f"""
             QPushButton {{
+<<<<<<< HEAD
+                background-color: #2E7D32;
+=======
                 background-color:  #2E7D32;
+>>>>>>> bebf379e53e85ce54b926e5c30cbb9777426539f
                 color: white;
                 font-family: {BODY_FONT};
                 font-size: 18px;
@@ -245,6 +251,10 @@ class BilangLvl10(QWidget):
                 opt.reset()
             else:
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
 
     def handle_back(self):
         self.reset_game()

@@ -25,7 +25,11 @@ class PantigScreen(QWidget):
         self.instruction_audio_output = QAudioOutput(self)
         self.instruction_player = QMediaPlayer(self)
         self.instruction_player.setAudioOutput(self.instruction_audio_output)
+
+        self.instruction_audio_output.setVolume(0.9)
+
         self.instruction_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
+
 
         outer_layout = QVBoxLayout(self)
         outer_layout.setContentsMargins(60, 60, 60, 0)
@@ -181,6 +185,27 @@ class PantigScreen(QWidget):
 
         scroll.setWidget(content)
 
+
+
+    def showEvent(self, event):
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
+    def play_instruction_sound(self):
+        sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
+        if os.path.exists(sound_path):
+            self.instruction_player.stop()
+            self.instruction_player.setSource(QUrl.fromLocalFile(sound_path))
+            self.instruction_player.play()
+        else:
+            print(f"Instruction sound not found: {sound_path}")
+
+    def stop_instruction_sound(self):
+        self.instruction_player.stop()
 
     def showEvent(self, event):
         self.play_instruction_sound()

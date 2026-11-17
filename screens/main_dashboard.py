@@ -2,6 +2,10 @@
 import os
 
 from assets.icon import icon_label
+
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy
+from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QSize, QUrl
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout, QSizePolicy
 from PySide6.QtGui import QIcon
@@ -26,6 +30,7 @@ class HomeScreen(QWidget):
         self.media_player = QMediaPlayer(self)
         self.media_player.setAudioOutput(self.audio_output)
         self.media_player.setLoops(QMediaPlayer.Infinite)  # Loop BGM automatically
+
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(60, 60, 60, 0)
@@ -66,11 +71,22 @@ class HomeScreen(QWidget):
         inner_layout.addLayout(text_layout)
         inner_layout.addStretch()
 
+
         # --- UPDATED SETTINGS (GIRAFFE) BUTTON ---
+
         self.g_icon = QPushButton()
         audio_icon_path = os.path.join(ASSETS_DIR, "giraffe.png")
         if os.path.exists(audio_icon_path):
             self.g_icon.setIcon(QIcon(audio_icon_path))
+
+        self.g_icon.setIconSize(QSize(40, 40))
+        self.g_icon.setCursor(Qt.PointingHandCursor)
+        self.g_icon.setStyleSheet(
+            "border: none; background-color: transparent;"
+        )
+        self.g_icon.clicked.connect(lambda: self.router.navigate("settings"))
+        inner_layout.addWidget(self.g_icon)
+
             
         self.g_icon.setIconSize(QSize(30, 30))  # Slightly scaled down to fit inside the circle
         self.g_icon.setFixedSize(50, 50)        # Forces a perfect 50x50 square for the circle
@@ -96,6 +112,7 @@ class HomeScreen(QWidget):
         self.g_icon.clicked.connect(lambda: self.router.navigate("settings"))
         inner_layout.addWidget(self.g_icon)
         # -----------------------------------------
+
 
         main_layout.addWidget(container)
 
@@ -176,10 +193,30 @@ class HomeScreen(QWidget):
         main_layout.addLayout(lower_part)
 
     def showEvent(self, event):
-        """Refreshes greeting and starts dashboard background music when active."""
         super().showEvent(event)
         self.refresh_teacher_greeting()
         self.play_dashboard_bgm()
+
+    """Refreshes the teacher greeting every time the home screen becomes active."""
+    def refresh_teacher_greeting(self):
+        teacher_name = self.get_current_teacher_name()
+        if hasattr(self, 'hello_text'):
+            self.hello_text.setText(f"Hello, {teacher_name}!")
+
+    def get_current_teacher_name(self):
+        """Fetches the latest full_name directly from the database using AppSession or fallback."""
+        try:
+            teacher_id = AppSession.get_teacher_id()
+            if teacher_id:
+                with get_db_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT full_name FROM teachers WHERE teacher_id = ?", (teacher_id,))
+                    row = cursor.fetchone()
+                    if row and row['full_name']:
+                        return row['full_name']
+        except Exception as e:
+            print(f"--> Error fetching teacher name: {e}")
+
 
     def hideEvent(self, event):
         """Stops background music when leaving the dashboard screen."""
@@ -222,6 +259,7 @@ class HomeScreen(QWidget):
                         return row['full_name']
         except Exception as e:
             print(f"--> Error fetching teacher name: {e}")
+
 
         # Fallback to latest teacher record if session ID isn't set yet
         teacher = self.get_latest_teacher()

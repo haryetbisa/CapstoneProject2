@@ -21,6 +21,7 @@ INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "aud
 INSTRUCTION_SOUND_FILE = "TANONG 1.mp3" 
 
 
+
 class BilangLvl1(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -62,7 +63,7 @@ class BilangLvl1(QWidget):
         back_btn.setStyleSheet("border: none; background-color: transparent; border-radius: 6px;")
         back_btn.clicked.connect(self.handle_back)
 
-        pagsasanay = QLabel("Pagsasanay: Bilog")
+        pagsasanay = QLabel("Pagsasanay 1: Bilog")
         pagsasanay.setStyleSheet(f"""
             font-size: 30px;
             font-family: {BODY_FONT};
@@ -111,11 +112,9 @@ class BilangLvl1(QWidget):
         quest_row.addWidget(self.opt_3)
         main_layout.addLayout(quest_row)
 
-      
-        action_layout = QHBoxLayout()
-        action_layout.setAlignment(Qt.AlignCenter)
-        action_layout.setSpacing(20)
+        # Action Buttons Layout (Restart + Next)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -157,9 +156,6 @@ class BilangLvl1(QWidget):
         self.next_btn.hide()
         self.next_btn.clicked.connect(self.handle_next)
 
-        action_layout.addWidget(self.restart_btn)
-        action_layout.addWidget(self.next_btn)
-        main_layout.addLayout(action_layout)
 
         main_layout.addStretch()
 
@@ -182,6 +178,10 @@ class BilangLvl1(QWidget):
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
 
     def showEvent(self, event):
+        """Resets state whenever screen becomes visible."""
+        self.reset_game()
+        super().showEvent(event)
+
         """Resets game state, restores styles, and plays instruction audio whenever screen becomes visible."""
         self.reset_game()
         self.play_instruction_sound()
@@ -226,6 +226,31 @@ class BilangLvl1(QWidget):
             self.feedback_player.setSource(QUrl.fromLocalFile(voice_path))
             self.feedback_player.play()
 
+    def handle_choice(self, is_correct: bool, button: QPushButton):
+        """Handles choice interaction, plays SFX, and toggles navigation buttons."""
+        self.play_feedback_sound(is_correct)
+
+        self.opt_1.setEnabled(False)
+        self.opt_2.setEnabled(False)
+        self.opt_3.setEnabled(False)
+
+        if is_correct:
+            button.setStyleSheet("background-color: #2ECC71; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+            self.next_btn.show()
+        else:
+            button.setStyleSheet("background-color: #E74C3C; color: white; border-radius: 10px; font-weight: bold;")
+            self.restart_btn.show()
+
+    def showEvent(self, event):
+        self.reset_game()
+        self.play_instruction_sound()
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        self.stop_instruction_sound()
+        super().hideEvent(event)
+
     def play_instruction_sound(self):
         sound_path = os.path.abspath(os.path.join(INSTRUCTION_SOUNDS_DIR, INSTRUCTION_SOUND_FILE))
         if os.path.exists(sound_path):
@@ -236,6 +261,7 @@ class BilangLvl1(QWidget):
             print(f"Instruction sound not found: {sound_path}")
 
     def stop_instruction_sound(self):
+        self.instruction_player.stop()
         self.instruction_player.stop()
 
     def handle_choice(self, is_correct: bool, button: QPushButton):
@@ -276,3 +302,4 @@ class BilangLvl1(QWidget):
 
         except Exception as e:
             print(f"--> Error logging activity progress: {e}")
+  

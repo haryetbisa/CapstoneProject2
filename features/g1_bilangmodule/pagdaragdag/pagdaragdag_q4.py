@@ -21,6 +21,7 @@ INSTRUCTION_SOUNDS_DIR = os.path.join(BASE_DIR, "..", "..", "..", "assets", "aud
 INSTRUCTION_SOUND_FILE = "TANONG 11.mp3" 
 
 
+
 class BilangLvl12(QWidget):
     def __init__(self, router):
         super().__init__()
@@ -78,9 +79,9 @@ class BilangLvl12(QWidget):
 
         # Word Problem Statement
         word_prob = QLabel("<b>Piliin ang tamang matematikal na pangungusap:</b><br>"
-                           "Si Aling Rosa ay nagtitinda ng kakanin. Si Mang Ben naman ay nagtitinda ng taho.<br>"
-                           "Bumili si Joy ng kakanin at taho, nagkakahalaga lahat ng <b>pitumpung piso.</b><br>"
-                           "Nagkakahalaga ang kakanin at taho ng: ")
+                           "Si Aling Rosa ay nagtitinda ng kakanin na nagkakahalaga ng <b>limampung piso</b>.<br>"
+                           "Si Mang Ben naman ay nagtitinda ng taho na nagkakahalaga ng <b>dalawampung piso</b>. <br>"
+                           "Magkano lahat ang babayaran ni Joy kung bumili siya ng kakanin at taho?")
         word_prob.setAlignment(Qt.AlignJustify)
         word_prob.setWordWrap(True)
         word_prob.setStyleSheet(f"font-size: 28px; font-weight: 500; font-family: {BODY_FONT}; color: {CHOCO_BROWN};")
@@ -181,6 +182,7 @@ class BilangLvl12(QWidget):
         action_layout.setAlignment(Qt.AlignCenter)
         action_layout.setSpacing(20)
 
+        self.restart_btn = QPushButton(" Restart")
         self.restart_btn = QPushButton("Ulitin")
         restart_icon_path = os.path.join(ICONS_DIR, "reset_icon.png")
         if os.path.exists(restart_icon_path):
@@ -245,6 +247,10 @@ class BilangLvl12(QWidget):
                 opt.reset()
             else:
                 opt.setStyleSheet(f"background-color: {color}; color: white; border-radius: 10px; font-weight: bold;")
+
+    def showEvent(self, event):
+        self.reset_game()
+        super().showEvent(event)
 
     def handle_back(self):
         self.reset_game()

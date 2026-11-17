@@ -1,6 +1,14 @@
 # session.py
 import json
 import os
+
+
+SESSION_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "active_session.json")
+
+
+class AppSession:
+    """Global state manager for tracking active teacher and student sessions with file persistence."""
+
 import sys
 
 # FIX: Save to the directory where the .exe is located, not the temporary PyInstaller folder
@@ -19,6 +27,7 @@ class AppSession:
     _active_teacher_name = "Walang Guro"
     _active_student_id = None
     _active_student_name = "Walang Nakapili"
+
 
     # Global Audio Volume Settings (stored as float 0.0 to 1.0)
     _music_volume = 0.7
@@ -40,6 +49,7 @@ class AppSession:
     @classmethod
     def get_sfx_volume(cls) -> float:
         return cls._sfx_volume
+
 
     # --- TEACHER SESSION & PERSISTENCE ---
     @classmethod

@@ -4,6 +4,7 @@ import os
 import sqlite3
 from .database_security import encrypt_data, decrypt_data
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "data", "basamatika.db")
 
@@ -35,6 +36,8 @@ def init_local_database():
             )
         """)
 
+
+        # 2. Students Table
         # 2. Students Table (Names will be encrypted for privacy)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS students (
@@ -75,6 +78,8 @@ def init_local_database():
             )
         """)
 
+
+        conn.commit()
         conn.commit()
 
 
@@ -112,3 +117,4 @@ def fetch_all_secure_students():
                 "created_at": row["created_at"]
             })
         return students_list
+

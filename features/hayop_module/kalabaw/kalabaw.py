@@ -112,7 +112,7 @@ class LessonScreenKalabaw(QWidget):
         #lesson explanation
         card = LessonCard(
         title="Aralin 6 : KALABAW",
-        body_text="Ang kalabaw ay isang uri ng malaking alagang hayop sa bukid na itinuturing na pambansang hayop ng Pilipinas at kilala bilang manggagawang kaibigan ng magsasaka. Mayroon silang malaking katawan, matitigas na kuko, at dalawang malalaking sungay.")
+        body_text="Ang kalabaw ay isang malaking alagang hayop sa bukid na may maitim na katawan, matitigas na kuko, at dalawang malalaking sungay.  Kilala rin bilang manggagawang kaibigan ng mga magsasaka sapagkat siya ang tumutulong sa mga gawain sa bukid.")
         right_column.addWidget(card)
 
         self.speak_btn = QPushButton("Sunod")

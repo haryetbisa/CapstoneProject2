@@ -125,15 +125,19 @@ class Salita5Game(QWidget):
         grid_layout.setHorizontalSpacing(20)
         grid_layout.setColumnStretch(3, 1)  # Stretchable middle gap
         main_layout.addLayout(grid_layout)
+        
 
         items = [
             ("bola.png", "bola", "lola", "lola.png", "lola", "lola"),
             ("mata.png", "mata", "bata", "bata.png", "bata", "bata"),
             ("buto.png", "buto", "bato", "bato.png", "bato", "bato"),
-            ("lapis.png", "lapis", "ipis", "ipis.png", "ipis", "ipis"),
             ("sako.png", "sako", "siko", "braso.png", "siko", "siko"),
         ]
 
+        for left_img, left_txt, left_key, right_img, right_txt, right_key in items:
+            row = QHBoxLayout()
+
+            # Left side
         for i, (left_img, left_txt, left_key, right_img, right_txt, right_key) in enumerate(items):
             # Left Side
             left_image_lbl = QLabel()

@@ -70,7 +70,7 @@ class LessonScreenLeeg(QWidget):
 
         card = LessonCard(
             title="Aralin 6 : LEEG",
-            body_text="Ang leeg ay ang bahagi ng katawan na nag-uugnay sa ulo at katawan, na sumusuporta sa paggalaw ng ulo at naglalaman ng mga daanan para sa paghinga, pagkain, at daloy ng dugo."
+            body_text="Ang leeg ay ang bahagi ng katawan na nag-uugnay sa ulo at katawan. Tinulungan nito ang tao na umiling, umangat at maaaring iikoy sa iba’t ibang direksyon."
         )
         content_layout.addWidget(card)
 
